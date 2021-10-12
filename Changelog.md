@@ -1,7 +1,58 @@
 ## VRX 1
 
+### VRX 1.5.X
+1. New VRX example with 2022 course elements 
+    * [Pull Request 359](https://github.com/osrf/vrx/pull/359) 
+
+1. Created Scan, Dock and Deliver task 
+    * [Pull Request 333](https://github.com/osrf/vrx/pull/333) 
+
+1. Created Wildlife Encounter task 
+    * [Pull Request 326](https://github.com/osrf/vrx/pull/326) 
+    * [Pull Request 330](https://github.com/osrf/vrx/pull/330) 
+
+1. New animal models and motion plugin for Wildlife Encounter task  
+    * [Pull Request 319](https://github.com/osrf/vrx/pull/319) 
+    * [Pull Request 321](https://github.com/osrf/vrx/pull/321) 
+
+1. New placards and docks for Scan and Dock and Deliver task
+    * [Pull Request 332](https://github.com/osrf/vrx/pull/332) 
+    * [Pull Request 338](https://github.com/osrf/vrx/pull/333) 
+
+1. New ball shooter model and plugin for Scan and Dock and Deliver task
+    * [Pull Request 311](https://github.com/osrf/vrx/pull/311) 
+    * [Pull Request 316](https://github.com/osrf/vrx/pull/316) 
+    * [Pull Request 345](https://github.com/osrf/vrx/pull/345) 
+    * [Pull Request 352](https://github.com/osrf/vrx/pull/352) 
+
+1. Update Station keeping, Wayfinding, Perception and Gymkhana tasks for VRX Competition 2022 
+    * [Pull Request 307](https://github.com/osrf/vrx/pull/307) 
+    * [Pull Request 313](https://github.com/osrf/vrx/pull/313) 
+    * [Pull Request 314](https://github.com/osrf/vrx/pull/314) 
+    * [Pull Request 315](https://github.com/osrf/vrx/pull/315) 
+    * [Pull Request 325](https://github.com/osrf/vrx/pull/325) 
+    * [Pull Request 337](https://github.com/osrf/vrx/pull/337) 
+    * [Pull Request 356](https://github.com/osrf/vrx/pull/356) 
+
+1. Refactored Docker images to integrate with Rocker:
+    * [Pull Request 304](https://github.com/osrf/vrx/pull/304) 
+
+
+### VRX 1.4.X
+
 1. New hydro params:
     * [Pull request 214](https://github.com/osrf/vrx/pull/214)
+1. Migrate to Noetic and Gazebo 11 
+    * [Pull request 247](https://github.com/osrf/vrx/pull/247)
+1. Add Noetic Docker Image 
+    * [Pull request 248](https://github.com/osrf/vrx/pull/248)
+1. Updated CI test image for Noetic
+    * [Pull request 256](https://github.com/osrf/vrx/pull/256)
+1. Sydney International Regatta Centre arena mesh
+    * [Pull request 253](https://github.com/osrf/vrx/pull/253)
+1. Updated buoys for VRX 2022  
+    * [Pull request 264](https://github.com/osrf/vrx/pull/264)
+
 
 ### VRX 1.3.X
 

@@ -15,11 +15,11 @@
  *
 */
 
-#include "vrx_gazebo/navigation_scoring_plugin.hh"
 #include <cmath>
 #include <gazebo/common/Assert.hh>
 #include <gazebo/common/Console.hh>
 #include <gazebo/physics/Link.hh>
+#include "vrx_gazebo/navigation_scoring_plugin.hh"
 
 /////////////////////////////////////////////////
 NavigationScoringPlugin::Gate::Gate(
@@ -253,7 +253,7 @@ void NavigationScoringPlugin::Update()
   // Current score
   this->ScoringPlugin::SetScore(std::min(this->GetRunningStateDuration(),
     this->ElapsedTime().Double() +
-    this->numCollisions * this->obstaclePenalty)/this->numGates);
+    this->GetNumCollisions() * this->obstaclePenalty) / this->numGates);
 
 #if GAZEBO_MAJOR_VERSION >= 8
   const auto robotPose = this->vehicleModel->WorldPose();
@@ -292,7 +292,7 @@ void NavigationScoringPlugin::Update()
     else if (currentState == GateState::VEHICLE_BEFORE &&
              gate.state   == GateState::VEHICLE_AFTER)
     {
-      currentState = GateState::INVALID;
+      gate.state = GateState::INVALID;
       gzmsg << "Transited the gate in the wrong direction. Gate invalidated!"
             << std::endl;
       this->Fail();
@@ -317,12 +317,6 @@ void NavigationScoringPlugin::Fail()
 {
   this->SetScore(this->ScoringPlugin::GetTimeoutScore());
   this->Finish();
-}
-
-//////////////////////////////////////////////////
-void NavigationScoringPlugin::OnCollision()
-{
-  this->numCollisions++;
 }
 
 // Register plugin with gazebo

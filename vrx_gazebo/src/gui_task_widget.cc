@@ -14,18 +14,20 @@
  * limitations under the License.
  *
 */
-#include "gui_task_widget.hh"
-
 #include <tf/tf.h>
 #include <math.h>
 
+#include <gazebo/gui/GuiPlugin.hh>
 #include <gazebo/msgs/msgs.hh>
 
 #include <sstream>
 
+#include "gui_task_widget.hh"
+
 using namespace gazebo;
 
 // Register this plugin with the simulator
+// cppcheck-suppress unknownMacro
 GZ_REGISTER_GUI_PLUGIN(GUITaskWidget)
 
 /////////////////////////////////////////////////

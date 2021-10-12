@@ -7,6 +7,8 @@ if(NOT ERB_EXE_PATH)
   message(FATAL_ERROR "Could not find the `erb` tool.  Try `sudo apt-get install ruby`")
 endif()
 
+add_compile_options(-std=c++17)
+
 # For Qt
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -123,6 +125,36 @@ install(TARGETS placard_plugin
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+# Plugin for controlling the ball shooter.
+add_library(ball_shooter_plugin src/ball_shooter_plugin.cc)
+target_link_libraries(placard_plugin
+  ${catkin_LIBRARIES}
+)
+add_dependencies(ball_shooter_plugin
+  ${catkin_EXPORTED_TARGETS}
+)
+install(TARGETS ball_shooter_plugin
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+# Plugin for controlling the animal buoys .
+add_library(follow_plugin src/follow_plugin.cc)
+target_link_libraries(follow_plugin
+  ${catkin_LIBRARIES}
+  waypoint_markers
+)
+add_dependencies(follow_plugin
+  ${catkin_EXPORTED_TARGETS}
+  waypoint_markers
+)
+install(TARGETS follow_plugin
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 # A generic scoring plugin.
 add_library(scoring_plugin src/scoring_plugin.cc)
 target_link_libraries(scoring_plugin
@@ -151,6 +183,18 @@ install(TARGETS navigation_scoring_plugin
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+# Plugin for scoring the wildlife challenge task.
+add_library(wildlife_scoring_plugin src/wildlife_scoring_plugin.cc)
+target_link_libraries(wildlife_scoring_plugin
+  ${catkin_LIBRARIES}
+  scoring_plugin)
+add_dependencies(wildlife_scoring_plugin ${catkin_EXPORTED_TARGETS})
+install(TARGETS wildlife_scoring_plugin
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 # Plugin for scoring the station keeping challenge task.
 add_library(stationkeeping_scoring_plugin src/stationkeeping_scoring_plugin.cc)
 target_link_libraries(stationkeeping_scoring_plugin
@@ -172,6 +216,19 @@ target_link_libraries(wayfinding_scoring_plugin
   waypoint_markers)
 add_dependencies(wayfinding_scoring_plugin ${catkin_EXPORTED_TARGETS})
 install(TARGETS wayfinding_scoring_plugin
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+# Plugin for scoring gymkhana task
+add_library(gymkhana_vrx_scoring_plugin src/gymkhana_scoring_plugin.cc)
+target_link_libraries(gymkhana_vrx_scoring_plugin
+  ${catkin_LIBRARIES}
+  scoring_plugin
+)
+
+install(TARGETS gymkhana_vrx_scoring_plugin
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -209,7 +266,9 @@ if(${GAZEBO_MAJOR_VERSION} GREATER 7)
     ${QT_LIBRARIES}
   )
   qt5_use_modules(gui_task_widget Widgets)
-  add_dependencies(gui_task_widget ${catkin_EXPORTED_TARGETS})
+  add_dependencies(gui_task_widget
+    ${catkin_EXPORTED_TARGETS}
+    vrx_gazebo_generate_messages_cpp)
   install(TARGETS gui_task_widget
     ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
@@ -233,16 +292,20 @@ install(TARGETS perception_scoring_plugin
 set(dock_base_erb_files
   models/dock_2016_base/model.sdf.erb
   models/dock_2018_base/model.sdf.erb
+  models/dock_2022_base/model.sdf.erb
   models/dock_2016_base_dynamic/model.sdf.erb
   models/dock_2018_base_dynamic/model.sdf.erb
+  models/dock_2022_base_dynamic/model.sdf.erb
 )
 
 # Dock files that need to be processed with erb
 set(dock_erb_files
   models/dock_2016/model.sdf.erb
   models/dock_2018/model.sdf.erb
+  models/dock_2022/model.sdf.erb
   models/dock_2016_dynamic/model.sdf.erb
   models/dock_2018_dynamic/model.sdf.erb
+  models/dock_2022_dynamic/model.sdf.erb
 )
 
 # Process the dock base erb files
@@ -289,25 +352,22 @@ endif()
 # Generate world files from xacro and install
 xacro_add_files(
   worlds/example_course.world.xacro
-  worlds/navigation_task.world.xacro
+  worlds/gymkhana.world.xacro
   worlds/perception_task.world.xacro
-  worlds/sandisland.world.xacro
-  worlds/dock.world.xacro
-  worlds/scan_and_dock.world.xacro
+  worlds/scan_dock_deliver.world.xacro
   worlds/stationkeeping_task.world.xacro
+  worlds/sydneyregatta.world.xacro
   worlds/wayfinding_task.world.xacro
-  worlds/wind_test.world.xacro
-  worlds/ocean.world.xacro
+  worlds/wildlife_task.world.xacro
   ${XACRO_INORDER} INSTALL DESTINATION worlds
 )
 # Generate obstacle course
-# TODO Convert to Python3 for Noetic
-#add_custom_command(
-#  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/models/robotx_2018_qualifying_avoid_obstacles_buoys/model.sdf
-#  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_avoid_obstacles_buoys
-#  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_avoid_obstacles_buoys --seed 1337 --a3 6 --a5 7 --a7 7 > ${CMAKE_CURRENT_SOURCE_DIR}/models/robotx_2018_qualifying_avoid_obstacles_buoys/model.sdf
-#)
-#add_custom_target(${PROJECT_NAME}_generate_obstacle_course_buoys ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/models/robotx_2018_qualifying_avoid_obstacles_buoys/model.sdf)
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/models/robotx_2018_qualifying_avoid_obstacles_buoys/model.sdf
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_avoid_obstacles_buoys.py
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_avoid_obstacles_buoys.py --seed 1337 --a3 6 --a5 7 --a7 7 > ${CMAKE_CURRENT_SOURCE_DIR}/models/robotx_2018_qualifying_avoid_obstacles_buoys/model.sdf
+)
+add_custom_target(${PROJECT_NAME}_generate_obstacle_course_buoys ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/models/robotx_2018_qualifying_avoid_obstacles_buoys/model.sdf)
 
 # Install all the config files
 install(DIRECTORY config/
@@ -343,8 +403,10 @@ endif()
 
 # Python Scripts
 catkin_install_python(PROGRAMS
+    nodes/pinger_visualization.py
+    nodes/set_pinger_position.py
     nodes/twist2thrust.py
     nodes/key2thrust_angle.py
-    scripts/generate_worlds
-    scripts/generate_wamv
+    scripts/generate_worlds.py
+    scripts/generate_wamv.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})

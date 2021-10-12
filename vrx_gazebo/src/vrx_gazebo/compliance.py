@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 import rospkg
 import numpy as np
@@ -183,7 +183,7 @@ def find_boxes(box_yaml):
 
     boxes = []
 
-    for name, properties in box_def.iteritems():
+    for name, properties in iter(box_def.items()):
         boxes.append(Box(str(name),
                          properties['pose'],
                          properties['size'],

@@ -22,6 +22,7 @@
 #include <gazebo/common/Assert.hh>
 #include <gazebo/common/Console.hh>
 #include <gazebo/common/Events.hh>
+#include <gazebo/common/Plugin.hh>
 #include <ignition/math/config.hh>
 #include <ignition/math/Matrix4.hh>
 #include <ignition/math/Pose3.hh>
@@ -142,6 +143,7 @@ void PerceptionObject::EndTrial()
   gzmsg << "PerceptionScoringPlugin: despawning " << this->name << std::endl;
 }
 
+// cppcheck-suppress unknownMacro
 GZ_REGISTER_WORLD_PLUGIN(PerceptionScoringPlugin)
 
 /////////////////////////////////////////////////
@@ -428,7 +430,7 @@ void PerceptionScoringPlugin::OnAttempt(
 //////////////////////////////////////////////////
 void PerceptionScoringPlugin::OnRunning()
 {
-  gzmsg << "OnRunning" << std::endl;
+  gzmsg << "PerceptionScoringPlugin::OnRunning" << std::endl;
   // Quit if ros plugin was not loaded
   if (!ros::isInitialized())
   {
