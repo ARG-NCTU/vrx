@@ -36,8 +36,8 @@ class Node():
             self.left_msg.data += -1*data.angular.z
             self.right_msg.data += data.angular.z
         else:
-            self.left_msg.data = data.linear.x
-            self.right_msg.data = data.angular.z
+            self.left_msg.data = data.linear.x*linfac - data.angular.z*angfac
+            self.right_msg.data = data.linear.x*linfac + data.angular.z*angfac
 
         rospy.logdebug("TX ")
         rospy.logdebug("\tleft:%f, right:%f"%(self.left_msg.data,
@@ -52,9 +52,9 @@ if __name__ == '__main__':
 
     # ROS Parameters
     # Scaling from Twist.linear.x to (left+right)
-    linear_scaling = rospy.get_param('~linear_scaling',0.2)
+    linear_scaling = rospy.get_param('~linear_scaling',0.8)
     # Scaling from Twist.angular.z to (right-left)
-    angular_scaling = rospy.get_param('~angular_scaling',0.05)
+    angular_scaling = rospy.get_param('~angular_scaling',0.6)
 
     rospy.loginfo("Linear scaling=%f, Angular scaling=%f"%(linear_scaling,angular_scaling))
 
