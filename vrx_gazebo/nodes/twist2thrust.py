@@ -4,6 +4,7 @@
 import sys
 import rospy
 from geometry_msgs.msg import Twist
+from sensor_msgs.msg import Joy
 from std_msgs.msg import Float32
 
 class Node():
@@ -12,39 +13,49 @@ class Node():
         self.angular_scaling = angular_scaling
         self.left_pub = None
         self.right_pub = None
-        self.left_msg =None
-        self.right_msg =None
+        self.left_msg =Float32()
+        self.right_msg =Float32()
+        self.left_lateral_msg =Float32()
+        self.right_lateral_msg =Float32()
         self.keyboard = keyboard
+        self.auto = 0
+        
+        # Publisher
+        self.left_pub = rospy.Publisher("left_cmd",Float32,queue_size=10)
+        self.right_pub = rospy.Publisher("right_cmd",Float32,queue_size=10)
+        self.left_lateral_pub = rospy.Publisher("left_lateral_cmd",Float32,queue_size=10)
+        self.right_lateral_pub = rospy.Publisher("right_lateral_cmd",Float32,queue_size=10)
 
-    def callback(self,data):
-        rospy.logdebug("RX: Twist "+rospy.get_caller_id())
-        rospy.logdebug("\tlinear:")
-        rospy.logdebug("\t\tx:%f,y:%f,z:%f"%(data.linear.x,
-                                            data.linear.y,
-                                            data.linear.z))
-        rospy.logdebug("\tangular:")
-        rospy.logdebug("\t\tx:%f,y:%f,z:%f"%(data.angular.x,
-                                            data.angular.y,
-                                            data.angular.z))
-        # scaling factors
-        linfac = self.linear_scaling
-        angfac = self.angular_scaling
+        # Subscriber
+        self.sub_cmd = rospy.Subscriber("cmd_vel", Twist, self.cb_cmd, queue_size=1)
+        self.sub_joy = rospy.Subscriber("joy", Joy, self.cbJoy, queue_size=1)
+        self.timer = rospy.Timer(rospy.Duration(0.1), self.cb_publish)
 
-        if self.keyboard:
-            self.left_msg.data = data.linear.x
-            self.right_msg.data = data.linear.x
-            self.left_msg.data += -1*data.angular.z
-            self.right_msg.data += data.angular.z
-        else:
-            self.left_msg.data = data.linear.x*linfac - data.angular.z*angfac
-            self.right_msg.data = data.linear.x*linfac + data.angular.z*angfac
-
-        rospy.logdebug("TX ")
-        rospy.logdebug("\tleft:%f, right:%f"%(self.left_msg.data,
-                                              self.right_msg.data))
+    def cb_publish(self, event):
         self.left_pub.publish(self.left_msg)
         self.right_pub.publish(self.right_msg)
+        self.left_lateral_pub.publish(self.left_lateral_msg)
+        self.right_lateral_pub.publish(self.right_lateral_msg)
+    def cb_cmd(self, data):
+        if self.auto:
+            self.left_msg.data = data.linear.x
+            self.right_msg.data = data.linear.x
+            self.left_lateral_msg = -1*data.angular.z
+            self.right_lateral_msg = data.angular.z
+    
+    def cbJoy(self,data):
+        if(data.buttons[7]==1) and not self.auto:
+            self.auto = 1
+            rospy.loginfo("going auto")
+        elif(data.buttons[6]==1) and self.auto:
+            self.auto = 0
+            rospy.loginfo("going manual")
 
+        if not self.auto:
+            self.left_msg.data = data.axes[1]*self.linear_scaling
+            self.right_msg.data = data.axes[1]*self.linear_scaling 
+            self.left_lateral_msg = -1*data.axes[3]*self.angular_scaling
+            self.right_lateral_msg = data.axes[3]*self.angular_scaling
 
 if __name__ == '__main__':
 
@@ -52,9 +63,9 @@ if __name__ == '__main__':
 
     # ROS Parameters
     # Scaling from Twist.linear.x to (left+right)
-    linear_scaling = rospy.get_param('~linear_scaling',0.8)
+    linear_scaling = rospy.get_param('~linear_scaling',0.6)
     # Scaling from Twist.angular.z to (right-left)
-    angular_scaling = rospy.get_param('~angular_scaling',0.6)
+    angular_scaling = rospy.get_param('~angular_scaling',0.45)
 
     rospy.loginfo("Linear scaling=%f, Angular scaling=%f"%(linear_scaling,angular_scaling))
 
@@ -62,14 +73,6 @@ if __name__ == '__main__':
     key = '--keyboard' in sys.argv
     node=Node(linear_scaling,angular_scaling,keyboard=key)
 
-    # Publisher
-    node.left_pub = rospy.Publisher("left_cmd",Float32,queue_size=10)
-    node.right_pub = rospy.Publisher("right_cmd",Float32,queue_size=10)
-    node.left_msg = Float32()
-    node.right_msg = Float32()
-
-    # Subscriber
-    rospy.Subscriber("cmd_vel",Twist,node.callback)
 
     try:
         rospy.spin()

@@ -60,7 +60,7 @@
 
     <!-- WAMV with "T" thruster configuration -->
     <xacro:if value="${thruster_conf == 'T'}">
-      <xacro:wamv_gazebo thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_t_thrusters.xacro"/>
+      <xacro:wamv_gazebo thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_t_thrusters_nycu.xacro"/>
     </xacro:if>
 
     <!-- WAMV with "X" thruster configuration -->

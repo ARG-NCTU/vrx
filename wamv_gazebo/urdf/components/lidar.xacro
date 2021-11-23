@@ -28,3 +28,5 @@
     </xacro:if>
   </xacro:macro>
 </robot>
+
+<!-- x:=1.5 y:=0 z:=1.3 -->
