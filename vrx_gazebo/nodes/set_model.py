@@ -8,9 +8,9 @@ def main():
     rospy.init_node('set_pose')
 
     state_msg = ModelState()
-    state_msg.model_name = 'wamv'
-    state_msg.pose.position.x = -541
-    state_msg.pose.position.y = 224.15
+    state_msg.model_name = 'wamv1'
+    state_msg.pose.position.x = -630
+    state_msg.pose.position.y = 370
     state_msg.pose.position.z = 0
     state_msg.pose.orientation.x = 0
     state_msg.pose.orientation.y = 0

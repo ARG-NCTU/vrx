@@ -40,8 +40,8 @@ class Node():
         if self.auto:
             self.left_msg.data = data.linear.x
             self.right_msg.data = data.linear.x
-            self.left_lateral_msg = -1*data.angular.z
-            self.right_lateral_msg = data.angular.z
+            self.left_lateral_msg = data.angular.z
+            self.right_lateral_msg = -1*data.angular.z
     
     def cbJoy(self,data):
         if(data.buttons[7]==1) and not self.auto:
@@ -54,8 +54,8 @@ class Node():
         if not self.auto:
             self.left_msg.data = data.axes[1]*self.linear_scaling
             self.right_msg.data = data.axes[1]*self.linear_scaling 
-            self.left_lateral_msg = -1*data.axes[3]*self.angular_scaling
-            self.right_lateral_msg = data.axes[3]*self.angular_scaling
+            self.left_lateral_msg = data.axes[3]*self.angular_scaling
+            self.right_lateral_msg = -1*data.axes[3]*self.angular_scaling
 
 if __name__ == '__main__':
 
