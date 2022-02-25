@@ -35,8 +35,8 @@
   <arg name="wamv_P" default="0" />
   <arg name="wamv_Y" default="1" />
 
-	<arg name="drone_x" default="-532" />
-  <arg name="drone_y" default="162" />
+	<arg name="drone_x" default="-531" />
+  <arg name="drone_y" default="144" />
   <arg name="drone_z" default="2.2" />
   <arg name="drone_R" default="0" />
   <arg name="drone_P" default="0" />
