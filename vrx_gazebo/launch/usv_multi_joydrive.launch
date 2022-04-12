@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="veh" default="wamv"/>
+  <arg name="num" default="4"/>
+
+  <!-- Joystick Driver -->
+  <node pkg="joy" type="joy_node" name="joy">
+    <param name="dev" value="/dev/input/js1"/>
+    <!-- <param name="autorepeat_rate" type="double" value="10.0" />  -->
+  </node>
+
+  <!-- Joystick Teleop -->
+  <!-- <rosparam file="$(find vrx_gazebo)/config/diffdrive.yaml" command="load"/>
+  <node pkg="joy_teleop" type="joy_teleop.py" name="joy_teleop">
+    <remap from="joy" to="/wamv/joy" />
+    <remap from="cmd_vel" to="/wamv/cmd_vel" />
+  </node> -->
+
+  <!-- Convert Twist messages to Drive messages -->
+  <group ns="$(arg veh)" >
+    <node pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
+      <remap from="left_cmd" to="/$(arg veh)/thrusters/left_thrust_cmd"/>
+      <remap from="right_cmd" to="/$(arg veh)/thrusters/right_thrust_cmd"/>
+      <remap from="left_lateral_cmd" to="/$(arg veh)/thrusters/left_lateral_thrust_cmd"/>
+      <remap from="right_lateral_cmd" to="/$(arg veh)/thrusters/right_lateral_thrust_cmd"/>
+    </node>
+  </group>
+
+  <group ns="$(arg veh)1" if="$(eval arg('num') - 1 > 0)">
+    <node pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
+      <remap from="left_cmd" to="/$(arg veh)1/thrusters/left_thrust_cmd"/>
+      <remap from="right_cmd" to="/$(arg veh)1/thrusters/right_thrust_cmd"/>
+      <remap from="left_lateral_cmd" to="/$(arg veh)1/thrusters/left_lateral_thrust_cmd"/>
+      <remap from="right_lateral_cmd" to="/$(arg veh)1/thrusters/right_lateral_thrust_cmd"/>
+    </node>
+  </group>
+
+    <group ns="$(arg veh)2" if="$(eval arg('num') - 2 > 0)">
+      <node pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
+        <remap from="left_cmd" to="/$(arg veh)2/thrusters/left_thrust_cmd"/>
+        <remap from="right_cmd" to="/$(arg veh)2/thrusters/right_thrust_cmd"/>
+        <remap from="left_lateral_cmd" to="/$(arg veh)2/thrusters/left_lateral_thrust_cmd"/>
+        <remap from="right_lateral_cmd" to="/$(arg veh)2/thrusters/right_lateral_thrust_cmd"/>
+      </node>
+    </group>
+
+    <group ns="$(arg veh)3" if="$(eval arg('num') - 3 > 0)">
+      <node pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
+        <remap from="left_cmd" to="/$(arg veh)3/thrusters/left_thrust_cmd"/>
+        <remap from="right_cmd" to="/$(arg veh)3/thrusters/right_thrust_cmd"/>
+        <remap from="left_lateral_cmd" to="/$(arg veh)3/thrusters/left_lateral_thrust_cmd"/>
+        <remap from="right_lateral_cmd" to="/$(arg veh)3/thrusters/right_lateral_thrust_cmd"/>
+      </node>
+    </group>
+</launch>
