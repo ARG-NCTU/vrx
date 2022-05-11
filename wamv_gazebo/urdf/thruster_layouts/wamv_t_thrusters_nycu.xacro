@@ -3,8 +3,8 @@
   <xacro:include filename="$(find wamv_description)/urdf/thrusters/engine.xacro" />
   <xacro:engine prefix="left" position="-2.373776 1.027135 0.318237" />
   <xacro:engine prefix="right" position="-2.373776 -1.027135 0.318237" />
-  <xacro:engine prefix="left_lateral" position="1.33 0.90 0.318237" orientation="0.0 0.0 1.5707"/>
-  <xacro:engine prefix="right_lateral" position="1.33 -0.90 0.318237" orientation="0.0 0.0 -1.5707"/>
+  <xacro:engine prefix="left_lateral" position="1.20 0.90 0.318237" orientation="0.0 0.0 1.5707"/>
+  <xacro:engine prefix="right_lateral" position="1.20 -0.90 0.318237" orientation="0.0 0.0 -1.5707"/>
   <gazebo>
     <plugin name="wamv_gazebo_thrust" filename="libusv_gazebo_thrust_plugin.so">
       <cmdTimeout>1.0</cmdTimeout>

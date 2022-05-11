@@ -102,12 +102,12 @@
             <always_on>true</always_on>
             <updaterate>100.0</updaterate>
             <contact>
-                <collision>${namespace}/base_link_fixed_joint_lump__left_float_collision_9</collision>
-                <collision>${namespace}/base_link_fixed_joint_lump__left_mid_float_collision_10</collision>
-                <collision>${namespace}/base_link_fixed_joint_lump__left_front_float_collision_11</collision>
-                <collision>${namespace}/base_link_fixed_joint_lump__right_float_collision_21</collision>
-                <collision>${namespace}/base_link_fixed_joint_lump__right_mid_float_collision_22</collision>
-                <collision>${namespace}/base_link_fixed_joint_lump__right_front_float_collision_23</collision>
+                <collision>${namespace}/base_link_fixed_joint_lump__left_float_collision_17</collision>
+                <collision>${namespace}/base_link_fixed_joint_lump__left_mid_float_collision_18</collision>
+                <collision>${namespace}/base_link_fixed_joint_lump__left_front_float_collision_19</collision>
+                <collision>${namespace}/base_link_fixed_joint_lump__right_float_collision_29</collision>
+                <collision>${namespace}/base_link_fixed_joint_lump__right_mid_float_collision_30</collision>
+                <collision>${namespace}/base_link_fixed_joint_lump__right_front_float_collision_31</collision>
             </contact>
             <plugin name="gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
                 <bumperTopicName>${namespace}/bumper_states</bumperTopicName>
