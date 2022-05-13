@@ -5,7 +5,7 @@
   <!-- Macro to create a WAM-V with dyanmics plugins and a customizeable thruster layout -->
   <xacro:macro  name="wamv_gazebo" params="thruster_layout">
     <!-- Defines the base vehicle -->
-    <xacro:include filename="$(find wamv_description)/urdf/wamv_base_contact_old.urdf.xacro" />
+    <xacro:include filename="$(find wamv_description)/urdf/wamv_base_contact.urdf.xacro" />
     <!-- Thruster Layout -->
     <xacro:include filename="${thruster_layout}"/>
     <!-- Attach hydrodynamics plugin -->
