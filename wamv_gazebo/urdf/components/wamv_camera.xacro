@@ -139,17 +139,18 @@
 
     <!-- Gazebo camera setup -->
     <gazebo reference="${namespace}/${name}_link">
-      <sensor type="camera" name="${name}_sensor">
+      <sensor type="depth" name="${name}_sensor">
         <update_rate>30.0</update_rate>
 	<xacro:if value="${visualize}">
 	  <visualize>true</visualize>
 	</xacro:if>
         <camera name="${name}_camera">
-          <horizontal_fov>1.3962634</horizontal_fov>
+          <horizontal_fov>1.570796</horizontal_fov>
+          <vertical_fov>1.04872</vertical_fov>
           <image>
             <width>1280</width>
             <height>720</height>
-            <format>R8G8B8</format>
+            <format>B8G8R8</format>
           </image>
           <clip>
             <near>0.05</near>
@@ -164,19 +165,30 @@
             <stddev>0.007</stddev>
           </noise>
         </camera>
-        <plugin name="camera_plugin_${name}" filename="libgazebo_ros_camera.so">
+        <plugin name="camera_plugin_${name}" filename="libgazebo_ros_openni_kinect.so">
+          <baseline>0.2</baseline>
           <alwaysOn>true</alwaysOn>
-          <updateRate>0.0</updateRate>
+          <updateRate>1.0</updateRate>
           <cameraName>${namespace}/${sensor_namespace}${camera_namespace}${name}</cameraName>
           <imageTopicName>image_raw</imageTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+          <depthImageTopicName>depth/image_raw</depthImageTopicName>
+          <depthImageInfoTopicName>depth/camera_info</depthImageInfoTopicName>
+          <pointCloudTopicName>depth/points</pointCloudTopicName>
           <frameName>${namespace}/${name}_link_optical</frameName>
+          <pointCloudCutoff>0.5</pointCloudCutoff>
+          <pointCloudCutoffMax>25.0</pointCloudCutoffMax>
           <hackBaseline>0.07</hackBaseline>
           <distortionK1>0.0</distortionK1>
           <distortionK2>0.0</distortionK2>
           <distortionK3>0.0</distortionK3>
           <distortionT1>0.0</distortionT1>
           <distortionT2>0.0</distortionT2>
+          <CxPrime>0</CxPrime>
+          <Cx>0</Cx>
+          <Cy>0</Cy>
+          <focalLength>0</focalLength>
+          <hackBaseline>0</hackBaseline>
         </plugin>
       </sensor>
     </gazebo>

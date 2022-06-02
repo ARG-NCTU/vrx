@@ -351,7 +351,10 @@ endif()
 
 # Generate world files from xacro and install
 xacro_add_files(
+  worlds/example_course_narrow.world.xacro
   worlds/example_course.world.xacro
+  worlds/collision_avoidance.world.xacro
+  worlds/collision_avoidance_forest.world.xacro
   worlds/navigation_task.world.xacro
   worlds/gymkhana.world.xacro
   worlds/perception_task.world.xacro
