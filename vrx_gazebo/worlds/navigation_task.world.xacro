@@ -57,6 +57,18 @@
       <pose>-455 305 0 0 0 1</pose>
     </include>
 
+    <!-- The navigation course 1-->
+    <include>
+      <uri>model://navigation_course1</uri>
+      <pose>-512 341 0.52 0 0 1.1870854</pose>
+    </include>
+
+    <!-- The navigation course 2-->
+    <include>
+      <uri>model://navigation_course2</uri>
+      <pose>-401 261.5 0 0 0 2.365713</pose>
+    </include>
+
     <!-- The obstacle course -->
     <!-- <include>
       <name>buoys</name>
