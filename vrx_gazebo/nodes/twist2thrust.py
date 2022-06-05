@@ -63,11 +63,7 @@ if __name__ == '__main__':
 
     # ROS Parameters
     # Scaling from Twist.linear.x to (left+right)
-<<<<<<< HEAD
     linear_scaling = rospy.get_param('~linear_scaling',1)
-=======
-    linear_scaling = rospy.get_param('~linear_scaling',1.6)
->>>>>>> 263d94cca49a27cacc63d0602ef167e9a03dd8ac
     # Scaling from Twist.angular.z to (right-left)
     angular_scaling = rospy.get_param('~angular_scaling',1)
 
