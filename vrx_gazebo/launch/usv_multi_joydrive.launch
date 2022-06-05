@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="veh" default="boat"/>
+  <arg name="veh" default="wamv"/>
   <arg name="veh1" default="wamv"/>
   <arg name="num" default="7"/>
 
@@ -18,7 +18,7 @@
   </node> -->
 
   <!-- Convert Twist messages to Drive messages -->
-  <group ns="$(arg veh)7" >
+  <group ns="$(arg veh)6" >
     <node pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
       <remap from="left_cmd" to="/$(arg veh1)6/thrusters/left_thrust_cmd"/>
       <remap from="right_cmd" to="/$(arg veh1)6/thrusters/right_thrust_cmd"/>
@@ -27,7 +27,7 @@
     </node>
   </group>
 
-  <group ns="$(arg veh)1" if="$(eval arg('num') - 1 > 0)">
+  <group ns="$(arg veh)" if="$(eval arg('num') - 1 > 0)">
     <node pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
       <remap from="left_cmd" to="/$(arg veh1)/thrusters/left_thrust_cmd"/>
       <remap from="right_cmd" to="/$(arg veh1)/thrusters/right_thrust_cmd"/>
@@ -36,7 +36,7 @@
     </node>
   </group>
 
-    <group ns="$(arg veh)2" if="$(eval arg('num') - 2 > 0)">
+    <group ns="$(arg veh)1" if="$(eval arg('num') - 2 > 0)">
       <node pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
         <remap from="left_cmd" to="/$(arg veh1)1/thrusters/left_thrust_cmd"/>
         <remap from="right_cmd" to="/$(arg veh1)1/thrusters/right_thrust_cmd"/>
@@ -45,7 +45,7 @@
       </node>
     </group>
 
-    <group ns="$(arg veh)3" if="$(eval arg('num') - 3 > 0)">
+    <group ns="$(arg veh)2" if="$(eval arg('num') - 3 > 0)">
       <node pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
         <remap from="left_cmd" to="/$(arg veh1)2/thrusters/left_thrust_cmd"/>
         <remap from="right_cmd" to="/$(arg veh1)2/thrusters/right_thrust_cmd"/>
@@ -54,7 +54,7 @@
       </node>
     </group>
 
-    <group ns="$(arg veh)4" if="$(eval arg('num') - 4 > 0)">
+    <group ns="$(arg veh)3" if="$(eval arg('num') - 4 > 0)">
       <node pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
         <remap from="left_cmd" to="/$(arg veh1)3/thrusters/left_thrust_cmd"/>
         <remap from="right_cmd" to="/$(arg veh1)3/thrusters/right_thrust_cmd"/>
@@ -63,7 +63,7 @@
       </node>
     </group>
 
-    <group ns="$(arg veh)5" if="$(eval arg('num') - 5 > 0)">
+    <group ns="$(arg veh)4" if="$(eval arg('num') - 5 > 0)">
       <node pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
         <remap from="left_cmd" to="/$(arg veh1)4/thrusters/left_thrust_cmd"/>
         <remap from="right_cmd" to="/$(arg veh1)4/thrusters/right_thrust_cmd"/>
@@ -72,7 +72,7 @@
       </node>
     </group>
 
-    <group ns="$(arg veh)6" if="$(eval arg('num') - 6 > 0)">
+    <group ns="$(arg veh)5" if="$(eval arg('num') - 6 > 0)">
       <node pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
         <remap from="left_cmd" to="/$(arg veh1)5/thrusters/left_thrust_cmd"/>
         <remap from="right_cmd" to="/$(arg veh1)5/thrusters/right_thrust_cmd"/>

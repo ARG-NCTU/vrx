@@ -2,7 +2,7 @@
 <launch>
   <env name="ROSCONSOLE_CONFIG_FILE" value="$(find vrx_gazebo)/config/custom_rosconsole.conf"/>
   <!-- Gazebo world to load -->
-  <arg name="world" default="$(find vrx_gazebo)/worlds/example_course_narrow.world" />
+  <arg name="world" default="$(find vrx_gazebo)/worlds/yamls/narrow_path.world" />
   <!-- If true, run gazebo GUI -->
   <arg name="gui" default="true" />
   <!-- If true, run gazebo in verbose mode -->
@@ -70,8 +70,8 @@
   
   <!-- Spawn model in Gazebo -->
   <node name="spawn_model" pkg="gazebo_ros" type="spawn_model"
-        args="-x -486 -y -28 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 6.24
+        args="-x -532 -y -52 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 2.33
               -urdf -param $(arg namespace)/robot_description -model wamv"/>
 
 
@@ -90,8 +90,8 @@
   </node>
 
   <node name="spawn_model_1" pkg="gazebo_ros" type="spawn_model"
-        args="-x -531 -y -17 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 1.2
+        args="-x -529 -y -34 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 2.377916 
               -urdf -param wamv1/robot_description -model wamv1"/>
 
   <!-- WamV2 -->
@@ -108,7 +108,7 @@
   </node>
 
   <node name="spawn_model_7" pkg="gazebo_ros" type="spawn_model"
-        args="-x -600 -y -15 -z $(arg z)
+        args="-x -860 -y -35 -z $(arg z)
               -R $(arg R) -P $(arg P) -Y 1.2
               -urdf -param wamv7/robot_description -model wamv7"/>
 
@@ -126,8 +126,8 @@
   </node>
 
   <node name="spawn_model_2" pkg="gazebo_ros" type="spawn_model"
-        args="-x -537 -y -15 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 1.2
+        args="-x -527 -y -8.8 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y -2.6822276 
               -urdf -param wamv2/robot_description -model wamv2"/>
     <!-- WamV3 -->
   <param name="wamv3/robot_description"
@@ -143,8 +143,8 @@
   </node>
 
   <node name="spawn_model_3" pkg="gazebo_ros" type="spawn_model"
-        args="-x -542 -y -12 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 1.2
+        args="-x -524 -y 6.767 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y -2.3114149 
               -urdf -param wamv3/robot_description -model wamv3"/>
             
   <param name="wamv4/robot_description"
@@ -160,8 +160,8 @@
   </node>
 
   <node name="spawn_model_4" pkg="gazebo_ros" type="spawn_model"
-        args="-x -533 -y -34 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 5.08
+        args="-x -576 -y -39 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 0.6124562
               -urdf -param wamv4/robot_description -model wamv4"/>
 
   <param name="wamv5/robot_description"
@@ -177,8 +177,8 @@
   </node>
 
   <node name="spawn_model_5" pkg="gazebo_ros" type="spawn_model"
-        args="-x -538.6 -y -37.3 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 5.08
+        args="-x -577.6 -y -15 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y -0.1219218
               -urdf -param wamv5/robot_description -model wamv5"/>
 
   <param name="wamv6/robot_description"
@@ -194,8 +194,8 @@
   </node>
 
   <node name="spawn_model_6" pkg="gazebo_ros" type="spawn_model"
-        args="-x -544 -y -39 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 5.08
+        args="-x -573 -y 7.286 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y -1.1952654 
               -urdf -param wamv6/robot_description -model wamv6"/>
 
   <!-- Set the pinger location -->
