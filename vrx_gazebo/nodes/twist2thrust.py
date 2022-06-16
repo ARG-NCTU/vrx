@@ -27,7 +27,7 @@ class Node():
         self.right_lateral_pub = rospy.Publisher("right_lateral_cmd",Float32,queue_size=10)
 
         # Subscriber
-        self.sub_cmd = rospy.Subscriber("cmd_vel", Twist, self.cb_cmd, queue_size=1)
+        self.sub_cmd = rospy.Subscriber("/boat1/cmd_vel", Twist, self.cb_cmd, queue_size=1)
         self.sub_joy = rospy.Subscriber("/joy", Joy, self.cbJoy, queue_size=1)
         self.timer = rospy.Timer(rospy.Duration(0.1), self.cb_publish)
 
@@ -40,8 +40,10 @@ class Node():
         if self.auto:
             self.left_msg.data = data.linear.x
             self.right_msg.data = data.linear.x
-            self.left_lateral_msg = data.angular.z
-            self.right_lateral_msg = -1*data.angular.z
+            self.left_lateral_msg = -1*data.angular.z
+            self.right_lateral_msg = data.angular.z
+            print(self.left_lateral_msg)
+            print(self.right_lateral_msg)
     
     def cbJoy(self,data):
         if(data.buttons[7]==1) and not self.auto:

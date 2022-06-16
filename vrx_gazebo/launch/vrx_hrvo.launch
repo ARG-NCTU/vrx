@@ -71,7 +71,7 @@
   <!-- Spawn model in Gazebo -->
   <node name="spawn_model" pkg="gazebo_ros" type="spawn_model"
         args="-x -486 -y -28 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 6.24
+              -R $(arg R) -P $(arg P) -Y 0
               -urdf -param $(arg namespace)/robot_description -model wamv"/>
 
 
