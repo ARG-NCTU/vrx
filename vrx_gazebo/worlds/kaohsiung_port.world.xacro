@@ -1,0 +1,564 @@
+<?xml version="1.0" ?>
+<!-- World containing sydneyregatta model and some course challenges -->
+<sdf version="1.6" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:property name="bay1_allowed" value="false"/>
+  <xacro:property name="bay1_symbol" value="blue_rectangle"/>
+  <xacro:property name="bay2_allowed" value="false"/>
+  <xacro:property name="bay2_symbol" value="green_rectangle"/>
+  <xacro:property name="bay3_allowed" value="false"/>
+  <xacro:property name="bay3_symbol" value="red_rectangle"/>
+  <xacro:property name="color_1" value="blue"/>
+  <xacro:property name="color_2" value="green"/>
+  <xacro:property name="color_3" value="blue"/>
+
+  <world name="vrx_master_thesis">
+    <xacro:include filename="$(find vrx_gazebo)/worlds/sydneyregatta.xacro" />
+    <xacro:sydneyregatta />
+    <!--Waves-->
+    <xacro:include filename="$(find wave_gazebo)/world_models/ocean_waves/model.xacro"/>
+    <xacro:ocean_waves scale="2.5"/>
+
+    <!--Wind-->
+    <xacro:include filename="$(find vrx_gazebo)/worlds/xacros/usv_wind_plugin.xacro"/>
+    <xacro:usv_wind_gazebo>
+      <wind_objs>
+        <wind_obj>
+          <name>wamv</name>
+          <link_name>wamv/base_link</link_name>
+          <coeff_vector>.5 .5 .33</coeff_vector>
+        </wind_obj>
+      </wind_objs>
+    </xacro:usv_wind_gazebo>
+
+    <!-- The light buoy -->
+    <!-- <include>
+      <uri>model://robotx_light_buoy</uri>
+      <pose>-500 224 0.25 0 0 3.14</pose>
+    </include> -->
+
+    <!-- The 2022 dock with the placards -->  
+    <!-- <include>
+      <uri>model://dock_2022</uri>
+      <pose>-550 233 0 0 0 3.14</pose>
+    </include> -->
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block00</name>
+      <pose>-237.70091605526642 164.98583955114847 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block01</name>
+      <pose>-240.43313155662565 173.37065252293328 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block02</name>
+      <pose>-238.73458651387875 174.4122972437134 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block03</name>
+      <pose>-235.94502008661965 172.7016827526362 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a3</uri>
+      <name>block04</name>
+      <pose>-236.46733192086535 196.274758285042 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block05</name>
+      <pose>-230.75574019133677 188.4054375618511 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block06</name>
+      <pose>-229.06019241870325 169.01556885783975 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block07</name>
+      <pose>-230.3067157821435 167.3410693218351 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block08</name>
+      <pose>-227.51934876259384 194.32771706771462 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block09</name>
+      <pose>-229.3066601823885 179.9322869355929 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block10</name>
+      <pose>-215.86354711990117 182.96788493983604 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block11</name>
+      <pose>-220.99714487785587 164.2501401072524 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block12</name>
+      <pose>-219.7310434969632 186.91501597161277 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block13</name>
+      <pose>-215.36150248102496 168.4853030199023 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block14</name>
+      <pose>-217.0409252484065 169.50869012063706 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block15</name>
+      <pose>-207.6102477755953 202.37912479699233 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block16</name>
+      <pose>-210.2388875654219 166.14629467099604 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block17</name>
+      <pose>-206.01998800849032 175.12466950802946 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block18</name>
+      <pose>-208.0077721052684 191.49109624762897 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a3</uri>
+      <name>block19</name>
+      <pose>-207.94705429846735 171.04694489703465 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block20</name>
+      <pose>-199.16441522714095 168.59347881285254 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block21</name>
+      <pose>-195.50629757449315 181.52868787828913 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block22</name>
+      <pose>-199.2835461504631 178.375797477089 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block23</name>
+      <pose>-198.21071878612352 164.96706214907277 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block24</name>
+      <pose>-200.07505262048196 185.0935089628425 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block25</name>
+      <pose>-185.73474100081373 195.96143518717795 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block26</name>
+      <pose>-188.87637396689928 175.42494112441616 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block27</name>
+      <pose>-186.708789032282 180.81536660568628 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block28</name>
+      <pose>-190.71126310293528 166.23152278527027 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block29</name>
+      <pose>-188.98721949457428 202.16791713716 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block30</name>
+      <pose>-180.43269633240737 169.92579887911205 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block31</name>
+      <pose>-175.69115330028856 175.31367341372206 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block32</name>
+      <pose>-178.0995804935401 186.40852875227182 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block33</name>
+      <pose>-176.8940631526321 176.76861937587037 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block34</name>
+      <pose>-175.59951311066112 168.83928542632674 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block35</name>
+      <pose>-166.80787457827768 203.1096886602581 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block36</name>
+      <pose>-168.431963946307 183.6819426313169 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block37</name>
+      <pose>-170.97680014617282 173.667194435524 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block38</name>
+      <pose>-170.82202231527708 170.91553943313173 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block39</name>
+      <pose>-165.03240957081633 167.6270373143637 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block40</name>
+      <pose>-157.45269436817878 200.92538216971113 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block41</name>
+      <pose>-158.37369736011678 185.3298047830497 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block42</name>
+      <pose>-159.49781623038652 166.52049317378538 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block43</name>
+      <pose>-155.21658742831187 190.7466619601435 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block44</name>
+      <pose>-157.7754153035496 179.64082400439116 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block45</name>
+      <pose>-145.92465149029846 179.42812089112314 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block46</name>
+      <pose>-146.71117605759946 182.52729268604688 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block47</name>
+      <pose>-147.2649680348542 202.13428614350315 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block48</name>
+      <pose>-147.37234056960156 174.70901373017293  0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a5</uri>
+      <name>block49</name>
+      <pose>-145.31709210817664 192.0465445038153 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block50</name>
+      <pose>-138.31740452037423 194.68654540924797 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block51</name>
+      <pose>-136.21623043880717 176.18080260759604 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block52</name>
+      <pose>-135.71155549274366 192.9327300528858 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block53</name>
+      <pose>-139.19387521335292 190.33331331348654 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block54</name>
+      <pose>-138.32352705920596 192.8961220432795 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block55</name>
+      <pose>-125.19894620309992 195.52596662379347 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block56</name>
+      <pose>-126.51813634595283 190.6129763972617 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block57</name>
+      <pose>-130.0820586371333 190.46220635536483 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block58</name>
+      <pose>-130.23977322379608 194.65364174574384 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block59</name>
+      <pose>-129.17485412188543 182.23334219716736 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block60</name>
+      <pose>-120.4347303938647 175.16545780674286 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block61</name>
+      <pose>-119.76349843235666 201.33032933904798 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block62</name>
+      <pose>-120.91086738530706 166.40285915090874 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block63</name>
+      <pose>-116.75042412937226 176.64652212703618 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a5</uri>
+      <name>block64</name>
+      <pose>-120.11441347850669 200.93360326007792 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block65</name>
+      <pose>-105.29232526651955 171.481452526907 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block66</name>
+      <pose>-107.279678814535 183.90563709741272 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block67</name>
+      <pose>-109.16102938667414 175.66258809596042 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block68</name>
+      <pose>-107.85176369418105 167.64577631648686 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a5</uri>
+      <name>block69</name>
+      <pose>-108.35343282373651 169.20417404226595 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block70</name>
+      <pose>-97.66937786200572 198.65858114478678 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block71</name>
+      <pose>-98.22679068327368 188.0976900004297 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block72</name>
+      <pose>-96.31242634678637 167.97757917772412 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block73</name>
+      <pose>-98.27318002733348 171.7524192095562 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block74</name>
+      <pose>-100.32742569142837 169.06586780499444 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block75</name>
+      <pose>-89.03698005588956 182.53652787894066 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block76</name>
+      <pose>-89.69730361298221 184.7736162752109 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block77</name>
+      <pose>-90.5721139038387 187.5582242915505 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block78</name>
+      <pose>-88.08334862578857 185.2972769708317 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a3</uri>
+      <name>block79</name>
+      <pose>-85.05566508657611 168.69739166681842 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block80</name>
+      <pose>-78.72639973541702 169.10329452074717 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block81</name>
+      <pose>-77.37868877635732 164.66990438017683 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block82</name>
+      <pose>-77.66535674049881 172.90547504039148 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block83</name>
+      <pose>-76.00646030985848 201.51885058449122 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a5</uri>
+      <name>block84</name>
+      <pose>-80.97400999581049 174.65535915615555 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block85</name>
+      <pose>-68.60077337573802 195.8308207577779 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block86</name>
+      <pose>-68.43685567251852 171.11926766959456 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block87</name>
+      <pose>-67.69523369170138 169.4406241608213 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block88</name>
+      <pose>-67.72993028190075 194.1913708976797 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a3</uri>
+      <name>block89</name>
+      <pose>-65.96067009184334 191.7617443518514 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block90</name>
+      <pose>-57.563963415971486 184.4590583310984 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block91</name>
+      <pose>-60.174832123933555 179.39375146645983 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block92</name>
+      <pose>-59.768550079132794 196.71462511586438 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block93</name>
+      <pose>-57.392864759601366 182.88937164247773 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block94</name>
+      <pose>-60.60962694175525 175.2208350595813 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://black_totem</uri>
+      <name>block95</name>
+      <pose>-50.76412165952664 195.76197652694697 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://red_totem</uri>
+      <name>block96</name>
+      <pose>-50.121546176296704 202.93216365906136 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://yellow_totem</uri>
+      <name>block97</name>
+      <pose>-47.39790379296127 182.4163223741531 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://blue_totem</uri>
+      <name>block98</name>
+      <pose>-50.64907430406174 171.17296026349405 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block99</name>
+      <pose>-50.135111440131425 192.76578814130943 0 0 -0 0</pose>
+    </include>
+  </world>
+</sdf>

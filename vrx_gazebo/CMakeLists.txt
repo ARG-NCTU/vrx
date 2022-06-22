@@ -363,6 +363,8 @@ xacro_add_files(
   worlds/sydneyregatta.world.xacro
   worlds/wayfinding_task.world.xacro
   worlds/wildlife_task.world.xacro
+  worlds/master_thesis.world.xacro
+  worlds/kaohsiung_port.world.xacro
   ${XACRO_INORDER} INSTALL DESTINATION worlds
 )
 # Generate obstacle course
