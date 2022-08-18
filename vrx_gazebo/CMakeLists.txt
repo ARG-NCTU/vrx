@@ -353,6 +353,7 @@ endif()
 xacro_add_files(
   worlds/example_course_narrow.world.xacro
   worlds/example_course.world.xacro
+  worlds/bamboo_lake.world.xacro
   worlds/collision_avoidance.world.xacro
   worlds/collision_avoidance_forest.world.xacro
   worlds/navigation_task.world.xacro
@@ -365,6 +366,7 @@ xacro_add_files(
   worlds/wildlife_task.world.xacro
   worlds/master_thesis.world.xacro
   worlds/kaohsiung_port.world.xacro
+  worlds/wildlife.world.xacro
   ${XACRO_INORDER} INSTALL DESTINATION worlds
 )
 # Generate obstacle course

@@ -2,7 +2,7 @@
 <launch>
   <env name="ROSCONSOLE_CONFIG_FILE" value="$(find vrx_gazebo)/config/custom_rosconsole.conf"/>
   <!-- Gazebo world to load -->
-  <arg name="world" default="$(find vrx_gazebo)/worlds/example_course.world" />
+  <arg name="world" default="$(find vrx_gazebo)/worlds/bamboo_lake.world" />
   <!-- If true, run gazebo GUI -->
   <arg name="gui" default="true" />
   <!-- If true, run gazebo in verbose mode -->
@@ -19,12 +19,12 @@
   <arg name="pinger_params" default="$(find vrx_gazebo)/config/pinger.yaml"/>
 
   <!-- Initial USV location and attitude-->
-  <arg name="x" default="-532" />
-  <arg name="y" default="162" />
+  <arg name="x" default="0" />
+  <arg name="y" default="0" />
   <arg name="z" default="0.1" />
   <arg name="P" default="0" />
   <arg name="R" default="0" />
-  <arg name="Y" default="1.4" />
+  <arg name="Y" default="1" />
 
   <!-- Allow user specified thruster configurations
        H = stern trusters on each hull
@@ -65,11 +65,16 @@
      <remap from="robot_description" to="wamv/robot_description" />
      <remap from="joint_states" to="wamv/joint_states" />
   </node>
-  
   <!-- Spawn model in Gazebo -->
   <node name="spawn_model" pkg="gazebo_ros" type="spawn_model"
         args="-x $(arg x) -y $(arg y) -z $(arg z)
               -R $(arg R) -P $(arg P) -Y $(arg Y)
               -urdf -param $(arg namespace)/robot_description -model wamv"/>
+
+  <!-- Set the pinger location -->
+  <!-- <node name="set_pinger_position" pkg="vrx_gazebo" type="set_pinger_position.py" output="screen">
+    <rosparam command="load" file="$(arg pinger_params)" />
+  </node>
+  <node name="pinger_visualization" pkg="vrx_gazebo" type="pinger_visualization.py" /> -->
 
 </launch>

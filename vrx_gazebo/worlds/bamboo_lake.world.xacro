@@ -1,0 +1,105 @@
+<?xml version="1.0" ?>
+<!-- World containing sydneyregatta model and some course challenges -->
+<sdf version="1.6" xmlns:xacro="http://ros.org/wiki/xacro">
+  <world name="robotx_example_course">
+    <xacro:include filename="$(find vrx_gazebo)/worlds/sydneyregatta.xacro" />
+    <xacro:sydneyregatta />
+    <!--Waves-->
+    <xacro:include filename="$(find wave_gazebo)/world_models/ocean_waves/model.xacro"/>
+    <xacro:ocean_waves scale="2.5"/>
+
+    <!--Wind-->
+    <xacro:include filename="$(find vrx_gazebo)/worlds/xacros/usv_wind_plugin.xacro"/>
+    <xacro:usv_wind_gazebo>
+      <wind_objs>
+        <wind_obj>
+          <name>wamv</name>
+          <link_name>wamv/base_link</link_name>
+          <coeff_vector>.5 .5 .33</coeff_vector>
+        </wind_obj>
+      </wind_objs>
+    </xacro:usv_wind_gazebo>
+
+    <!-- The light buoy -->
+    <!-- <include>
+      <uri>model://robotx_light_buoy</uri>
+      <name>buoy01</name>
+      <pose>27.04 -35.7 0.25 0 0 2.778295</pose>
+    </include> -->
+
+    <include>
+      <uri>model://robotx_light_buoy</uri>
+      <name>buoy02</name>
+      <pose>27.7 -30.689 0.25 0 0 -0.0200224</pose>
+    </include>
+
+    <!-- The 2022 dock with the placards -->
+    <include>
+      <uri>model://dock_2022</uri>
+      <name>dock01</name>
+      <pose>6.7 -3.48 0 0 0 1.4281814</pose>
+    </include>
+
+    <include>
+      <uri>model://dock_2022</uri>
+      <name>dock02</name>
+      <pose>40.85 -1.59 0 0 0 -2.6857368</pose>
+    </include>
+
+    <include>
+      <uri>model://dock_2022</uri>
+      <name>dock03</name>
+      <pose>54.5 -25.03 0 0 0 -3.0648626</pose>
+    </include>
+
+    <!-- <include>
+      <uri>model://dock_block_4x4</uri>
+      <name>dockblock01</name>
+      <pose>8.56 -5.95 0.25 0 0 -0.1448688</pose>
+    </include>
+
+    <include>
+      <uri>model://dock_block_4x4</uri>
+      <name>dockblock02</name>
+      <pose>9.1 -2.07 0.25 0 0 -0.1448688</pose>
+    </include> -->
+
+    <include>
+      <uri>model://polyform_a3</uri>
+      <name>block01</name>
+      <pose>16.5 -22.9 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a5</uri>
+      <name>block02</name>
+      <pose>10.57 -28.3 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a5</uri>
+      <name>block03</name>
+      <pose>15.1 -12.5 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block04</name>
+      <pose>-5.27 -17.06 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block05</name>
+      <pose>4 -16.64 0 0 -0 0</pose>
+    </include>
+
+    <!-- The obstacle course -->
+    <!-- <include>
+      <name>buoys</name>
+      <uri>model://obstacle_course</uri>
+      <pose>-420 295 0 0 0 -2.04</pose>
+    </include> -->
+
+  </world>
+</sdf>
