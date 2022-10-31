@@ -5,7 +5,7 @@ import sys
 import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
-from std_msgs.msg import Float32
+from std_msgs.msg import Float32 ,String
 
 class Node():
     def __init__(self,linear_scaling,angular_scaling,keyboard=False):
@@ -19,6 +19,7 @@ class Node():
         self.right_lateral_msg =Float32()
         self.keyboard = keyboard
         self.auto = 0
+        self.path = '/home/argrobotx/robotx-2022/catkin_ws/src/vrx/vrx_gazebo/nodes/result.txt'
         
         # Publisher
         self.left_pub = rospy.Publisher("left_cmd",Float32,queue_size=10)
@@ -27,9 +28,30 @@ class Node():
         self.right_lateral_pub = rospy.Publisher("right_lateral_cmd",Float32,queue_size=10)
 
         # Subscriber
+        #self.pub_status = rospy.Publisher( "/experinment_state", String, queue_size=1)
         self.sub_cmd = rospy.Subscriber("robot_twist", Twist, self.cb_cmd, queue_size=1)
+        self.sub_state = rospy.Subscriber("/experinment_state", String, self.cb_state, queue_size=1)
         self.sub_joy = rospy.Subscriber("/joy", Joy, self.cbJoy, queue_size=1)
         self.timer = rospy.Timer(rospy.Duration(0.1), self.cb_publish)
+
+        self.start_time = rospy.get_time()
+
+    def cb_state(self,msg):
+        print(msg.data)
+        if msg.data == "collision":
+            used_time = str(rospy.get_time() - self.start_time)
+            f = open(self.path, 'a')
+            f.write('\nfail')
+            f.write('used_time')
+            f.write(used_time)
+            self.start_time = rospy.get_time()
+        elif msg.data == "finish":
+            used_time = str(rospy.get_time() - self.start_time)
+            f = open(self.path, 'a')
+            f.write('\nused_time')
+            f.write(used_time)
+            self.start_time = rospy.get_time()
+
 
     def cb_publish(self, event):
         self.left_pub.publish(self.left_msg)
@@ -47,6 +69,7 @@ class Node():
         if(data.buttons[7]==1) and not self.auto:
             self.auto = 1
             rospy.loginfo("going auto")
+            self.start_time = rospy.get_time()
         elif(data.buttons[6]==1) and self.auto:
             self.auto = 0
             rospy.loginfo("going manual")
