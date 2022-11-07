@@ -144,7 +144,7 @@
       <color_sequence_service>scan_dock_deliver/color_sequence</color_sequence_service>
       <color_1>blue</color_1>
       <color_2>green</color_2>
-      <color_3>red</color_3>
+      <color_3>blue</color_3>
 
       <!-- Dock checkers -->
       <dock_bonus_points>15</dock_bonus_points>
@@ -157,7 +157,7 @@
           <symbol_topic>/vrx/dock_2022_placard1/symbol</symbol_topic>
           <min_dock_time>10.0</min_dock_time>
           <dock_allowed>false</dock_allowed>
-          <symbol>red_circle</symbol>
+          <symbol>red_rectangle</symbol>
         </bay>
 
         <bay>
@@ -167,7 +167,7 @@
           <symbol_topic>/vrx/dock_2022_placard2/symbol</symbol_topic>
           <min_dock_time>10.0</min_dock_time>
           <dock_allowed>true</dock_allowed>
-          <symbol>blue_circle</symbol>
+          <symbol>blue_rectangle</symbol>
         </bay>
 
         <bay>
@@ -177,7 +177,7 @@
           <symbol_topic>/vrx/dock_2022_placard3/symbol</symbol_topic>
           <min_dock_time>10.0</min_dock_time>
           <dock_allowed>false</dock_allowed>
-          <symbol>yellow_rectangle</symbol>
+          <symbol>green_rectangle</symbol>
         </bay>
       </bays>
 

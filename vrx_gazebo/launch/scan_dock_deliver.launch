@@ -24,7 +24,7 @@
        H = stern trusters on each hull
        T = H with a lateral thruster
        X = "holonomic" configuration -->
-  <arg name="thrust_config" default="H" />
+  <arg name="thrust_config" default="T" />
 
   <!-- Do we lock the vessel to the world? -->
   <arg name="wamv_locked" default="true" />
@@ -43,7 +43,14 @@
   </include>
 
   <!-- Load robot model -->
-  <arg name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
+  <!-- Determine which model -->
+  <arg name="h_config" value="$(eval int((thrust_config)=='H'))"/>
+  <arg name="t_config" value="$(eval int((thrust_config)=='T'))"/>
+  <arg name="x_config" value="$(eval int((thrust_config)=='X'))"/>
+
+  <!-- For now - can only use the T configuration! -->
+  <arg if="$(arg t_config)" name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
+
   <param name="$(arg namespace)/robot_description"
          command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
          locked:=$(arg wamv_locked)
