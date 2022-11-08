@@ -369,6 +369,7 @@ xacro_add_files(
   worlds/wildlife.world.xacro
   worlds/pinger.world.xacro
   worlds/unity_ros.world.xacro
+  worlds/semi_final.world.xacro
   ${XACRO_INORDER} INSTALL DESTINATION worlds
 )
 # Generate obstacle course
