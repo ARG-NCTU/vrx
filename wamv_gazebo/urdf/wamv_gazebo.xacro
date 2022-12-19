@@ -7,7 +7,9 @@
     <!-- Defines the base vehicle -->
     <xacro:include filename="$(find wamv_description)/urdf/wamv_base_contact.urdf.xacro" />
     <!-- Thruster Layout -->
-    <xacro:include filename="${thruster_layout}"/>
+    <xacro:if value="${thruster_layout != ''}">
+      <xacro:include filename="${thruster_layout}"/>
+    </xacro:if>
     <!-- Attach hydrodynamics plugin -->
     <xacro:usv_dynamics_gazebo name="wamv_dynamics_plugin"/>
   </xacro:macro>

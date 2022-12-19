@@ -3,7 +3,7 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro"
        name="WAM-V">
   <xacro:arg name="locked" default="false" />
-  <xacro:arg name="thruster_config" default="H" />
+  <xacro:arg name="thruster_config" default="" />
   <xacro:arg name="camera_enabled" default="false" />
   <xacro:arg name="gps_enabled" default="false" />
   <xacro:arg name="imu_enabled" default="false" />
@@ -34,6 +34,8 @@
   <!-- Thruster yaml file -->
   <xacro:arg name="yaml_thruster_generation" default="false"/>
   <xacro:arg name="thruster_xacro_file" default = ""/>
+
+  <xacro:arg name="plate" default="false" />
 
   <!-- === The WAM-V platform === -->
   <xacro:include filename="$(find wamv_gazebo)/urdf/wamv_gazebo.xacro"/>
@@ -66,6 +68,11 @@
     <!-- WAMV with "X" thruster configuration -->
     <xacro:if value="${thruster_conf == 'X'}">
       <xacro:wamv_gazebo thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_x_thrusters.xacro"/>
+    </xacro:if>
+
+    <!-- WAMV with "X" thruster configuration -->
+    <xacro:if value="${thruster_conf == ''}">
+      <xacro:wamv_gazebo thruster_layout=""/>
     </xacro:if>
   </xacro:unless>
 
@@ -173,7 +180,26 @@
       
       <!-- Add ball shooter (default pitch angle: ~-60 deg) -->
       <!-- <xacro:wamv_ball_shooter name="ball_shooter" x="0.54" y="0.30" z="1.296" pitch="-1.04"/> -->
+      <xacro:if value="$(arg plate)">
+        <link name="$(arg namespace)/plate">
+          <visual>
+            <geometry>
+              <box size="3.0 3.0 0.01"/>
+            </geometry>
+          </visual>
+          <collision>
+            <geometry>
+              <box size="3.0 3.0 0.01"/>
+            </geometry>
+          </collision>
+        </link>
 
+        <joint name="base_to_plate" type="fixed">
+          <parent link="$(arg namespace)/base_link"/>
+          <child link="$(arg namespace)/plate"/>
+          <origin xyz="0 0 1.85"/>
+        </joint>
+      </xacro:if>
     </xacro:if>
   </xacro:unless>
 
