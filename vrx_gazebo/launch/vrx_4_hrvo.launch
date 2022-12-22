@@ -59,22 +59,22 @@
 
   <!-- For now - can only use the T configuration! -->
 
-  <param name="wamv1/robot_description"
+  <param name="wamv3/robot_description"
          command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
          locked:=$(arg wamv_locked)		   
          thruster_config:=$(arg thrust_config)
          vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
-         namespace:=wamv1 "/>
+         namespace:=wamv3 "/>
 
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv1_tf_pub" >
-     <remap from="robot_description" to="wamv1/robot_description" />
-     <remap from="joint_states" to="wamv1/joint_states" />
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv3_tf_pub" >
+     <remap from="robot_description" to="wamv3/robot_description" />
+     <remap from="joint_states" to="wamv3/joint_states" />
   </node>
 
-  <node name="spawn_model_1" pkg="gazebo_ros" type="spawn_model"
-        args="-x -504 -y 21 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 6
-              -urdf -param wamv1/robot_description -model wamv1"/>
+  <node name="spawn_model_3" pkg="gazebo_ros" type="spawn_model"
+        args="-x -305 -y -28 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 2.6
+              -urdf -param wamv3/robot_description -model wamv3"/>
 
   <param name="wamv2/robot_description"
         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
@@ -89,26 +89,26 @@
   </node>
 
   <node name="spawn_model_2" pkg="gazebo_ros" type="spawn_model"
-        args="-x -505 -y -28 -z $(arg z)
+        args="-x -504 -y -28 -z $(arg z)
               -R $(arg R) -P $(arg P) -Y 1.2
               -urdf -param wamv2/robot_description -model wamv2"/>
     <!-- WamV3 -->
-  <param name="wamv3/robot_description"
+  <param name="wamv5/robot_description"
         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
         locked:=$(arg wamv_locked)		   
         thruster_config:=$(arg thrust_config)
         vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
-        namespace:=wamv3 "/>
+        namespace:=wamv5 "/>
 
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv3_tf_pub" >
-     <remap from="robot_description" to="wamv3/robot_description" />
-     <remap from="joint_states" to="wamv3/joint_states" />
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv5_tf_pub" >
+     <remap from="robot_description" to="wamv5/robot_description" />
+     <remap from="joint_states" to="wamv5/joint_states" />
   </node>
 
-  <node name="spawn_model_3" pkg="gazebo_ros" type="spawn_model"
-        args="-x -305 -y -28 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 2.5
-              -urdf -param wamv3/robot_description -model wamv3"/>
+  <node name="spawn_model_5" pkg="gazebo_ros" type="spawn_model"
+        args="-x -535 -y -28 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 1.2
+              -urdf -param wamv5/robot_description -model wamv5"/>
             
   <param name="wamv4/robot_description"
         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
@@ -126,4 +126,23 @@
         args="-x -305 -y 21 -z $(arg z)
               -R $(arg R) -P $(arg P) -Y 4
               -urdf -param wamv4/robot_description -model wamv4"/>
+
+
+
+  <param name="wamv1/robot_description"
+         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
+         locked:=$(arg wamv_locked)		   
+         thruster_config:=$(arg thrust_config)
+         vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
+         namespace:=wamv1 "/>
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv1_tf_pub" >
+     <remap from="robot_description" to="wamv1/robot_description" />
+     <remap from="joint_states" to="wamv1/joint_states" />
+  </node>
+
+  <node name="spawn_model_1" pkg="gazebo_ros" type="spawn_model"
+        args="-x -504 -y 21 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 6
+              -urdf -param wamv1/robot_description -model wamv1"/>
 </launch>
