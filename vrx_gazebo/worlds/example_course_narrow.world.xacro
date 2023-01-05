@@ -30,14 +30,129 @@
     <include>
       <name>dock2</name>
       <uri>model://dock_2022</uri>
-      <pose>-530 -35 0 0 0 1.94</pose>
+      <pose>-600 -80 0 0 0 0</pose>
     </include>
 
     <include>
       <name>dock1</name>
       <uri>model://dock_2022</uri>
-      <pose>-545 -10 0 0 0 4.34</pose>
+      <pose>-600 -40 0 0 0 0</pose>
     </include>
+
+    <include>
+      <name>dock3</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 -10 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>dock4</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 30 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>dock5</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 -60 0 0 0 0</pose>
+    </include>
+    <include>
+      <name>dock6</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 10 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>dock7</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 -100 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>dock8</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 50 0 0 0 0</pose>
+    </include>
+
+    <!-- <include>
+      <name>dock7</name>
+      <uri>model://dock_2022</uri>
+      <pose>-590 37 0 0 0 4.71</pose>
+    </include>
+
+    <include>
+      <name>dock8</name>
+      <uri>model://dock_2022</uri>
+      <pose>-570 37 0 0 0 4.71</pose>
+    </include>
+
+    <include>
+      <name>dock9</name>
+      <uri>model://dock_2022</uri>
+      <pose>-550 37 0 0 0 4.71</pose>
+    </include>
+
+    <include>
+      <name>dock10</name>
+      <uri>model://dock_2022</uri>
+      <pose>-530 37 0 0 0 4.71</pose>
+    </include>
+
+    <include>
+      <name>dock11</name>
+      <uri>model://dock_2022</uri>
+      <pose>-510 37 0 0 0 4.71</pose>
+    </include>
+
+    <include>
+      <name>dock12</name>
+      <uri>model://dock_2022</uri>
+      <pose>-490 37 0 0 0 4.71</pose>
+    </include>
+    <include>
+      <name>dock13</name>
+      <uri>model://dock_2022</uri>
+      <pose>-610 37 0 0 0 4.71</pose>
+    </include>
+
+
+    <include>
+      <name>dock19</name>
+      <uri>model://dock_2022</uri>
+      <pose>-590 -70 0 0 0 1.57</pose>
+    </include>
+
+    <include>
+      <name>dock20</name>
+      <uri>model://dock_2022</uri>
+      <pose>-570 -70 0 0 0 1.57</pose>
+    </include>
+
+    <include>
+      <name>dock21</name>
+      <uri>model://dock_2022</uri>
+      <pose>-550 -70 0 0 0 1.57</pose>
+    </include>
+
+    <include>
+      <name>dock22</name>
+      <uri>model://dock_2022</uri>
+      <pose>-530 -70 0 0 0 1.57</pose>
+    </include>
+
+    <include>
+      <name>dock23</name>
+      <uri>model://dock_2022</uri>
+      <pose>-510 -70 0 0 0 1.57</pose>
+    </include>
+
+    <include>
+      <name>dock24</name>
+      <uri>model://dock_2022</uri>
+      <pose>-490 -70 0 0 0 1.57</pose>
+    </include> -->
+
+
 
     <!-- The VRX animal buoys -->
     <include>

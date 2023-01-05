@@ -33,7 +33,7 @@ class robot_status(object):
 
         # self.machine,self.compute_unit = self.who_am_I(data)
         self.machine = "wamv"
-        self.boat = "wamv"
+        self.boat = "wamv2"
         self.boat1 = "wamv"
         self.r = 8
         self.flag = "finish"

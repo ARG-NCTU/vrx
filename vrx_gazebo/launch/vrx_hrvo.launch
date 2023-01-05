@@ -95,7 +95,7 @@
               -urdf -param wamv1/robot_description -model wamv1"/>
 
   <!-- WamV2 -->
-  <param name="wamv7/robot_description"
+  <!-- <param name="wamv7/robot_description"
          command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
          locked:=$(arg wamv_locked)		   
          thruster_config:=$(arg thrust_config)
@@ -110,7 +110,7 @@
   <node name="spawn_model_7" pkg="gazebo_ros" type="spawn_model"
         args="-x -600 -y -15 -z $(arg z)
               -R $(arg R) -P $(arg P) -Y 1.2
-              -urdf -param wamv7/robot_description -model wamv7"/>
+              -urdf -param wamv7/robot_description -model wamv7"/> -->
 
 
   <param name="wamv2/robot_description"
@@ -164,7 +164,7 @@
               -R $(arg R) -P $(arg P) -Y 5.08
               -urdf -param wamv4/robot_description -model wamv4"/>
 
-  <param name="wamv5/robot_description"
+  <!-- <param name="wamv5/robot_description"
         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
         locked:=$(arg wamv_locked)		   
         thruster_config:=$(arg thrust_config)
@@ -196,7 +196,7 @@
   <node name="spawn_model_6" pkg="gazebo_ros" type="spawn_model"
         args="-x -544 -y -39 -z $(arg z)
               -R $(arg R) -P $(arg P) -Y 5.08
-              -urdf -param wamv6/robot_description -model wamv6"/>
+              -urdf -param wamv6/robot_description -model wamv6"/> -->
 
   <!-- Set the pinger location -->
   <node name="set_pinger_position" pkg="vrx_gazebo" type="set_pinger_position.py" output="screen">
