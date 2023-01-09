@@ -8,7 +8,7 @@ from sensor_msgs.msg import Joy
 from gazebo_msgs.msg import ModelStates
 
 
-class VRMUX:
+class WAMVUnityBridge:
     def __init__(self):
 
         self.robot_start_number = rospy.get_param("~robot_start_number", 1)
@@ -81,6 +81,6 @@ class VRMUX:
 
 
 if __name__ == "__main__":
-    rospy.init_node("vr_mux")
-    vr_mux = VRMUX()
+    rospy.init_node("wamv_unity_bridge")
+    wamv_unity_bridge = WAMVUnityBridge()
     rospy.spin()
