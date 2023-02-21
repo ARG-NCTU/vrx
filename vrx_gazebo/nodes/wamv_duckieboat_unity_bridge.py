@@ -20,7 +20,7 @@ class DuckieboatUnityBridge:
         self.angular_scaling_factor = rospy.get_param("~angular_scaling_factor", 1.0)
 
         self.cmd_vel = Twist()
-        self.thruster_cmd = [Float32() for i in range(4)]
+        self.thruster_cmd = [Float32() for i in range(2)]
 
         # VR to ROS side
         self.sub_vr = rospy.Subscriber("vr/joystick", Joy, self.vr_callback, queue_size=10)
@@ -29,10 +29,8 @@ class DuckieboatUnityBridge:
         ]
         self.pub_thruster_cmd_list = [
             [
-                rospy.Publisher(f"{self.robot_ns}/thrusters/left_thrust_cmd", Float32, queue_size=10),
-                rospy.Publisher(f"{self.robot_ns}/thrusters/right_thrust_cmd", Float32, queue_size=10),
-                rospy.Publisher(f"{self.robot_ns}/thrusters/left_lateral_thrust_cmd", Float32, queue_size=10),
-                rospy.Publisher(f"{self.robot_ns}/thrusters/right_lateral_thrust_cmd", Float32, queue_size=10),
+                rospy.Publisher(f"{self.robot_ns}/thrusters/left_rear_thrust_cmd", Float32, queue_size=10),
+                rospy.Publisher(f"{self.robot_ns}/thrusters/right_rear_thrust_cmd", Float32, queue_size=10),
             ]
             for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount)
         ]
@@ -51,16 +49,14 @@ class DuckieboatUnityBridge:
         self.robot_select = int(msg.axes[0])
         if self.robot_select > 4:
             self.cmd_vel.linear.x = msg.axes[2]
-            self.cmd_vel.angular.z = -msg.axes[1]
+            self.cmd_vel.angular.z = msg.axes[1]
             self.pub_cmd_vel_list[self.robot_select - self.robot_start_number].publish(self.cmd_vel)
             
-            self.thruster_cmd[0].data = self.cmd_vel.linear.x
-            self.thruster_cmd[1].data = self.cmd_vel.linear.x
-            self.thruster_cmd[2].data = self.cmd_vel.angular.z
-            self.thruster_cmd[3].data = -self.cmd_vel.angular.z
+            self.thruster_cmd[0].data = self.cmd_vel.linear.x + self.cmd_vel.angular.z
+            self.thruster_cmd[1].data = self.cmd_vel.linear.x - self.cmd_vel.angular.z
             
             for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount):
-                for j in range(4):
+                for j in range(2):
                     if i == self.robot_select:
                         self.pub_thruster_cmd_list[i - self.robot_start_number][j].publish(self.thruster_cmd[j])
                     else:
