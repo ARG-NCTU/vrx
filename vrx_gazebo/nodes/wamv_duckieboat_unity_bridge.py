@@ -10,9 +10,9 @@ from gazebo_msgs.msg import ModelStates
 class DuckieboatUnityBridge:
     def __init__(self):
 
-        self.robot_start_number = rospy.get_param("~robot_start_number", 1)
+        self.robot_start_number = 5
         self.robot_amount = 1
-        self.robot_select = self.robot_start_number
+        self.robot_select = 5
 
         self.robot_ns = "duckie_alpha"
 
@@ -49,22 +49,22 @@ class DuckieboatUnityBridge:
 
     def vr_callback(self, msg):
         self.robot_select = int(msg.axes[0])
-
-        self.cmd_vel.linear.x = msg.axes[2]
-        self.cmd_vel.angular.z = -msg.axes[1]
-        self.pub_cmd_vel_list[self.robot_select - self.robot_start_number].publish(self.cmd_vel)
-
-        self.thruster_cmd[0].data = self.cmd_vel.linear.x
-        self.thruster_cmd[1].data = self.cmd_vel.linear.x
-        self.thruster_cmd[2].data = self.cmd_vel.angular.z
-        self.thruster_cmd[3].data = -self.cmd_vel.angular.z
-
-        for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount):
-            for j in range(4):
-                if i == self.robot_select:
-                    self.pub_thruster_cmd_list[i - self.robot_start_number][j].publish(self.thruster_cmd[j])
-                else:
-                    self.pub_thruster_cmd_list[i - self.robot_start_number][j].publish(Float32())
+        if self.robot_select > 4:
+            self.cmd_vel.linear.x = msg.axes[2]
+            self.cmd_vel.angular.z = -msg.axes[1]
+            self.pub_cmd_vel_list[self.robot_select - self.robot_start_number].publish(self.cmd_vel)
+            
+            self.thruster_cmd[0].data = self.cmd_vel.linear.x
+            self.thruster_cmd[1].data = self.cmd_vel.linear.x
+            self.thruster_cmd[2].data = self.cmd_vel.angular.z
+            self.thruster_cmd[3].data = -self.cmd_vel.angular.z
+            
+            for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount):
+                for j in range(4):
+                    if i == self.robot_select:
+                        self.pub_thruster_cmd_list[i - self.robot_start_number][j].publish(self.thruster_cmd[j])
+                    else:
+                        self.pub_thruster_cmd_list[i - self.robot_start_number][j].publish(Float32())
 
     def model_callback(self, msg: ModelStates):
         robot_index = [msg.name.index(f"{self.robot_ns}") for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount)]
@@ -120,22 +120,22 @@ class WAMVUnityBridge:
 
     def vr_callback(self, msg):
         self.robot_select = int(msg.axes[0])
+        if self.robot_select < 5:
+            self.cmd_vel.linear.x = msg.axes[2]
+            self.cmd_vel.angular.z = -msg.axes[1]
+            self.pub_cmd_vel_list[self.robot_select - self.robot_start_number].publish(self.cmd_vel)
+            
+            self.thruster_cmd[0].data = self.cmd_vel.linear.x
+            self.thruster_cmd[1].data = self.cmd_vel.linear.x
+            self.thruster_cmd[2].data = self.cmd_vel.angular.z
+            self.thruster_cmd[3].data = -self.cmd_vel.angular.z
 
-        self.cmd_vel.linear.x = msg.axes[2]
-        self.cmd_vel.angular.z = -msg.axes[1]
-        self.pub_cmd_vel_list[self.robot_select - self.robot_start_number].publish(self.cmd_vel)
-
-        self.thruster_cmd[0].data = self.cmd_vel.linear.x
-        self.thruster_cmd[1].data = self.cmd_vel.linear.x
-        self.thruster_cmd[2].data = self.cmd_vel.angular.z
-        self.thruster_cmd[3].data = -self.cmd_vel.angular.z
-
-        for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount):
-            for j in range(4):
-                if i == self.robot_select:
-                    self.pub_thruster_cmd_list[i - self.robot_start_number][j].publish(self.thruster_cmd[j])
-                else:
-                    self.pub_thruster_cmd_list[i - self.robot_start_number][j].publish(Float32())
+            for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount):
+                for j in range(4):
+                    if i == self.robot_select:
+                        self.pub_thruster_cmd_list[i - self.robot_start_number][j].publish(self.thruster_cmd[j])
+                    else:
+                        self.pub_thruster_cmd_list[i - self.robot_start_number][j].publish(Float32())
 
     def model_callback(self, msg: ModelStates):
         robot_index = [msg.name.index(f"{self.robot_ns}{i}") for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount)]
@@ -153,4 +153,5 @@ class WAMVUnityBridge:
 if __name__ == "__main__":
     rospy.init_node("wamv_duckieboat_unity_bridge")
     wamv_unity_bridge = WAMVUnityBridge()
+    duckieboat_unity_bridge = DuckieboatUnityBridge()
     rospy.spin()
