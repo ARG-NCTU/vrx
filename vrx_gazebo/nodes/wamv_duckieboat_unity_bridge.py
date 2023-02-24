@@ -7,6 +7,53 @@ from geometry_msgs.msg import PoseStamped
 from sensor_msgs.msg import Joy
 from gazebo_msgs.msg import ModelStates
 
+class DroneUnityBridge:
+    def __init__(self):
+
+        self.robot_start_number = 6
+        self.robot_amount = 1
+        self.robot_select = 6
+
+        self.robot_ns = "drone"
+
+        self.linear_scaling_factor = rospy.get_param("~linear_scaling_factor", 1.0)
+        self.angular_scaling_factor = rospy.get_param("~angular_scaling_factor", 1.0)
+
+        self.cmd_vel = Twist()
+        self.thruster_cmd = [Float32() for i in range(3)]
+        
+        # VR to ROS side
+        self.sub_vr = rospy.Subscriber("vr/joystick", Joy, self.vr_callback, queue_size=10)
+        self.pub_cmd_vel_list = [
+            rospy.Publisher(f"{self.robot_ns}/cmd_vel", Twist, queue_size=10) for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount)
+        ]
+        self.pub_thruster_cmd_list = [
+            [
+                rospy.Publisher(f"{self.robot_ns}/thrusters/linear", Float32, queue_size=10),
+                rospy.Publisher(f"{self.robot_ns}/thrusters/angular", Float32, queue_size=10),
+                rospy.Publisher(f"{self.robot_ns}/thrusters/updown", Float32, queue_size=10),
+            ]
+            for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount)
+        ]
+
+    def vr_callback(self, msg):
+        self.robot_select = int(msg.axes[0])
+        if self.robot_select == 6:
+            self.cmd_vel.linear.x = msg.axes[2]
+            self.cmd_vel.angular.z = msg.axes[1]
+            self.pub_cmd_vel_list[self.robot_select - self.robot_start_number].publish(self.cmd_vel)
+            
+            self.thruster_cmd[0].data = self.cmd_vel.linear.x
+            self.thruster_cmd[1].data = self.cmd_vel.angular.z
+            self.thruster_cmd[2].data = msg.axes[4] #updown
+            
+            for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount):
+                for j in range(3):
+                    if i == self.robot_select:
+                        self.pub_thruster_cmd_list[i - self.robot_start_number][j].publish(self.thruster_cmd[j])
+                    else:
+                        self.pub_thruster_cmd_list[i - self.robot_start_number][j].publish(Float32())
+
 class DuckieboatUnityBridge:
     def __init__(self):
 
@@ -34,7 +81,7 @@ class DuckieboatUnityBridge:
             ]
             for i in range(self.robot_start_number, self.robot_start_number + self.robot_amount)
         ]
-
+        
         # ROS to VR  side
         self.sub_model = rospy.Subscriber("gazebo/model_states/throttle", ModelStates, self.model_callback, queue_size=10)
         self.robot_pose_list = [PoseStamped() for i in range(self.robot_amount)]
@@ -44,10 +91,10 @@ class DuckieboatUnityBridge:
         self.pub_camera_pose = rospy.Publisher(f"vr/camera/pose", PoseStamped, queue_size=10)
 
         # [s, rx, ry, mode]
-
+    
     def vr_callback(self, msg):
         self.robot_select = int(msg.axes[0])
-        if self.robot_select > 4:
+        if self.robot_select == 5:
             self.cmd_vel.linear.x = msg.axes[2]
             self.cmd_vel.angular.z = msg.axes[1]
             self.pub_cmd_vel_list[self.robot_select - self.robot_start_number].publish(self.cmd_vel)
@@ -150,4 +197,5 @@ if __name__ == "__main__":
     rospy.init_node("wamv_duckieboat_unity_bridge")
     wamv_unity_bridge = WAMVUnityBridge()
     duckieboat_unity_bridge = DuckieboatUnityBridge()
+    drone_unity_bridge = DroneUnityBridge()
     rospy.spin()
