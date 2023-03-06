@@ -121,7 +121,7 @@
         namespace:=wamv2 "/>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv2_tf_pub" >
-     <remap from="robot_description" to="wamv5/robot_description" />
+     <remap from="robot_description" to="wamv2/robot_description" />
      <remap from="joint_states" to="wamv2/joint_states" />
   </node>
 

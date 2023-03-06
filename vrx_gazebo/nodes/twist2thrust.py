@@ -27,7 +27,7 @@ class Node():
         self.right_lateral_pub = rospy.Publisher("right_lateral_cmd",Float32,queue_size=10)
 
         # Subscriber
-        self.sub_cmd = rospy.Subscriber("robot_twist", Twist, self.cb_cmd, queue_size=1)
+        self.sub_cmd = rospy.Subscriber("cmd_vel", Twist, self.cb_cmd, queue_size=1)
         self.sub_joy = rospy.Subscriber("/joy", Joy, self.cbJoy, queue_size=1)
         self.timer = rospy.Timer(rospy.Duration(0.1), self.cb_publish)
 
@@ -63,9 +63,9 @@ if __name__ == '__main__':
 
     # ROS Parameters
     # Scaling from Twist.linear.x to (left+right)
-    linear_scaling = rospy.get_param('~linear_scaling',0.5)
+    linear_scaling = rospy.get_param('~linear_scaling',1)
     # Scaling from Twist.angular.z to (right-left)
-    angular_scaling = rospy.get_param('~angular_scaling',0.5)
+    angular_scaling = rospy.get_param('~angular_scaling',1)
 
     rospy.loginfo("Linear scaling=%f, Angular scaling=%f"%(linear_scaling,angular_scaling))
 
