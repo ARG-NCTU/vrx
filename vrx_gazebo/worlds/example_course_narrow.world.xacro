@@ -22,12 +22,1217 @@
 
     <!-- The light buoy -->
     <include>
+      <uri>model://polyform_a7</uri>
+      <name>block00</name>
+      <pose>-600 -30 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block01</name>
+      <pose>-600 -32 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block02</name>
+      <pose>-600 -34 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block03</name>
+      <pose>-600 -36 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block04</name>
+      <pose>-600 -38 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block05</name>
+      <pose>-600 -40 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block06</name>
+      <pose>-600 -42 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block07</name>
+      <pose>-600 -44 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block08</name>
+      <pose>-600 -46 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block09</name>
+      <pose>-600 -48 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block10</name>
+      <pose>-600 -50 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block11</name>
+      <pose>-600 -52 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block12</name>
+      <pose>-600 -54 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block13</name>
+      <pose>-600 -56 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block14</name>
+      <pose>-600 -58 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block15</name>
+      <pose>-600 -60 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block16</name>
+      <pose>-600 -62 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block17</name>
+      <pose>-600 -64 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block18</name>
+      <pose>-600 -66 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block19</name>
+      <pose>-600 -68 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block20</name>
+      <pose>-600 -70 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block21</name>
+      <pose>-600 -72 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block22</name>
+      <pose>-600 -74 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block23</name>
+      <pose>-600 -76 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block24</name>
+      <pose>-600 -78 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block25</name>
+      <pose>-600 -80 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block26</name>
+      <pose>-600 -82 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block27</name>
+      <pose>-600 -84 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block28</name>
+      <pose>-600 -86 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block29</name>
+      <pose>-600 -88 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block30</name>
+      <pose>-600 -90 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block31</name>
+      <pose>-600 -92 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block32</name>
+      <pose>-600 -94 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block33</name>
+      <pose>-600 -94 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block34</name>
+      <pose>-600 -94 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block35</name>
+      <pose>-600 -94 0 0 -0 0</pose>
+    </include>
+
+
+
+
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block36</name>
+      <pose>-600 -20 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block37</name>
+      <pose>-600 -18 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block38</name>
+      <pose>-600 -16 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block39</name>
+      <pose>-600 -14 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block40</name>
+      <pose>-600 -12 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block41</name>
+      <pose>-600 -10 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block42</name>
+      <pose>-600 -8 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block43</name>
+      <pose>-600 -6 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block44</name>
+      <pose>-600 -4 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block45</name>
+      <pose>-600 -2 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block46</name>
+      <pose>-600 0 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block47</name>
+      <pose>-600 2 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block48</name>
+      <pose>-600 4 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block49</name>
+      <pose>-600 6 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block50</name>
+      <pose>-600 8 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block51</name>
+      <pose>-600 10 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block52</name>
+      <pose>-600 12 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block53</name>
+      <pose>-600 14 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block54</name>
+      <pose>-600 16 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block55</name>
+      <pose>-600 18 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block56</name>
+      <pose>-600 20 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block57</name>
+      <pose>-600 22 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block58</name>
+      <pose>-600 24 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block59</name>
+      <pose>-600 26 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block60</name>
+      <pose>-600 28 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block61</name>
+      <pose>-600 30 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block62</name>
+      <pose>-600 32 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block63</name>
+      <pose>-600 34 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block64</name>
+      <pose>-600 36 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block65</name>
+      <pose>-600 38 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block66</name>
+      <pose>-600 40 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block67</name>
+      <pose>-600 42 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block68</name>
+      <pose>-600 44 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block69</name>
+      <pose>-600 46 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block70</name>
+      <pose>-600 48 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block71</name>
+      <pose>-600 50 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block72</name>
+      <pose>-600 52 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block73</name>
+      <pose>-600 54 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block74</name>
+      <pose>-600 56 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block75</name>
+      <pose>-600 58 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block76</name>
+      <pose>-600 60 0 0 -0 0</pose>
+    </include>
+
+
+
+
+
+
+
+
+  
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block00</name>
+      <pose>-600 -30 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block01</name>
+      <pose>-600 -32 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block02</name>
+      <pose>-600 -34 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block03</name>
+      <pose>-600 -36 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block04</name>
+      <pose>-600 -38 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block05</name>
+      <pose>-600 -40 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block06</name>
+      <pose>-600 -42 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block07</name>
+      <pose>-600 -44 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block08</name>
+      <pose>-600 -46 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block09</name>
+      <pose>-600 -48 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block10</name>
+      <pose>-600 -50 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block11</name>
+      <pose>-600 -52 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block12</name>
+      <pose>-600 -54 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block13</name>
+      <pose>-600 -56 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block14</name>
+      <pose>-600 -58 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block15</name>
+      <pose>-600 -60 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block16</name>
+      <pose>-600 -62 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block17</name>
+      <pose>-600 -64 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block18</name>
+      <pose>-600 -66 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block19</name>
+      <pose>-600 -68 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block20</name>
+      <pose>-600 -70 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block21</name>
+      <pose>-600 -72 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block22</name>
+      <pose>-600 -74 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block23</name>
+      <pose>-600 -76 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block24</name>
+      <pose>-600 -78 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block25</name>
+      <pose>-600 -80 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block26</name>
+      <pose>-600 -82 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block27</name>
+      <pose>-600 -84 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block28</name>
+      <pose>-600 -86 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block29</name>
+      <pose>-600 -88 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block30</name>
+      <pose>-600 -90 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block31</name>
+      <pose>-600 -92 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block32</name>
+      <pose>-600 -94 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block33</name>
+      <pose>-600 -90 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block34</name>
+      <pose>-600 -92 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block35</name>
+      <pose>-600 -94 0 0 -0 0</pose>
+    </include>
+
+
+
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block36</name>
+      <pose>-600 -20 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block37</name>
+      <pose>-600 -18 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block38</name>
+      <pose>-600 -16 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block39</name>
+      <pose>-600 -14 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block40</name>
+      <pose>-600 -12 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block41</name>
+      <pose>-600 -10 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block42</name>
+      <pose>-600 -8 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block43</name>
+      <pose>-600 -6 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block44</name>
+      <pose>-600 -4 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block45</name>
+      <pose>-600 -2 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block46</name>
+      <pose>-600 0 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block47</name>
+      <pose>-600 2 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block48</name>
+      <pose>-600 4 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block49</name>
+      <pose>-600 6 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block50</name>
+      <pose>-600 8 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block51</name>
+      <pose>-600 10 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block52</name>
+      <pose>-600 12 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block53</name>
+      <pose>-600 14 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block54</name>
+      <pose>-600 16 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block55</name>
+      <pose>-600 18 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block56</name>
+      <pose>-600 20 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block57</name>
+      <pose>-600 22 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block58</name>
+      <pose>-600 24 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block59</name>
+      <pose>-600 26 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block60</name>
+      <pose>-600 28 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block61</name>
+      <pose>-600 30 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block62</name>
+      <pose>-600 32 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block63</name>
+      <pose>-600 34 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block64</name>
+      <pose>-600 36 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block65</name>
+      <pose>-600 38 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block66</name>
+      <pose>-600 40 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block67</name>
+      <pose>-600 42 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block68</name>
+      <pose>-600 44 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block69</name>
+      <pose>-600 46 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block70</name>
+      <pose>-600 48 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block71</name>
+      <pose>-600 50 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block72</name>
+      <pose>-600 52 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block73</name>
+      <pose>-600 54 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block74</name>
+      <pose>-600 56 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block75</name>
+      <pose>-600 58 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>1block76</name>
+      <pose>-600 60 0 0 -0 0</pose>
+    </include>
+
+
+
+
+
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block00</name>
+      <pose>-600 -30 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block01</name>
+      <pose>-600 -32 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block02</name>
+      <pose>-600 -34 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block03</name>
+      <pose>-600 -36 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block04</name>
+      <pose>-600 -38 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block05</name>
+      <pose>-600 -40 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block06</name>
+      <pose>-600 -42 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block07</name>
+      <pose>-600 -44 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block08</name>
+      <pose>-600 -46 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block09</name>
+      <pose>-600 -48 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block10</name>
+      <pose>-600 -50 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block11</name>
+      <pose>-600 -52 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block12</name>
+      <pose>-600 -54 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block13</name>
+      <pose>-600 -56 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block14</name>
+      <pose>-600 -58 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block15</name>
+      <pose>-600 -60 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block16</name>
+      <pose>-600 -62 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block17</name>
+      <pose>-600 -64 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block18</name>
+      <pose>-600 -66 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block19</name>
+      <pose>-600 -68 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block20</name>
+      <pose>-600 -70 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block21</name>
+      <pose>-600 -72 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block22</name>
+      <pose>-600 -74 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block23</name>
+      <pose>-600 -76 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block24</name>
+      <pose>-600 -78 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block25</name>
+      <pose>-600 -80 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block26</name>
+      <pose>-600 -82 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block27</name>
+      <pose>-600 -84 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block28</name>
+      <pose>-600 -86 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block29</name>
+      <pose>-600 -88 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block30</name>
+      <pose>-600 -90 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block31</name>
+      <pose>-600 -92 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block32</name>
+      <pose>-600 -94 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block33</name>
+      <pose>-600 -90 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block34</name>
+      <pose>-600 -92 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block35</name>
+      <pose>-600 -94 0 0 -0 0</pose>
+    </include>
+
+
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block36</name>
+      <pose>-600 -20 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block37</name>
+      <pose>-600 -18 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block38</name>
+      <pose>-600 -16 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block39</name>
+      <pose>-600 -14 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block40</name>
+      <pose>-600 -12 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block41</name>
+      <pose>-600 -10 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block42</name>
+      <pose>-600 -8 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block43</name>
+      <pose>-600 -6 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block44</name>
+      <pose>-600 -4 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block45</name>
+      <pose>-600 -2 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block46</name>
+      <pose>-600 0 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block47</name>
+      <pose>-600 2 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block48</name>
+      <pose>-600 4 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block49</name>
+      <pose>-600 6 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block50</name>
+      <pose>-600 8 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block51</name>
+      <pose>-600 10 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block52</name>
+      <pose>-600 12 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block53</name>
+      <pose>-600 14 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block54</name>
+      <pose>-600 16 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block55</name>
+      <pose>-600 18 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block56</name>
+      <pose>-600 20 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block57</name>
+      <pose>-600 22 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block58</name>
+      <pose>-600 24 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block59</name>
+      <pose>-600 26 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block60</name>
+      <pose>-600 28 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block61</name>
+      <pose>-600 30 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block62</name>
+      <pose>-600 32 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block63</name>
+      <pose>-600 34 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block64</name>
+      <pose>-600 36 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block65</name>
+      <pose>-600 38 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block66</name>
+      <pose>-600 40 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block67</name>
+      <pose>-600 42 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block68</name>
+      <pose>-600 44 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block69</name>
+      <pose>-600 46 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block70</name>
+      <pose>-600 48 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block71</name>
+      <pose>-600 50 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block72</name>
+      <pose>-600 52 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block73</name>
+      <pose>-600 54 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block74</name>
+      <pose>-600 56 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block75</name>
+      <pose>-600 58 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>2block76</name>
+      <pose>-600 60 0 0 -0 0</pose>
+    </include>
+
+
+    
+
+
+
+
+    
+
+
+
+
+
+    
+
+
+
+    <include>
       <uri>model://robotx_light_buoy</uri>
       <pose>-511 218 0.25 0 0 3.14</pose>
     </include>
 
     <!-- The 2022 dock with the placards -->
-    <include>
+    <!-- <include>
       <name>dock2</name>
       <uri>model://dock_2022</uri>
       <pose>-600 -80 0 0 0 0</pose>
@@ -40,9 +1245,21 @@
     </include>
 
     <include>
+      <name>dock7</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 -100 0 0 0 0</pose>
+    </include>
+
+    <include>
       <name>dock3</name>
       <uri>model://dock_2022</uri>
       <pose>-600 -10 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>dock8</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 50 0 0 0 0</pose>
     </include>
 
     <include>
@@ -72,7 +1289,7 @@
       <name>dock8</name>
       <uri>model://dock_2022</uri>
       <pose>-600 50 0 0 0 0</pose>
-    </include>
+    </include> -->
 
     <!-- <include>
       <name>dock7</name>
@@ -185,6 +1402,72 @@
       <uri>model://obstacle_course</uri>
       <pose>-420 295 0 0 0 -2.04</pose>
     </include>
+
+
+
+
+
+
+    <include>
+      <uri>model://robotx_light_buoy</uri>
+      <pose>-511 218 0.25 0 0 3.14</pose>
+    </include>
+
+    <!-- The 2022 dock with the placards -->
+    <!-- <include>
+      <name>dock2</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 -80 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>dock1</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 -40 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>dock3</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 -10 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>dock4</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 30 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>dock5</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 -60 0 0 0 0</pose>
+    </include>
+    <include>
+      <name>dock6</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 10 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>dock7</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 -100 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>dock8</name>
+      <uri>model://dock_2022</uri>
+      <pose>-600 50 0 0 0 0</pose>
+    </include> -->
+
+
+
+
+
+
+
+
 
   </world>
 </sdf>

@@ -90,7 +90,7 @@
   </node>
 
   <node name="spawn_model_1" pkg="gazebo_ros" type="spawn_model"
-        args="-x -570 -y 0 -z $(arg z)
+        args="-x -572 -y 0 -z $(arg z)
               -R $(arg R) -P $(arg P) -Y 3.14 
               -urdf -param wamv1/robot_description -model wamv1"/>
 
@@ -113,25 +113,6 @@
               -urdf -param wamv7/robot_description -model wamv7"/> -->
 
 
-  <param name="wamv2/robot_description"
-        command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
-        locked:=$(arg wamv_locked)		   
-        thruster_config:=$(arg thrust_config)
-        vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
-        namespace:=wamv2 "/>
-
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv2_tf_pub" >
-     <remap from="robot_description" to="wamv2/robot_description" />
-     <remap from="joint_states" to="wamv2/joint_states" />
-  </node>
-
-  <node name="spawn_model_2" pkg="gazebo_ros" type="spawn_model"
-        args="-x -560 -y 10 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 3.14 
-              -urdf -param wamv2/robot_description -model wamv2"/>
-
-
-    <!-- WamV3 -->
   <param name="wamv3/robot_description"
         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
         locked:=$(arg wamv_locked)		   
@@ -145,28 +126,12 @@
   </node>
 
   <node name="spawn_model_3" pkg="gazebo_ros" type="spawn_model"
-        args="-x -560 -y -10 -z $(arg z)
+        args="-x -563 -y 10 -z $(arg z)
               -R $(arg R) -P $(arg P) -Y 3.14 
               -urdf -param wamv3/robot_description -model wamv3"/>
-            
-  <param name="wamv4/robot_description"
-        command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
-        locked:=$(arg wamv_locked)		   
-        thruster_config:=$(arg thrust_config)
-        vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
-        namespace:=wamv4"/>
-
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv4_tf_pub" >
-     <remap from="robot_description" to="wamv4/robot_description" />
-     <remap from="joint_states" to="wamv4/joint_states" />
-  </node>
-
-  <node name="spawn_model_4" pkg="gazebo_ros" type="spawn_model"
-        args="-x -550 -y 0 -z $(arg z)
-              -R $(arg R) -P $(arg P) -Y 3.14
-              -urdf -param wamv4/robot_description -model wamv4"/>
 
 
+    <!-- WamV3 -->
   <param name="wamv7/robot_description"
         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
         locked:=$(arg wamv_locked)		   
@@ -180,15 +145,50 @@
   </node>
 
   <node name="spawn_model_7" pkg="gazebo_ros" type="spawn_model"
-        args="-x -512 -y 0 -z $(arg z)
+        args="-x -567 -y -10 -z $(arg z)
               -R $(arg R) -P $(arg P) -Y 3.14 
               -urdf -param wamv7/robot_description -model wamv7"/>
+            
+  <!-- <param name="wamv4/robot_description"
+        command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
+        locked:=$(arg wamv_locked)		   
+        thruster_config:=$(arg thrust_config)
+        vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
+        namespace:=wamv4"/>
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv4_tf_pub" >
+     <remap from="robot_description" to="wamv4/robot_description" />
+     <remap from="joint_states" to="wamv4/joint_states" />
+  </node>
+
+  <node name="spawn_model_4" pkg="gazebo_ros" type="spawn_model"
+        args="-x -552 -y 0 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 3.14
+              -urdf -param wamv4/robot_description -model wamv4"/> -->
+
+
+  <param name="wamv2/robot_description"
+        command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
+        locked:=$(arg wamv_locked)		   
+        thruster_config:=$(arg thrust_config)
+        vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
+        namespace:=wamv2 "/>
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv2_tf_pub" >
+     <remap from="robot_description" to="wamv2/robot_description" />
+     <remap from="joint_states" to="wamv2/joint_states" />
+  </node>
+
+  <node name="spawn_model_2" pkg="gazebo_ros" type="spawn_model"
+        args="-x -516 -y 0 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 3.14 
+              -urdf -param wamv2/robot_description -model wamv2"/>
 
 
 
 
 
-  <param name="wamv5/robot_description"
+  <!-- <param name="wamv5/robot_description"
         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
         locked:=$(arg wamv_locked)		   
         thruster_config:=$(arg thrust_config)
@@ -203,7 +203,7 @@
   <node name="spawn_model_5" pkg="gazebo_ros" type="spawn_model"
         args="-x -560 -y 0 -z $(arg z)
               -R $(arg R) -P $(arg P) -Y 3.14 
-              -urdf -param wamv5/robot_description -model wamv5"/>
+              -urdf -param wamv5/robot_description -model wamv5"/> -->
 
   <!-- <param name="wamv5/robot_description"
         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
