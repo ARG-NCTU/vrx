@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="veh" default="wamv"/>
+  <arg name="veh" default="wamv2"/>
 
   <!-- Joystick Driver -->
-  <node pkg="joy" type="joy_node" name="joy">
-    <param name="dev" value="/dev/input/js0"/>
+  
+  <node pkg="joy" type="joy_node" name="joy2">
+    <param name="dev" value="/dev/input/js1"/>
     <!-- <param name="autorepeat_rate" type="double" value="10.0" />  -->
   </node>
+  
 
   <!-- Joystick Teleop -->
   <!-- <rosparam file="$(find vrx_gazebo)/config/diffdrive.yaml" command="load"/>
@@ -16,7 +18,7 @@
   </node> -->
 
   <!-- Convert Twist messages to Drive messages -->
-  <node ns="$(arg veh)" pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust" output="screen">
+  <node ns="$(arg veh)" pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust1" output="screen">
     <remap from="left_cmd" to="/$(arg veh)/thrusters/left_thrust_cmd"/>
     <remap from="right_cmd" to="/$(arg veh)/thrusters/right_thrust_cmd"/>
     <remap from="left_lateral_cmd" to="/$(arg veh)/thrusters/left_lateral_thrust_cmd"/>
