@@ -245,4 +245,15 @@
   </node>
   <node name="pinger_visualization" pkg="vrx_gazebo" type="pinger_visualization.py" />
 
+  <node ns="gazebo" pkg="topic_tools" type="throttle" name="model_states_throttle"
+    args="messages model_states 100.0 model_states/throttle" />
+
+  <node pkg="vrx_gazebo" type="wamv_unity_bridge.py" name="wamv_unity_bridge" output="screen">
+    <param name="robot_start_number" value="1" />
+    <param name="robot_amount" value="5" />
+    <param name="namespace" value="wamv" />
+    <param name="linear_scaling_factor" value="1.0" />
+    <param name="angular_scaling_factor" value="1.0" />
+  </node>
+
 </launch>
