@@ -16,15 +16,20 @@ class PoseUpdater:
         self.pose.pose.position.x = 70
         self.pose.pose.position.y = 0
         self.pose.pose.position.z = 10
+        #self.pose.pose.orientation.x = 0
+        #self.pose.pose.orientation.y = 0
+        #self.pose.pose.orientation.z = 0
+        #self.pose.pose.orientation.w = 1
 
     def thruster_callback_updown(self, msg):
         self.pose.pose.position.z += msg.data*0.1
 
     def thruster_callback_angular(self, msg):
-        self.pose.pose.position.y -= msg.data
-        
+        #self.pose.pose.orientation.y -= msg.data
+        self.pose.pose.position.y -= msg.data*0.3
+
     def thruster_callback_linear(self, msg):
-        self.pose.pose.position.x += msg.data
+        self.pose.pose.position.x += msg.data*0.3
 
     def publish_pose(self):
         # set the header timestamp to the current time

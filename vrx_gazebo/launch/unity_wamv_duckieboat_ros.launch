@@ -176,6 +176,9 @@
   <node pkg="vrx_gazebo" type="drone_pose_publisher.py" name="drone_pose_publisher" output="screen">
   </node>
 
+  <node pkg="vrx_gazebo" type="unity_groundtruth.py" name="unity_groundtruth" output="screen">
+  </node>
+
   <node pkg="vrx_gazebo" type="wamv_duckieboat_unity_bridge.py" name="wamv_duckieboat_unity_bridge" output="screen">
     <param name="robot_start_number" value="1" />
     <param name="robot_amount" value="4" />
