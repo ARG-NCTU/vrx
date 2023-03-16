@@ -256,4 +256,5 @@
     <param name="angular_scaling_factor" value="1.0" />
   </node>
 
+  <node pkg="vrx_gazebo" type="gazebo_block2array.py" name="gazebo_block2array" output="screen"/>
 </launch>
