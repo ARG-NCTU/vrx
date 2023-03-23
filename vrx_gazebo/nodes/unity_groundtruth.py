@@ -22,7 +22,7 @@ class Unity_Groundtruth():
         self.gtbbox_recieved = False
         # Subscriber
         self.gt_bbox_sub = rospy.Subscriber("unity/gt_bbox", Float32MultiArray, self.sub_gt_bbox, queue_size=1)
-        self.image_sub = rospy.Subscriber("unity/camera_under/compressed", CompressedImage, self.sub_img, queue_size=1)
+        self.image_sub = rospy.Subscriber("unity/camera_user/compressed", CompressedImage, self.sub_img, queue_size=1)
         # Publisher
         self.pub_target_screen = rospy.Publisher("unity/gt_img/compressed", CompressedImage, queue_size=1)
 
