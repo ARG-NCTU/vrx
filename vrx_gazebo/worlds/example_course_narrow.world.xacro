@@ -420,7 +420,7 @@
 
 
 
-
+<!-- 
 
   
     <include>
@@ -1208,7 +1208,7 @@
       <uri>model://polyform_a7</uri>
       <name>2block76</name>
       <pose>-600 60 0 0 -0 0</pose>
-    </include>
+    </include> 
 
 
     
@@ -1217,7 +1217,7 @@
 
 
     
-
+ -->
 
 
 
