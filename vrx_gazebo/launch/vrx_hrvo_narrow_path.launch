@@ -132,22 +132,22 @@
 
 
     <!-- WamV3 -->
-  <param name="wamv3/robot_description"
+  <param name="wamv7/robot_description"
         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
         locked:=$(arg wamv_locked)		   
         thruster_config:=$(arg thrust_config)
         vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
-        namespace:=wamv3 "/>
+        namespace:=wamv7 "/>
 
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv3_tf_pub" >
-     <remap from="robot_description" to="wamv3/robot_description" />
-     <remap from="joint_states" to="wamv3/joint_states" />
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv7_tf_pub" >
+     <remap from="robot_description" to="wamv7/robot_description" />
+     <remap from="joint_states" to="wamv7/joint_states" />
   </node>
 
-  <node name="spawn_model_3" pkg="gazebo_ros" type="spawn_model"
+  <node name="spawn_model_7" pkg="gazebo_ros" type="spawn_model"
         args="-x -560 -y -10 -z $(arg z)
               -R $(arg R) -P $(arg P) -Y 3.14 
-              -urdf -param wamv3/robot_description -model wamv3"/>
+              -urdf -param wamv7/robot_description -model wamv7"/>
             
   <param name="wamv4/robot_description"
         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
@@ -167,22 +167,22 @@
               -urdf -param wamv4/robot_description -model wamv4"/>
 
 
-  <param name="wamv7/robot_description"
+  <param name="wamv3/robot_description"
         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
         locked:=$(arg wamv_locked)		   
         thruster_config:=$(arg thrust_config)
         vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
-        namespace:=wamv7 "/>
+        namespace:=wamv3 "/>
 
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv7_tf_pub" >
-     <remap from="robot_description" to="wamv7/robot_description" />
-     <remap from="joint_states" to="wamv7/joint_states" />
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv3_tf_pub" >
+     <remap from="robot_description" to="wamv3/robot_description" />
+     <remap from="joint_states" to="wamv3/joint_states" />
   </node>
 
-  <node name="spawn_model_7" pkg="gazebo_ros" type="spawn_model"
+  <node name="spawn_model_3" pkg="gazebo_ros" type="spawn_model"
         args="-x -512 -y 0 -z $(arg z)
               -R $(arg R) -P $(arg P) -Y 3.14 
-              -urdf -param wamv7/robot_description -model wamv7"/>
+              -urdf -param wamv3/robot_description -model wamv3"/>
 
 
 
@@ -248,7 +248,7 @@
   <node ns="gazebo" pkg="topic_tools" type="throttle" name="model_states_throttle"
     args="messages model_states 100.0 model_states/throttle" />
 
-  <node pkg="vrx_gazebo" type="wamv_unity_bridge.py" name="wamv_unity_bridge" output="screen">
+  <node pkg="vrx_gazebo" type="wamv_unity_bridge_3.py" name="wamv_unity_bridge" output="screen">
     <param name="robot_start_number" value="1" />
     <param name="robot_amount" value="5" />
     <param name="namespace" value="wamv" />
