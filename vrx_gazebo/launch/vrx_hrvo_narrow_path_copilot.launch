@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<launch>
+  <env name="ROSCONSOLE_CONFIG_FILE" value="$(find vrx_gazebo)/config/custom_rosconsole.conf"/>
+  <!-- Gazebo world to load -->
+  <arg name="world" default="$(find vrx_gazebo)/worlds/example_course_narrow.world" />
+  <!-- If true, run gazebo GUI -->
+  <arg name="gui" default="true" />
+  <!-- If true, run gazebo in verbose mode -->
+  <arg name="verbose" default="false"/>
+  <!-- Set various other gazebo arguments-->
+  <arg name="extra_gazebo_args" default=""/>
+  <!-- Start in a default namespace -->
+  <arg name="namespace" default="wamv"/>
+  <!-- Do we lock the vessel to the world? -->
+  <arg name="wamv_locked" default="false" />
+  <!-- Start paused? -->
+  <arg name="paused" default="false"/>
+  <!-- Acoustic pinger position(s) -->
+  <arg name="pinger_params" default="$(find vrx_gazebo)/config/pinger.yaml"/>
+
+  <!-- Initial USV location and attitude-->
+  <arg name="x" default="-532" />
+  <arg name="y" default="162" />
+  <arg name="z" default="0.1" />
+  <arg name="P" default="0" />
+  <arg name="R" default="0" />
+  <arg name="Y" default="1.4" />
+  <arg name="yy" default="4.37" />
+  <arg name="yyy" default="3.1" />
+
+  <!-- Allow user specified thruster configurations
+       H = stern trusters on each hull
+       T = H with a lateral thruster
+       X = "holonomic" configuration -->
+  <arg name="thrust_config" default="T" />
+
+  <!-- Do we load the VRX sensor suite? -->
+  <arg name="vrx_sensors_enabled" default="true" />
+
+  <!-- Start Gazebo with the world file -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name"   value="$(arg world)"/>
+    <arg name="verbose"      value="$(arg verbose)"/>
+    <arg name="paused"       value="$(arg paused)"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui"          value="$(arg gui)" />
+    <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
+  </include>
+
+  <!-- Load robot model -->
+  <!-- Determine which model -->
+  <arg name="h_config" value="$(eval int((thrust_config)=='H'))"/>
+  <arg name="t_config" value="$(eval int((thrust_config)=='T'))"/>
+  <arg name="x_config" value="$(eval int((thrust_config)=='X'))"/>
+
+  <!-- For now - can only use the T configuration! -->
+  <arg if="$(arg t_config)" name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
+
+
+
+  <param name="wamv1/robot_description"
+         command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
+         locked:=$(arg wamv_locked)		   
+         thruster_config:=$(arg thrust_config)
+         vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
+         namespace:=wamv1 "/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv1_tf_pub" >
+     <remap from="robot_description" to="wamv1/robot_description" />
+     <remap from="joint_states" to="wamv1/joint_states" />
+  </node>
+  <node name="spawn_model_1" pkg="gazebo_ros" type="spawn_model"
+        args="-x -570 -y 0 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 3.14 
+              -urdf -param wamv1/robot_description -model wamv1"/>
+
+
+  <param name="wamv2/robot_description"
+        command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
+        locked:=$(arg wamv_locked)		   
+        thruster_config:=$(arg thrust_config)
+        vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
+        namespace:=wamv2 "/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv2_tf_pub" >
+     <remap from="robot_description" to="wamv2/robot_description" />
+     <remap from="joint_states" to="wamv2/joint_states" />
+  </node>
+  <node name="spawn_model_2" pkg="gazebo_ros" type="spawn_model"
+        args="-x -560 -y 10 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 3.14 
+              -urdf -param wamv2/robot_description -model wamv2"/>
+
+
+
+  <param name="wamv7/robot_description"
+        command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
+        locked:=$(arg wamv_locked)		   
+        thruster_config:=$(arg thrust_config)
+        vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
+        namespace:=wamv7 "/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv7_tf_pub" >
+     <remap from="robot_description" to="wamv7/robot_description" />
+     <remap from="joint_states" to="wamv7/joint_states" />
+  </node>
+  <node name="spawn_model_7" pkg="gazebo_ros" type="spawn_model"
+        args="-x -560 -y -10 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 3.14 
+              -urdf -param wamv7/robot_description -model wamv7"/>
+
+
+
+  <param name="wamv4/robot_description"
+        command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
+        locked:=$(arg wamv_locked)		   
+        thruster_config:=$(arg thrust_config)
+        vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
+        namespace:=wamv4"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv4_tf_pub" >
+     <remap from="robot_description" to="wamv4/robot_description" />
+     <remap from="joint_states" to="wamv4/joint_states" />
+  </node>
+  <node name="spawn_model_4" pkg="gazebo_ros" type="spawn_model"
+        args="-x -550 -y 0 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 3.14
+              -urdf -param wamv4/robot_description -model wamv4"/>
+
+
+  <param name="wamv5/robot_description"
+        command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
+        locked:=$(arg wamv_locked)		   
+        thruster_config:=$(arg thrust_config)
+        vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
+        namespace:=wamv5"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv5_tf_pub" >
+     <remap from="robot_description" to="wamv5/robot_description" />
+     <remap from="joint_states" to="wamv5/joint_states" />
+  </node>
+  <node name="spawn_model_5" pkg="gazebo_ros" type="spawn_model"
+        args="-x -560 -y 0 -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y 3.14 
+              -urdf -param wamv5/robot_description -model wamv5"/>
+
+
+  <param name="wamv3/robot_description"
+        command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
+        locked:=$(arg wamv_locked)		   
+        thruster_config:=$(arg thrust_config)
+        vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
+        namespace:=wamv3 "/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv3_tf_pub" >
+     <remap from="robot_description" to="wamv3/robot_description" />
+     <remap from="joint_states" to="wamv3/joint_states" />
+  </node>
+  <node name="spawn_model_3" pkg="gazebo_ros" type="spawn_model"
+        args="-x -512 -y 0 -z $(arg z) -R $(arg R) -P $(arg P) -Y 3.14 
+              -urdf -param wamv3/robot_description -model wamv3"/>
+
+
+  <!-- Set the pinger location -->
+  <node name="set_pinger_position" pkg="vrx_gazebo" type="set_pinger_position.py" output="screen">
+    <rosparam command="load" file="$(arg pinger_params)" />
+  </node>
+  <node name="pinger_visualization" pkg="vrx_gazebo" type="pinger_visualization.py" />
+
+  <node ns="gazebo" pkg="topic_tools" type="throttle" name="model_states_throttle"
+    args="messages model_states 100.0 model_states/throttle" />
+
+  <node pkg="vrx_gazebo" type="wamv_unity_bridge_3_copilot.py" name="wamv_unity_bridge_3_copilot" output="screen">
+    <param name="robot_start_number" value="1" />
+    <param name="robot_amount" value="5" />
+    <param name="namespace" value="wamv" />
+    <param name="linear_scaling_factor" value="1.0" />
+    <param name="angular_scaling_factor" value="1.0" />
+  </node>
+
+<include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+    <arg name="port" default="9090" />
+    <arg name="address" default="" />
+    <arg name="ssl" default="false" />
+    <arg name="certfile" default="" />
+    <arg name="keyfile" default="" />
+
+    <arg name="retry_startup_delay" default="5.0" />
+
+    <arg name="fragment_timeout" default="600" />
+    <arg name="delay_between_messages" default="0" />
+    <arg name="max_message_size" default="10000000" />
+    <arg name="unregister_timeout" default="10.0" />
+
+    <arg name="use_compression" default="false" />
+
+    <arg name="topics_glob" default="" />
+    <arg name="services_glob" default="" />
+    <arg name="params_glob" default="" />
+    <arg name="bson_only_mode" default="false" />
+  </include>
+
+  <node pkg="vrx_gazebo" type="gazebo_block2array.py" name="gazebo_block2array" output="screen"/>
+</launch>

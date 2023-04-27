@@ -18,7 +18,7 @@ class Node():
         self.left_lateral_msg =Float32()
         self.right_lateral_msg =Float32()
         self.keyboard = keyboard
-        self.auto = 0
+        self.auto = 1
         
         # Publisher
         self.left_pub = rospy.Publisher("left_cmd",Float32,queue_size=10)
@@ -37,6 +37,7 @@ class Node():
         self.left_lateral_pub.publish(self.left_lateral_msg)
         self.right_lateral_pub.publish(self.right_lateral_msg)
     def cb_cmd(self, data):
+        print(data)
         if self.auto:
             self.left_msg.data = data.linear.x
             self.right_msg.data = data.linear.x
