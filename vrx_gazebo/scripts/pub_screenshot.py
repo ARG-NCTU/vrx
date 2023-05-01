@@ -11,7 +11,8 @@ import numpy as np
 
 global start_x, start_y, end_x, end_y
 global flag
-start_x, start_y, end_x, end_y = 260, 60, 745, 490
+start_x, start_y, end_x, end_y = 460, 150, 1500, 850 # If you have one screens
+start_x, start_y, end_x, end_y = 260, 60, 745, 490 # If you have two screens
 flag = False
 rospy.init_node("screenshot", anonymous=True)
 # pub = rospy.Publisher('mini_map', Image, queue_size=10)
