@@ -27,7 +27,7 @@
     </include>
 
     <!-- The 2022 dock with the placards -->
-    <include>
+    <!-- <include>
       <name>dock2</name>
       <uri>model://dock_2022</uri>
       <pose>-530 -35 0 0 0 1.94</pose>
@@ -37,7 +37,7 @@
       <name>dock1</name>
       <uri>model://dock_2022</uri>
       <pose>-545 -10 0 0 0 4.34</pose>
-    </include>
+    </include> -->
 
     <!-- The VRX animal buoys -->
     <include>
