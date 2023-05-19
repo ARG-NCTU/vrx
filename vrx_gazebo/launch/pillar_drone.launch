@@ -67,4 +67,9 @@
               -R $(arg drone_R) -P $(arg drone_P) -Y $(arg drone_Y)
               -sdf -database $(arg model) -model drone"/>
 
+
+    <include file="$(find wamv_rl)/launch/pcToLaser_240_sim_drone.launch">
+        <!-- <arg name="veh" value="$(arg veh)" /> -->
+    </include>
+
 </launch>
