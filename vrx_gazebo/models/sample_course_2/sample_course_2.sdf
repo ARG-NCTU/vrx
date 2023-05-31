@@ -1,0 +1,76 @@
+<?xml version="1.0"?> 
+<sdf version="1.7">
+  <model name="sample_course_2">
+    <include>
+      <uri>model://everblock_grey</uri>      
+      <name>block0</name>
+      <pose>-4.5 -4.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_yellow</uri>      
+      <name>block1</name>
+      <pose>-4.5 -1.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_grey</uri>      
+      <name>block2</name>
+      <pose>-4.5 1.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_blue</uri>      
+      <name>block4</name>
+      <pose>-1.5 -4.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_white</uri>      
+      <name>block5</name>
+      <pose>-1.5 -1.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_grey</uri>      
+      <name>block6</name>
+      <pose>-1.5 1.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_grey</uri>      
+      <name>block7</name>
+      <pose>-1.5 4.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_grey</uri>      
+      <name>block8</name>
+      <pose>1.5 -4.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_grey</uri>      
+      <name>block9</name>
+      <pose>1.5 -1.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_grey</uri>      
+      <name>block11</name>
+      <pose>1.5 4.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_grey</uri>      
+      <name>block12</name>
+      <pose>4.5 -4.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_yellow</uri>      
+      <name>block13</name>
+      <pose>4.5 -1.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_grey</uri>      
+      <name>block14</name>
+      <pose>4.5 1.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://everblock_blue</uri>      
+      <name>block15</name>
+      <pose>4.5 4.5 0 0 0 0</pose>
+    </include></model>
+</sdf>
+
+<!-- vim: set et ft=xml fenc=utf-8 ff=unix sts=0 sw=2 ts=2 : -->

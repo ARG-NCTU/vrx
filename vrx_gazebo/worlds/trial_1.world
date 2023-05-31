@@ -1,0 +1,523 @@
+<?xml version="1.0"?> 
+<sdf version="1.7">
+  <world name="trial_1_world">
+
+    <physics name='default_physics' default='0' type='ode'>
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+    </physics>
+
+    <gui>
+      <camera name="user_camera">
+        <pose>0 -7 4 0 0.3 1.57</pose>
+      </camera>
+    </gui>
+
+    <scene>
+      <sky>
+        <clouds>
+          <speed>12</speed>
+        </clouds>
+      </sky>
+    </scene>
+
+    <!-- <model name='rover'>
+      <pose>0 2 0.04 0 0 1.57</pose>
+
+      <link name='base_link'>
+        <inertial>
+            <mass>0.2</mass>
+            <inertia>
+              <ixx>0.01</ixx>
+              <iyy>0.01</iyy>
+              <izz>0.01</izz>
+            </inertia>
+          </inertial>
+
+        <visual name='chassis_visual'>
+            <pose>0 0 0 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>0.2 0.1 0.03</size>
+              </box>
+            </geometry>
+            <material>
+              <script>
+                <uri>file://media/materials/scripts/gazebo.material</uri>
+                <name>Gazebo/DarkGrey</name>
+              </script>
+            </material>
+          </visual>
+
+          <collision name='chassis_collision'>
+            <pose>0 0 0 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>0.2 0.1 0.03</size>
+              </box>
+            </geometry>
+          </collision>
+
+        <visual name='computer_visual'>
+            <pose>-0.05 0 0.03 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>0.1 0.07 0.01</size>
+              </box>
+            </geometry>
+            <material>
+              <script>
+                <uri>file://media/materials/scripts/gazebo.material</uri>
+                <name>Gazebo/Green</name>
+              </script>
+            </material>
+          </visual>
+
+          <collision name='computer_collision'>
+            <pose>-0.05 0 0.03 0 0 0</pose>
+            <geometry>
+              <box>
+                <size>0.1 0.07 0.01</size>
+              </box>
+            </geometry>
+          </collision>
+
+      </link>
+      <link name="front_left">
+        <pose>0.08 0.07 -0.01 -1.5707 0 0</pose>
+        <inertial>
+            <mass>0.005</mass>
+            <inertia>
+              <ixx>0.0001</ixx>
+              <iyy>0.0001</iyy>
+              <izz>0.0001</izz>
+            </inertia>
+          </inertial>
+
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.02</length>
+            </cylinder>
+          </geometry>
+        </collision>
+
+        <visual name="tire">
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.02</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel">
+          <geometry>
+            <cylinder>
+              <radius>0.028499999999999998</radius>
+              <length>0.022</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Yellow</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel_line">
+          <geometry>
+            <box>
+              <size>0.053 0.01 0.024</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel_line2">
+          <geometry>
+            <box>
+              <size>0.01 0.053 0.024</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+      </link>
+
+      <joint type="revolute" name="front_left_joint">
+        <child>front_left</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <dynamics>
+            <friction>0.01</friction>
+            <damping>0.01</damping>
+          </dynamics>
+        </axis>
+      </joint>
+      
+      <link name="front_right">
+        <pose>0.08 -0.07 -0.01 -1.5707 0 0</pose>
+        <inertial>
+            <mass>0.005</mass>
+            <inertia>
+              <ixx>0.0001</ixx>
+              <iyy>0.0001</iyy>
+              <izz>0.0001</izz>
+            </inertia>
+          </inertial>
+
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.02</length>
+            </cylinder>
+          </geometry>
+        </collision>
+
+        <visual name="tire">
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.02</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel">
+          <geometry>
+            <cylinder>
+              <radius>0.028499999999999998</radius>
+              <length>0.022</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Yellow</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel_line">
+          <geometry>
+            <box>
+              <size>0.053 0.01 0.024</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel_line2">
+          <geometry>
+            <box>
+              <size>0.01 0.053 0.024</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+      </link>
+
+      <joint type="revolute" name="front_right_joint">
+        <child>front_right</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <dynamics>
+            <friction>0.01</friction>
+            <damping>0.01</damping>
+          </dynamics>
+        </axis>
+      </joint>
+      
+      <link name="rear_left">
+        <pose>-0.08 0.07 -0.01 -1.5707 0 0</pose>
+        <inertial>
+            <mass>0.005</mass>
+            <inertia>
+              <ixx>0.0001</ixx>
+              <iyy>0.0001</iyy>
+              <izz>0.0001</izz>
+            </inertia>
+          </inertial>
+
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.02</length>
+            </cylinder>
+          </geometry>
+        </collision>
+
+        <visual name="tire">
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.02</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel">
+          <geometry>
+            <cylinder>
+              <radius>0.028499999999999998</radius>
+              <length>0.022</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Yellow</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel_line">
+          <geometry>
+            <box>
+              <size>0.053 0.01 0.024</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel_line2">
+          <geometry>
+            <box>
+              <size>0.01 0.053 0.024</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+      </link>
+
+      <joint type="revolute" name="rear_left_joint">
+        <child>rear_left</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <dynamics>
+            <friction>0.01</friction>
+            <damping>0.01</damping>
+          </dynamics>
+        </axis>
+      </joint>
+      
+      <link name="rear_right">
+        <pose>-0.08 -0.07 -0.01 -1.5707 0 0</pose>
+        <inertial>
+            <mass>0.005</mass>
+            <inertia>
+              <ixx>0.0001</ixx>
+              <iyy>0.0001</iyy>
+              <izz>0.0001</izz>
+            </inertia>
+          </inertial>
+
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.02</length>
+            </cylinder>
+          </geometry>
+        </collision>
+
+        <visual name="tire">
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.02</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel">
+          <geometry>
+            <cylinder>
+              <radius>0.028499999999999998</radius>
+              <length>0.022</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Yellow</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel_line">
+          <geometry>
+            <box>
+              <size>0.053 0.01 0.024</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+        <visual name="wheel_line2">
+          <geometry>
+            <box>
+              <size>0.01 0.053 0.024</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/DarkGrey</name>
+            </script>
+          </material>
+        </visual>
+
+      </link>
+
+      <joint type="revolute" name="rear_right_joint">
+        <child>rear_right</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <dynamics>
+            <friction>0.01</friction>
+            <damping>0.01</damping>
+          </dynamics>
+        </axis>
+      </joint>
+      
+
+      
+      <include>
+        <uri>model://red_ball</uri>
+      </include>
+
+      <joint name="red_ball_joint" type="fixed">
+        <pose>-0.04 0 0.02 0 0 0</pose>
+        <child>red_ball::link</child>
+        <parent>base_link</parent>
+      </joint>
+      
+
+      <plugin name='p3d' filename='libgazebo_ros_p3d.so'>
+        <robotNamespace>rover</robotNamespace>
+        <updateRate>10</updateRate>
+        <bodyName>base_link</bodyName>
+        <topicName>/qualisys/rover/odom</topicName>
+        <frameName>map</frameName>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+      </plugin>
+
+      <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+        <robotNamespace>rover</robotNamespace>
+        <updateRate>100.0</updateRate>
+        <leftFrontJoint>front_left_joint</leftFrontJoint>
+        <rightFrontJoint>front_right_joint</rightFrontJoint>
+        <leftRearJoint>rear_left_joint</leftRearJoint>
+        <rightRearJoint>rear_right_joint</rightRearJoint>
+        <wheelSeparation>0.14</wheelSeparation>
+        <wheelDiameter>0.06</wheelDiameter>
+        <robotBaseFrame>rover_ground_truth</robotBaseFrame>
+        <torque>0.3</torque>
+        <broadcastTF>false</broadcastTF>
+        <commandTopic>cmd_vel</commandTopic>
+        <odometryTopic>odom</odometryTopic>
+        <odometryFrame>map</odometryFrame>
+        <covariance_x>0.0001</covariance_x>
+        <covariance_y>0.0001</covariance_y>
+        <covariance_yaw>0.0001</covariance_yaw>
+      </plugin>
+    </model> -->
+
+
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <include>
+      <pose>0 8 0 0 0 0</pose>
+      <uri>model://hangar_floor</uri>
+    </include>
+
+    <include>
+      <pose>0 8 0 0 0 0</pose>
+      <uri>model://sample_course_1</uri>
+    </include>
+
+    <include>
+      <pose>-3 -1 0 0 0 2.0</pose>
+      <uri>model://person_standing</uri>
+    </include>
+
+  </world>
+</sdf>
+
+<!-- vim: set et fenc=utf-8 ff=unix sts=0 ft=xml sw=2 ts=2 : -->
