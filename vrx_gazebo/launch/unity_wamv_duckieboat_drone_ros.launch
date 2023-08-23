@@ -213,7 +213,7 @@
   <param name="robot_description" command="cat '$(find sjtu_drone)/urdf/sjtu_drone.urdf'" />
 
   <!-- push robot_description to factory and spawn robot in gazebo at the origin, change x,y,z arguments to spawn in a different position -->
-  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model sjtu_drone -x 100 -y 15 -z 0.7"
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model sjtu_drone -x 88 -y 15 -z 2.7"
     respawn="false" output="screen" />
 
   <!-- Set the pinger location -->
