@@ -14,3 +14,4 @@ build_*
 vrx_gazebo/models/dock_permutations/*
 *.pyc
 bags/*
+tags
