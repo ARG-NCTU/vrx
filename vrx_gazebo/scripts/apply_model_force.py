@@ -8,9 +8,8 @@ class ApplyForceNode:
     def __init__(self):
         rospy.init_node("apply_wamv_force_node")
 
-        # 建一个ServiceProxy，以调用apply_body_wrench服务
         self.apply_wrench = rospy.ServiceProxy('/gazebo/apply_body_wrench', ApplyBodyWrench)
-        self.rate = rospy.Rate(1)  # 1hz
+        self.rate = rospy.Rate(1)
 
         self.model_name = rospy.get_param("~model_name", "wamv")
         self.link_name = rospy.get_param("~link_name", "wamv/base_link")
@@ -19,20 +18,10 @@ class ApplyForceNode:
 
     def run(self):
         try:
-                     
-            # 创建一个Wrench消息，表示施加的力和扭矩
-            force = Wrench()
-            force.force = Vector3(x=self.force_x, y=self.force_y, z=0.0)  # 随机生成力的大小
-            force.torque = Vector3(x=0.0, y=0.0, z=0.0)  # 没有扭矩
 
-            # 创建ApplyBodyWrench请求
-            # req = ApplyBodyWrench()
-            # req.body_name = self.model_name + "::" + self.link_name
-            # req.reference_frame = 'world'  # 使用世界坐标系
-            # req.reference_point = Point(x=0.0, y=0.0, z=0.0)
-            # req.wrench = force
-            # req.start_time = rospy.Time(0.0)  # 立即施加力
-            # req.duration = rospy.Duration(0.1)  # 施加力的持续时间0.1秒
+            force = Wrench()
+            force.force = Vector3(x=self.force_x, y=self.force_y, z=0.0)
+            force.torque = Vector3(x=0.0, y=0.0, z=0.0)
 
             while not rospy.is_shutdown():
                 body_name_str = self.model_name + "::" + self.link_name
