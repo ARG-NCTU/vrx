@@ -1,0 +1,13 @@
+<launch>
+    <arg name="model_name" default="wamv"/>
+    <arg name="link_name" default="wamv/base_link"/>
+    <arg name="force_x" default="0.0"/>
+    <arg name="force_y" default="0.0"/>
+
+    <node name="apply_wamv_force_node" pkg="vrx_gazebo" type="apply_model_force.py" output="screen">
+        <param name="model_name" value="$(arg model_name)" />
+        <param name="link_name" value="$(arg link_name)" />
+        <param name="force_x" value="$(arg force_x)" />
+        <param name="force_y" value="$(arg force_y)" />
+    </node>
+</launch>
