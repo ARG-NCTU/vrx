@@ -351,6 +351,7 @@ endif()
 
 # Generate world files from xacro and install
 xacro_add_files(
+  worlds/drone_sizihwan.world.xacro
   worlds/example_course_narrow.world.xacro
   worlds/example_course.world.xacro
   worlds/bamboo_lake.world.xacro
@@ -362,6 +363,7 @@ xacro_add_files(
   worlds/scan_dock_deliver.world.xacro
   worlds/stationkeeping_task.world.xacro
   worlds/sydneyregatta.world.xacro
+  worlds/sizihwan.world.xacro
   worlds/wayfinding_task.world.xacro
   worlds/wildlife_task.world.xacro
   worlds/master_thesis.world.xacro
