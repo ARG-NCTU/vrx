@@ -70,6 +70,11 @@
       <xacro:wamv_gazebo thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_x_thrusters.xacro"/>
     </xacro:if>
 
+    <!-- WAMV with "X_square" thruster configuration -->
+    <xacro:if value="${thruster_conf == 'X_square'}">
+      <xacro:wamv_gazebo thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_x_square_thrusters.xacro"/>
+    </xacro:if>
+
     <!-- WAMV with "X" thruster configuration -->
     <xacro:if value="${thruster_conf == ''}">
       <xacro:wamv_gazebo thruster_layout=""/>

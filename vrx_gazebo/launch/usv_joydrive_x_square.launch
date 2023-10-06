@@ -18,7 +18,7 @@
   </node> -->
 
   <!-- Convert Twist messages to Drive messages -->
-  <node ns="$(arg veh)" pkg="vrx_gazebo" type="twist2thrust_x.py" name="twist2thrust1" output="screen">
+  <node ns="$(arg veh)" pkg="vrx_gazebo" type="twist2thrust_x_square.py" name="twist2thrust1" output="screen">
     <remap from="left_front_cmd" to="/$(arg veh)/thrusters/left_front_thrust_cmd"/>
     <remap from="right_front_cmd" to="/$(arg veh)/thrusters/right_front_thrust_cmd"/>
     <remap from="left_rear_cmd" to="/$(arg veh)/thrusters/left_rear_thrust_cmd"/>

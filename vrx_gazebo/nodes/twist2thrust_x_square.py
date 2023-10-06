@@ -57,8 +57,8 @@ class Node():
         if not self.auto:
             self.left_front_msg.data = ((-1)*data.axes[0]+data.axes[1]+(-1)*data.axes[3])*self.linear_scaling
             self.right_front_msg.data = (data.axes[0]+data.axes[1]+data.axes[3])*self.linear_scaling 
-            self.left_rear_msg.data = (data.axes[0]*0.742+data.axes[1]*0.742+(-1)*data.axes[3])*self.angular_scaling #*0.742
-            self.right_rear_msg.data = ((-1)*data.axes[0]*0.742+data.axes[1]*0.742+data.axes[3])*self.angular_scaling
+            self.left_rear_msg.data = (data.axes[0]+data.axes[1]+(-1)*data.axes[3])*self.angular_scaling #*0.742
+            self.right_rear_msg.data = ((-1)*data.axes[0]+data.axes[1]+data.axes[3])*self.angular_scaling
 
 if __name__ == '__main__':
 
