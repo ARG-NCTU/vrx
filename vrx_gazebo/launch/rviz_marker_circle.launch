@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="radius" default="3.0" />
+  <!-- mark a circle in rviz -->
+  <node pkg="vrx_gazebo" type="rviz_marker_circle.py" name="rviz_marker_circle" output="screen">
+    <param name="radius" value="$(arg radius)" />
+  </node>
+</launch>
