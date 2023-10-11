@@ -56,7 +56,7 @@
 
     <!-- drone -->
 
-    <arg name="model" default="iris_downward_camera"/>
+    <arg name="model" default="iris_depth_camera"/>
     <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
     <arg name="gcs_url" default="" />   
     <arg name="tgt_system" default="1" />
@@ -139,6 +139,3 @@
 
     
 </launch>
-
-
-
