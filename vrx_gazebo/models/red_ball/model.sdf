@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <!-- Reference: https://www.polyformus.com/buoys/a-series -->
+  <model name="red_ball">
+    <static>true</static>
+    <pose>0 0 0 0 0 0</pose>
+    <link name="base_link">
+      <inertial>
+        <!-- Reference: https://www.sailrite.com/PDF/Polyform-Buoys-Fenders-Accessories.pdf, page 8 -->
+        <mass>0.05</mass>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <sphere><radius>0.1</radius></sphere>
+          <!-- <box>
+            <size>0.04 0.04 0.02</size>
+          </box> -->
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Red</name>
+          </script>
+        </material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <sphere><radius>0.1</radius></sphere>
+          <!-- <box>
+            <size>0.04 0.04 0.02</size>
+          </box> -->
+        </geometry>
+      </collision>
+    </link>
+
+    <plugin name="BuoyancyPlugin" filename="libbuoyancy_gazebo_plugin.so">
+      <wave_model>ocean_waves</wave_model>
+      <fluid_density>1000</fluid_density>
+      <fluid_level>0.0</fluid_level>
+      <linear_drag>20.0</linear_drag>
+      <angular_drag>2.0</angular_drag>
+      <buoyancy name="buoyancy">
+        <link_name>base_link</link_name>
+        <geometry>
+          <!-- <box>
+            <size>0.04 0.04 0.02</size>
+          </box> -->
+          <sphere><radius>0.1</radius></sphere>
+        </geometry>
+      </buoyancy>
+    </plugin>
+
+  </model>
+</sdf>
