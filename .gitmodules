@@ -1,0 +1,4 @@
+[submodule "usv_utils"]
+	path = usv_utils
+	url = git@github.com:ARG-NCTU/usv_utils.git
+	branch = devel-tzuchichen
