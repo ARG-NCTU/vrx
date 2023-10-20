@@ -98,6 +98,7 @@ class ShiftPose(object):
             self.wamv_qy = agent_wamv.pose.orientation.y
             self.wamv_qz = agent_wamv.pose.orientation.z
             self.wamv_qw = agent_wamv.pose.orientation.w
+            rospy.loginfo('%s pose x / y = %.2f / %.2f', model_name, self.wamv_x, self.wamv_y)
         elif model_name == 'wamv2':
             self.wamv2_x = agent_wamv.pose.position.x
             self.wamv2_y = agent_wamv.pose.position.y
@@ -106,10 +107,11 @@ class ShiftPose(object):
             self.wamv2_qy = agent_wamv.pose.orientation.y
             self.wamv2_qz = agent_wamv.pose.orientation.z
             self.wamv2_qw = agent_wamv.pose.orientation.w
+            rospy.loginfo('%s pose x / y = %.2f / %.2f', model_name, self.wamv2_x, self.wamv2_y)
+            
         else:
             pass
         
-        rospy.loginfo('%s pose x / y = %.2f / %.2f', model_name, self.wamv_x, self.wamv_y)
 
     def shift_wamv_pose(self, init1, init2, pos1,delta):
         #pos1: wamv pose (real world)
