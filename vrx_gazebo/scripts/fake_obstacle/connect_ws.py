@@ -7,9 +7,8 @@ from sensor_msgs.msg import Joy
 class ROSBridgeConnector:
     def __init__(self):
         rospy.init_node("connect_ws", anonymous=True)
-        self.ip = rospy.get_param("/connect_ws/ip", '127.0.0.1')
-        self.ws = rospy.get_param("/connect_ws/ws",'1')
-        
+        self.ip = rospy.get_param("~ip", '127.0.0.1')
+        self.ws = rospy.get_param("~ws",'1')
         rosbrideg_address = 'ws://' + self.ip + ':9090'
         print('WS',self.ws ,'publish data to:', rosbrideg_address)    
         self.client = roslibpy.Ros(host=rosbrideg_address)
@@ -22,6 +21,7 @@ class ROSBridgeConnector:
         elif self.ws == 2:   
             print("ws2")             
             self.pub_fake_pose = roslibpy.Topic(self.client, "/fake_fence_real2sim", "geometry_msgs/PoseStamped")
+            self.pub_wamv2 = roslibpy.Topic(self.client, "/wamv2/truth_map_posestamped", "geometry_msgs/PoseStamped")
             self.pub_cmd = roslibpy.Topic(self.client, "/wamv/cmd_vel", "Twist")
         else:
             pass
@@ -34,6 +34,7 @@ class ROSBridgeConnector:
         elif self.ws == 2:
             rospy.Subscriber("/fake_fence_real2sim", PoseStamped, self.cb_fake_pose)
             rospy.Subscriber("/wamv/cmd_vel", Twist, self.cb_twist)
+            rospy.Subscriber("/wamv2/truth_map_posestamped", PoseStamped, self.cb_wamv2_pose)
         else:
             pass
 
@@ -81,7 +82,9 @@ class ROSBridgeConnector:
 
     def cb_fake_pose(self, data):
         self.cb_posestamped(data, self.pub_fake_pose)
-
+        
+    def cb_wamv2_pose(self, data):
+        self.cb_posestamped(data, self.pub_wamv2)
         
 if __name__ == '__main__':
     connector = ROSBridgeConnector()

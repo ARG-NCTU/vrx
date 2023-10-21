@@ -8,7 +8,7 @@ from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Joy
 from gazebo_msgs.msg import ModelState
 from gazebo_msgs.srv import GetModelState, GetModelStateRequest, SetModelState, SetModelStateRequest
-
+import csv
 
 class ShiftPose(object):
     def __init__(self):
@@ -24,6 +24,7 @@ class ShiftPose(object):
         self.sub_joy = rospy.Subscriber("/joy", Joy, self.cb_joy, queue_size=1)
         
         self.sub_wamv = rospy.Subscriber("/wamv/truth_map_posestamped", PoseStamped, self.cb_wamv, queue_size=1)
+        
         self.model = GetModelStateRequest()
         
         self.update_pose = True
@@ -37,6 +38,9 @@ class ShiftPose(object):
         
         self.init_wamv_x, self.init_wamv_y, self.init_wamv_z = 0, 0, 0
         self.init_wamv_qx, self.init_wamv_qy, self.init_wamv_qz, self.init_wamv_qw = 0, 0, 0, 0
+        
+        self.init_wamv2_x, self.init_wamv2_y, self.init_wamv2_z = 0, 0, 0
+        self.init_wamv2_qx, self.init_wamv2_qy, self.init_wamv2_qz, self.init_wamv2_qw = 0, 0, 0, 0
         
         self.set_model = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
         self.objstate = SetModelStateRequest()
@@ -67,7 +71,7 @@ class ShiftPose(object):
         self.wamv_qy = msg.pose.orientation.y
         self.wamv_qz = msg.pose.orientation.z
         self.wamv_qw = msg.pose.orientation.w
-        
+            
     def set_wamv_pose(self, model_name='wamv2',initial=False, x=0 , y=0, z=0, qx=0, qy=0, qz=0, qw=0):
         
         self.objstate.model_state.model_name = model_name
@@ -143,38 +147,28 @@ class ShiftPose(object):
             return result
         else:
             pass
-        
-    def gazebo_odom(self):
-        
-        # agent_wamv= ModelState()
-        # agent_wamv2= ModelState()
-        # rospy.wait_for_service('/gazebo/get_model_state')
-        
-        # try:
-        #     agent_wamv = self.get_model('wamv', '')
-        #     agent_wamv2 = self.get_model('wamv2', '')
-        # except (rospy.ServiceException) as e:
-        #     print(e)
             
+    def gazebo_odom(self):
+
         if self.flag == True:
-            delta_x = abs(self.init_wamv_x - self.wamv2_x)
-            delta_y = abs(self.init_wamv_y - self.wamv2_y)
-            delta_z = abs(self.init_wamv_z - self.wamv2_z)
-            delta_qx = abs(self.init_wamv_qx - self.wamv2_qx)
-            delta_qy = abs(self.init_wamv_qy - self.wamv2_qy)
-            delta_qz = abs(self.init_wamv_qz - self.wamv2_qz)
-            delta_qw = abs(self.init_wamv_qw - self.wamv2_qw)
+            delta_x = abs(self.init_wamv_x - self.init_wamv2_x)
+            delta_y = abs(self.init_wamv_y - self.init_wamv2_y)
+            delta_z = abs(self.init_wamv_z - self.init_wamv2_z)
+            delta_qx = abs(self.init_wamv_qx - self.init_wamv2_qx)
+            delta_qy = abs(self.init_wamv_qy - self.init_wamv2_qy)
+            delta_qz = abs(self.init_wamv_qz - self.init_wamv2_qz)
+            delta_qw = abs(self.init_wamv_qw - self.init_wamv2_qw)
 
             pose_msg = PoseStamped()
             pose_msg.header.stamp = rospy.Time.now()
             pose_msg.header.frame_id = self.paraent_name
-            pose_msg.pose.position.x = self.shift_wamv_pose(self.init_wamv_x, self.wamv2_x, self.wamv_x, delta_x)
-            pose_msg.pose.position.y = self.shift_wamv_pose(self.init_wamv_y, self.wamv2_y, self.wamv_y, delta_y)
-            pose_msg.pose.position.z = self.shift_wamv_pose(self.init_wamv_z, self.wamv2_z, self.wamv_z, delta_z)
-            pose_msg.pose.orientation.x = self.shift_wamv_pose(self.init_wamv_qx, self.wamv2_qx, self.wamv_qx, delta_qx)
-            pose_msg.pose.orientation.y = self.shift_wamv_pose(self.init_wamv_qy, self.wamv2_qy, self.wamv_qy, delta_qy)
-            pose_msg.pose.orientation.z = self.shift_wamv_pose(self.init_wamv_qz, self.wamv2_qz, self.wamv_qz, delta_qz)
-            pose_msg.pose.orientation.w = self.shift_wamv_pose(self.init_wamv_qw, self.wamv2_qw, self.wamv_qw, delta_qw)
+            pose_msg.pose.position.x = self.shift_wamv_pose(self.init_wamv_x, self.init_wamv2_x, self.wamv_x, delta_x)
+            pose_msg.pose.position.y = self.shift_wamv_pose(self.init_wamv_y, self.init_wamv2_y, self.wamv_y, delta_y)
+            pose_msg.pose.position.z = self.shift_wamv_pose(self.init_wamv_z, self.init_wamv2_z, self.wamv_z, delta_z)
+            pose_msg.pose.orientation.x = self.shift_wamv_pose(self.init_wamv_qx, self.init_wamv2_qx, self.wamv_qx, delta_qx)
+            pose_msg.pose.orientation.y = self.shift_wamv_pose(self.init_wamv_qy, self.init_wamv2_qy, self.wamv_qy, delta_qy)
+            pose_msg.pose.orientation.z = self.shift_wamv_pose(self.init_wamv_qz, self.init_wamv2_qz, self.wamv_qz, delta_qz)
+            pose_msg.pose.orientation.w = self.shift_wamv_pose(self.init_wamv_qw, self.init_wamv2_qw, self.wamv_qw, delta_qw)
 
             #pub fake pose , just let RL use and not affect wamv2 pose
             self.pub_pose.publish(pose_msg)
