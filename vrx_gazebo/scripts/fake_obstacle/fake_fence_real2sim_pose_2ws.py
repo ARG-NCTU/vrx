@@ -169,10 +169,12 @@ class ShiftPose(object):
             pose_msg.header.frame_id = self.paraent_name
             pose_msg.pose.position.x = self.shift_wamv_pose(self.init_wamv_x, self.init_wamv2_x, self.wamv_x, delta_x)
             pose_msg.pose.position.y = self.shift_wamv_pose(self.init_wamv_y, self.init_wamv2_y, self.wamv_y, delta_y)
-            pose_msg.pose.position.z = self.shift_wamv_pose(self.init_wamv_z, self.init_wamv2_z, self.wamv_z, delta_z)
+            # pose_msg.pose.position.z = self.shift_wamv_pose(self.init_wamv_z, self.init_wamv2_z, self.wamv_z, delta_z)
+            pose_msg.pose.position.z = self.wamv2_z
             pose_msg.pose.orientation.x = self.shift_wamv_pose(self.init_wamv_qx, self.init_wamv2_qx, self.wamv_qx, delta_qx)
             pose_msg.pose.orientation.y = self.shift_wamv_pose(self.init_wamv_qy, self.init_wamv2_qy, self.wamv_qy, delta_qy)
-            pose_msg.pose.orientation.z = self.shift_wamv_pose(self.init_wamv_qz, self.init_wamv2_qz, self.wamv_qz, delta_qz)
+            # pose_msg.pose.orientation.z = self.shift_wamv_pose(self.init_wamv_qz, self.init_wamv2_qz, self.wamv_qz, delta_qz)
+            pose_msg.pose.orientation.z = self.wamv2_qz
             pose_msg.pose.orientation.w = self.shift_wamv_pose(self.init_wamv_qw, self.init_wamv2_qw, self.wamv_qw, delta_qw)
             # print('init_x/ y=',self.init_wamv_x, self.init_wamv2_x)
             #pub fake pose , just let RL use and not affect wamv2 pose

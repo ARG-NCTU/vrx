@@ -131,6 +131,7 @@ class RecordTraj(object):
             rospy.sleep(0.1)  
             if (self.stop_record == 1) and self.update: 
                 rospy.loginfo('stop record')
+                rospy.loginfo('save file in %s', self.file_path)
                 break  # Exit the loop
 
 
