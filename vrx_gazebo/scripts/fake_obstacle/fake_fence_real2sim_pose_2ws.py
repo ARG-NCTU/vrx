@@ -24,6 +24,8 @@ class ShiftPose(object):
         self.sub_joy = rospy.Subscriber("/joy", Joy, self.cb_joy, queue_size=1)
         
         self.sub_wamv = rospy.Subscriber("/wamv/truth_map_posestamped", PoseStamped, self.cb_wamv, queue_size=1)
+        self.sub_wamv2 = rospy.Subscriber("/wamv2/truth_map_posestamped", PoseStamped, self.cb_wamv2, queue_size=1)
+        
         
         self.model = GetModelStateRequest()
         
@@ -62,8 +64,6 @@ class ShiftPose(object):
             # rospy.loginfo('stop recieve wamv pose as origin')
             
     def cb_wamv(self, msg):
-        msg.header.stamp = rospy.Time.now()
-        msg.header.frame_id = msg.header.frame_id
         self.wamv_x = msg.pose.position.x
         self.wamv_y = msg.pose.position.y
         self.wamv_z = msg.pose.position.z
@@ -71,22 +71,31 @@ class ShiftPose(object):
         self.wamv_qy = msg.pose.orientation.y
         self.wamv_qz = msg.pose.orientation.z
         self.wamv_qw = msg.pose.orientation.w
-            
+    
+    def cb_wamv2(self, msg):
+        self.wamv2_x = msg.pose.position.x
+        self.wamv2_y = msg.pose.position.y
+        self.wamv2_z = msg.pose.position.z
+        self.wamv2_qx = msg.pose.orientation.x
+        self.wamv2_qy = msg.pose.orientation.y
+        self.wamv2_qz = msg.pose.orientation.z
+        self.wamv2_qw = msg.pose.orientation.w       
+        
     def set_wamv_pose(self, model_name='wamv2',initial=False, x=0 , y=0, z=0, qx=0, qy=0, qz=0, qw=0):
         
         self.objstate.model_state.model_name = model_name
         
-        if initial == True:
-            x = rospy.get_param("~x", 0)
-            y = rospy.get_param("~y", 50)
-            z = rospy.get_param("~z", -0.090229)
-            qx = self.wamv_qx
-            qy = self.wamv_qy
-            qz = self.wamv_qz
-            qw = self.wamv_qw
-            rospy.loginfo('set wamv2 pose: x/ y/ z = %.2f / %.2f / %.2f', x, y, z)
-        else:
-            pass
+        # if initial == True:
+        x = rospy.get_param("~x", 0)
+        y = rospy.get_param("~y", 50)
+        z = rospy.get_param("~z", -0.090229)
+        qx = self.wamv_qx
+        qy = self.wamv_qy
+        qz = self.wamv_qz
+        qw = self.wamv_qw
+        rospy.loginfo('set wamv2 pose: x/ y/ z = %.2f / %.2f / %.2f', x, y, z)
+        # else:
+        #     pass
         
         # self.objstate.model_state.reference_frame = 'world'
         self.objstate.model_state.pose.position.x = x
@@ -117,21 +126,17 @@ class ShiftPose(object):
             self.init_wamv_qy = self.wamv_qy
             self.init_wamv_qz = self.wamv_qz
             self.init_wamv_qw = self.wamv_qw
-            rospy.loginfo('%s pose x / y = %.2f / %.2f', model_name, self.init_wamv_x, self.init_wamv_y)
+            rospy.loginfo('Get %s pose x / y = %.2f / %.2f', model_name, self.init_wamv_x, self.init_wamv_y)
 
         elif model_name == 'wamv2':
-            try:
-                agent_wamv2 = self.get_model(model_name, '')
-            except (rospy.ServiceException) as e:
-                print(e)   
-            self.wamv2_x = agent_wamv2.pose.position.x
-            self.wamv2_y = agent_wamv2.pose.position.y
-            self.wamv2_z = agent_wamv2.pose.position.z
-            self.wamv2_qx = agent_wamv2.pose.orientation.x
-            self.wamv2_qy = agent_wamv2.pose.orientation.y
-            self.wamv2_qz = agent_wamv2.pose.orientation.z
-            self.wamv2_qw = agent_wamv2.pose.orientation.w
-            rospy.loginfo('%s pose x / y = %.2f / %.2f', model_name, self.wamv2_x, self.wamv2_y)
+            self.init_wamv2_x = self.wamv2_x
+            self.init_wamv2_y = self.wamv2_y
+            self.init_wamv2_z = self.wamv2_z
+            self.init_wamv2_qx = self.wamv2_qx
+            self.init_wamv2_qy = self.wamv2_qy
+            self.init_wamv2_qz = self.wamv2_qz
+            self.init_wamv2_qw = self.wamv2_qw
+            rospy.loginfo('Get %s pose x / y = %.2f / %.2f', model_name, self.wamv2_x, self.wamv2_y)
         else:
             pass
         
@@ -169,7 +174,7 @@ class ShiftPose(object):
             pose_msg.pose.orientation.y = self.shift_wamv_pose(self.init_wamv_qy, self.init_wamv2_qy, self.wamv_qy, delta_qy)
             pose_msg.pose.orientation.z = self.shift_wamv_pose(self.init_wamv_qz, self.init_wamv2_qz, self.wamv_qz, delta_qz)
             pose_msg.pose.orientation.w = self.shift_wamv_pose(self.init_wamv_qw, self.init_wamv2_qw, self.wamv_qw, delta_qw)
-
+            # print('init_x/ y=',self.init_wamv_x, self.init_wamv2_x)
             #pub fake pose , just let RL use and not affect wamv2 pose
             self.pub_pose.publish(pose_msg)
 

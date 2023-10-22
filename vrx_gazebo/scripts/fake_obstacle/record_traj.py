@@ -5,11 +5,15 @@ from sensor_msgs.msg import Joy
 import csv
 import os 
 import time
+from nav_msgs.msg import Path
 
 class RecordTraj(object):
     def __init__(self):
         
         self.wamv_x, self.wamv_y, self.wamv2_x, self.wamv2_y, self.fake_x, self.fake_y = 0, 0, 0, 0, 0, 0
+        self.wamv_orientation = [0, 0, 0, 0]
+        self.wamv2_orientation = [0, 0, 0, 0]
+        self.fake_orientation = [0, 0, 0, 0]
         self.linear_x, self.linear_y, self.linear_z, self.angular_x, self.angular_y, self.angular_z = 0, 0, 0, 0, 0, 0
         
         self.sub_wamv1 = rospy.Subscriber("/wamv/truth_map_posestamped", PoseStamped, self.cb_wamv, queue_size=1)
@@ -24,6 +28,11 @@ class RecordTraj(object):
         self.joy = [0, 0]
         self.vel = [0, 0, 0, 0, 0, 0]
         self.stop_record = 0
+        
+        self.pub_path_wamv = rospy.Publisher('/wamv/trajectory', Path, queue_size=1)
+        self.pub_path_wamv2 = rospy.Publisher('/wamv2/trajectory', Path, queue_size=1)
+        self.pub_path_fake = rospy.Publisher('/fake/trajectory', Path, queue_size=1)
+        
     def create_csv(self):
         # self.file_path = os.path.expanduser('~/robotx-2022/csv/wamv_pose.csv')
         date = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
@@ -34,23 +43,22 @@ class RecordTraj(object):
         rospy.loginfo('create csv')   
         with open(self.file_path, 'w', newline='') as csvfile:
             self.writer = csv.writer(csvfile)
-            self.writer.writerow(['count','wamv_x', 'wamv_y', 
-                                  'wamv2_x', 'wamv2_y',
-                                  'fake_x', 'fake_y', 
-                                  'joy_auto/manual', 
-                                  'vel'])
+            self.writer.writerow(['count','wamv_x', 'wamv_y', 'wamv_orientation',
+                                  'wamv2_x','wamv2_y','wamv2_orientation',
+                                  'fake_x', 'fake_y', 'fake_orientation',
+                                  'joy_auto/manual', 'vel'])
 
             
     def record_pose (self):
+        self.time = rospy.get_time()/1000000000
         if self.flag == True:
             with open(self.file_path, 'a', newline='') as csvfile:
                 self.writer = csv.writer(csvfile)
 
-                self.writer.writerow([self.cnt, self.wamv_x, self.wamv_y, 
-                                     self.wamv2_x, self.wamv2_y, 
-                                     self.fake_x, self.fake_y, 
-                                     self.joy, self.vel
-                                     ])
+                self.writer.writerow([self.cnt, self.wamv_x, self.wamv_y, self.wamv_orientation,
+                                     self.wamv2_x, self.wamv2_y, self.wamv2_orientation,
+                                     self.fake_x, self.fake_y, self.fake_orientation, 
+                                     self.joy, self.vel])
                 self.cnt += 1
               
         if self.flag == False :
@@ -62,13 +70,16 @@ class RecordTraj(object):
         if sub == 'wamv':
             self.wamv_x = msg.pose.position.x
             self.wamv_y = msg.pose.position.y
+            self.wamv_orientation = [msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w]
         elif sub == 'wamv2':
             self.wamv2_x = msg.pose.position.x
             self.wamv2_y = msg.pose.position.y
+            self.wamv2_orientation = [msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w]
         elif sub == 'fake':
             self.fake_x = msg.pose.position.x
             self.fake_y = msg.pose.position.y
-    
+            self.fake_orientation = [msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w]
+          
     def cb_wamv(self, msg):
         self.cb_poststamp(msg,sub='wamv')
         
@@ -103,6 +114,17 @@ class RecordTraj(object):
             self.cnt = 0   
             rospy.loginfo('switch mode')
             
+    # def pub_trajectory(self):
+    #     path_msg = Path()
+    #     path_msg.header.frame_id = 'map'
+    #     pose1 = PoseStamped()
+    #     pose1.header.frame_id = "map"  # Set the same frame ID as the Path
+    #     pose1.pose.position.x = self.wamv_x
+    #     pose1.pose.position.y = self.wamv_y
+    #     pose1.pose.position.z = self.wamv_z
+    #     path_msg.poses.append(self.wamv_x)
+        
+        
     def run(self): 
         while not rospy.is_shutdown():
             self.record_pose()
