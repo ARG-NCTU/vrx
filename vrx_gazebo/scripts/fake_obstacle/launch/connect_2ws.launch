@@ -1,0 +1,14 @@
+<launch>
+   <arg name="ip" default="140.113.148.100"/>
+   <arg name="ws" default="2"/>
+
+   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+      <arg name="port" default="9090" />
+   </include>
+
+   <node pkg="vrx_gazebo" type="connect_ws.py" name="connect_ws" output="screen">
+      <param name="~ip" value="$(arg ip)" />
+      <param name="~ws" value="$(arg ws)" />
+   </node>
+
+</launch>

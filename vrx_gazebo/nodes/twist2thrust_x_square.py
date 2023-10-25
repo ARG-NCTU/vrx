@@ -7,6 +7,9 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Float32
 
+import add_path
+from joy2motor.joy2motorX import joy_to_motor_x
+
 class Node():
     def __init__(self,linear_scaling,angular_scaling,keyboard=False):
         self.linear_scaling = linear_scaling
@@ -55,10 +58,20 @@ class Node():
 
         
         if not self.auto:
-            self.left_front_msg.data = ((-1)*data.axes[0]+data.axes[1]+(-1)*data.axes[3])*self.linear_scaling
-            self.right_front_msg.data = (data.axes[0]+data.axes[1]+data.axes[3])*self.linear_scaling 
-            self.left_rear_msg.data = (data.axes[0]+data.axes[1]+(-1)*data.axes[3])*self.angular_scaling #*0.742
-            self.right_rear_msg.data = ((-1)*data.axes[0]+data.axes[1]+data.axes[3])*self.angular_scaling
+            # self.left_front_msg.data = ((-1)*data.axes[0]+data.axes[1]+(-1)*data.axes[3])*self.linear_scaling
+            # self.right_front_msg.data = (data.axes[0]+data.axes[1]+data.axes[3])*self.linear_scaling 
+            # self.left_rear_msg.data = (data.axes[0]+data.axes[1]+(-1)*data.axes[3])*self.angular_scaling #*0.742
+            # self.right_rear_msg.data = ((-1)*data.axes[0]+data.axes[1]+data.axes[3])*self.angular_scaling
+
+            self.left_front_msg.data, \
+            self.right_front_msg.data, \
+            self.left_rear_msg.data, \
+            self.right_rear_msg.data = joy_to_motor_x(data.axes[0],
+                                                  data.axes[1],
+                                                  data.axes[3],
+                                                  front_scaling=1,
+                                                  rear_scaling=1)
+            
 
 if __name__ == '__main__':
 
