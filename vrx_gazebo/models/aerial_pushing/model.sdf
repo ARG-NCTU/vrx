@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+    <model name="aerial_pushing">
+        <pose>0 0 0 0 0 0</pose>
+
+        <link name="vertical">
+            <pose>0 0 -0.33 0 0 0</pose>
+
+            <gravity>0</gravity>
+            <inertial>
+                <pose>0.01 0.025 0.025 0 0 0</pose>
+                <mass>0.00001<node name="spawn_sdf_cgo" pkg="gazebo_ros" type="spawn_model"
+                    args="-x -527 -y 144 -z 5
+                          -R 0 -P 0 -Y 0
+                          -sdf -database cgo3_arm -model arm"/></mass>
+                <inertia>
+                    <ixx>1e-08</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>1e-08</iyy>
+                    <iyz>0</iyz>
+                    <izz>1e-08</izz>
+                </inertia>
+            </inertial>
+            <collision name="collision">
+                <pose>0 0 0 0 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <radius>0.04</radius>
+                        <length>0.6</length>
+                    </cylinder>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <pose>0 0 0 0 0 0</pose>
+                <origin rpy="0 0 0" xyz="0 0 -0.03"/>
+                <geometry>
+                    <cylinder>
+                        <radius>0.04</radius>
+                        <length>0.6</length>
+                    </cylinder>
+                </geometry>
+            </visual>
+        </link>
+
+        <link name="horizontal">
+            <pose>0 0 -0.06 0 0 0</pose>
+            <gravity>0</gravity>
+            <inertial>
+                <pose>0.01 0.025 0.025 0 0 0</pose>
+                <mass>0.00001</mass>
+                <inertia>
+                    <ixx>1e-08</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>1e-08</iyy>
+                    <iyz>0</iyz>
+                    <izz>1e-08</izz>
+                </inertia>
+            </inertial>
+            <collision name="collision">
+                <pose>0.2 0 0 0 1.57 0</pose>
+                <geometry>
+                    <cylinder>
+                        <radius>0.04</radius>
+                        <length>0.5</length>
+                    </cylinder>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <pose>0.2 0 0 0 1.57 0</pose>
+                <origin rpy="0 0 0" xyz="0 0 -0.03"/>
+                <geometry>
+                    <cylinder>
+                        <radius>0.04</radius>
+                        <length>0.5</length>
+                    </cylinder>
+                </geometry>
+            </visual>
+        </link>
+    </model>
+</sdf>

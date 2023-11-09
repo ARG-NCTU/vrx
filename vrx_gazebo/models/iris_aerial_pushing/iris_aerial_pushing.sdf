@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name='iris_aerial_pushing'>
+
+    <include>
+      <uri>model://iris</uri>
+    </include>
+
+    <include>
+      <uri>model://aerial_pushing</uri>
+    </include>
+
+    <include>
+      <uri>model://depth_camera</uri>
+      <pose>0.1 0 0 0 0.785 0</pose>
+    </include>
+
+
+    <joint name="depth_camera_joint" type="revolute">
+      <child>depth_camera::link</child>
+      <parent>iris::base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <upper>0</upper>
+          <lower>0</lower>
+        </limit>
+      </axis>
+    </joint>
+
+
+    <joint name='rod_joint0' type='fixed'>
+      <child>aerial_pushing::vertical</child>
+      <parent>iris::base_link</parent>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0</upper>
+          <effort>0</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+
+
+    <joint name='rod_joint1' type='fixed'>
+      <child>aerial_pushing::horizontal</child>
+      <parent>iris::base_link</parent>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0</upper>
+          <effort>0</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+  </model>
+</sdf>
