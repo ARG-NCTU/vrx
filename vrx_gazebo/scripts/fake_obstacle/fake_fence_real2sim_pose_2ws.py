@@ -47,21 +47,29 @@ class ShiftPose(object):
         self.set_model = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
         self.objstate = SetModelStateRequest()
         self.flag = False
+        self.start_x = rospy.get_param("~x", 30)
+        self.start_y = rospy.get_param("~y", 50)
+        self.start_z = rospy.get_param("~z",  -0.090229)
+        self.set_wamv_pose(model_name='wamv2', x=0 , y=0, z=0, qx=0, qy=0, qz=0, qw=0)
+        
         
     def cb_joy(self, msg):
         start_btn = 7  
-        end_btn = 6      
-        if (msg.buttons[start_btn] == 1 ) and self.update_pose:
-            self.update_pose = False
+        end_btn =  4 
+        manual = 6
+        if (msg.buttons[start_btn] == 1 ) and self.update_pose:        
             self.get_wamv_pose_once(model_name='wamv')
-            self.set_wamv_pose(model_name='wamv2', initial=True)
+            self.set_wamv_pose(model_name='wamv2', x = self.start_x, y = self.start_y, z = self.start_z, qx = self.wamv_qx, qy = self.wamv_qy, qz = self.wamv_qz, qw = self.wamv_qw)
             self.get_wamv_pose_once(model_name='wamv2')
-            rospy.loginfo('get wamv pose as origin') 
-            self.flag = True
+            # rospy.loginfo('get wamv pose as origin') 
+            self.update_pose = False
+            self.flag = True 
+            
             
         if(msg.buttons[end_btn] == 1 ) and not self.update_pose:
             self.update_pose = True
-            # rospy.loginfo('stop recieve wamv pose as origin')
+            self.flag = False
+            rospy.loginfo('stop recieve wamv pose as origin')
             
     def cb_wamv(self, msg):
         self.wamv_x = msg.pose.position.x
@@ -81,23 +89,30 @@ class ShiftPose(object):
         self.wamv2_qz = msg.pose.orientation.z
         self.wamv2_qw = msg.pose.orientation.w       
         
-    def set_wamv_pose(self, model_name='wamv2',initial=False, x=0 , y=0, z=0, qx=0, qy=0, qz=0, qw=0):
+    def set_wamv_pose(self, model_name='wamv2', x=0 , y=0, z=0, qx=0, qy=0, qz=0, qw=0):
         
         self.objstate.model_state.model_name = model_name
         
         # if initial == True:
-        x = rospy.get_param("~x", 0)
-        y = rospy.get_param("~y", 50)
-        z = rospy.get_param("~z", -0.090229)
-        qx = self.wamv_qx
-        qy = self.wamv_qy
-        qz = self.wamv_qz
-        qw = self.wamv_qw
-        rospy.loginfo('set wamv2 pose: x/ y/ z = %.2f / %.2f / %.2f', x, y, z)
+        #     x = rospy.get_param("~x", 30)
+        #     y = rospy.get_param("~y", 50)
+        #     z = rospy.get_param("~z", -0.090229)
+        #     print('x/ y=',x, y)
+        # # else:
+        # #     x = self.wamv_x
+        # #     y = self.wamv_y
+        # #     z = self.wamv_z
+            
+        #     qx = self.wamv_qx
+        #     qy = self.wamv_qy
+        #     qz = self.wamv_qz
+        #     qw = self.wamv_qw
+        #     rospy.loginfo('wamv2 is ready')
+        #     rospy.loginfo('set wamv2 pose: x/ y/ z = %.2f / %.2f / %.2f', x, y, z)
         # else:
         #     pass
         
-        # self.objstate.model_state.reference_frame = 'world'
+        self.objstate.model_state.reference_frame = 'world'
         self.objstate.model_state.pose.position.x = x
         self.objstate.model_state.pose.position.y = y
         self.objstate.model_state.pose.position.z = z
@@ -114,7 +129,7 @@ class ShiftPose(object):
         self.objstate.model_state.twist.angular.y = 0
         self.objstate.model_state.twist.angular.z = 0
         self.set_model(self.objstate)
-        rospy.loginfo('wamv2 is ready')
+        print('wamv2 pose is set:', x , y)
         
     def get_wamv_pose_once(self, model_name='wamv2'):
            
@@ -154,7 +169,9 @@ class ShiftPose(object):
             pass
             
     def gazebo_odom(self):
-
+        if self.flag == False:
+            self.set_wamv_pose(model_name='wamv2', x = self.start_x, y = self.start_y, z = self.start_z, qx = self.wamv_qx, qy = self.wamv_qy, qz = self.wamv_qz, qw = self.wamv_qw)  
+        
         if self.flag == True:
             delta_x = abs(self.init_wamv_x - self.init_wamv2_x)
             delta_y = abs(self.init_wamv_y - self.init_wamv2_y)
@@ -163,7 +180,6 @@ class ShiftPose(object):
             delta_qy = abs(self.init_wamv_qy - self.init_wamv2_qy)
             delta_qz = abs(self.init_wamv_qz - self.init_wamv2_qz)
             delta_qw = abs(self.init_wamv_qw - self.init_wamv2_qw)
-
             pose_msg = PoseStamped()
             pose_msg.header.stamp = rospy.Time.now()
             pose_msg.header.frame_id = self.paraent_name
@@ -179,7 +195,6 @@ class ShiftPose(object):
             # print('init_x/ y=',self.init_wamv_x, self.init_wamv2_x)
             #pub fake pose , just let RL use and not affect wamv2 pose
             self.pub_pose.publish(pose_msg)
-
             odom= Odometry()
             odom.header.stamp= rospy.Time.now()
             odom.header.frame_id = "map"
@@ -190,20 +205,20 @@ class ShiftPose(object):
             odom.pose.pose.orientation.y = pose_msg.pose.orientation.y
             odom.pose.pose.orientation.z = pose_msg.pose.orientation.z
             odom.pose.pose.orientation.w = pose_msg.pose.orientation.w
-
             self.pub_odometry.publish(odom)
+            
+            ## make sure wamv fake can be the same pose as wamv real
+            
+            self.set_wamv_pose(model_name='wamv2', 
+                                   x = pose_msg.pose.position.x, 
+                                   y = pose_msg.pose.position.y, 
+                                   z = pose_msg.pose.position.z, 
+                                   qx = pose_msg.pose.orientation.x, 
+                                   qy = pose_msg.pose.orientation.y, 
+                                   qz = pose_msg.pose.orientation.z, 
+                                   qw = pose_msg.pose.orientation.w)
 
-            # make sure wamv fake can be the same pose as wamv real
-            # self.set_wamv_pose(model_name='wamv2',initial = False, 
-            #                        x = pose_msg.pose.position.x, 
-            #                        y = pose_msg.pose.position.y, 
-            #                        z = pose_msg.pose.position.z, 
-            #                        qx = pose_msg.pose.orientation.x, 
-            #                        qy = pose_msg.pose.orientation.y, 
-            #                        qz = pose_msg.pose.orientation.z, 
-            #                        qw = pose_msg.pose.orientation.w)
-
-            #     print('x/ y=',pose_msg.pose.position.x, pose_msg.pose.position.y)
+            # print('x/ y=',pose_msg.pose.position.x, pose_msg.pose.position.y)
 
 if __name__ == "__main__":
     rospy.init_node("shift_pose")

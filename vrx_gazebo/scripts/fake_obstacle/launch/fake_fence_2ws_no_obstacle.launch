@@ -3,6 +3,7 @@
   <env name="ROSCONSOLE_CONFIG_FILE" value="$(find vrx_gazebo)/config/custom_rosconsole.conf"/>
   <!-- Gazebo world to load -->
   <arg name="world" default="$(find vrx_gazebo)/worlds/motor_anchoring.world" />
+  <!-- <arg name="world" default="$(find vrx_gazebo)/worlds/fake_fence.world" /> -->
   <!-- If true, run gazebo GUI -->
   <arg name="gui" default="true" />
   <!-- If true, run gazebo in verbose mode -->
@@ -60,7 +61,7 @@
       command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
       locked:=$(arg wamv_locked)		   
       thruster_config:=$(arg thrust_config)
-      vrx_sensors_enabled:=$(arg real_sensors_enabled)
+      vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
       namespace:=$(arg namespace) "/>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv_tf_pub" >

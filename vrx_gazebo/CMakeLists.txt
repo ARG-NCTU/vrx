@@ -374,6 +374,7 @@ xacro_add_files(
   worlds/semi_final.world.xacro
   worlds/motor_anchoring.world.xacro
   worlds/fake_fence.world.xacro
+  worlds/real_fence.world.xacro
   ${XACRO_INORDER} INSTALL DESTINATION worlds
 )
 # Generate obstacle course
