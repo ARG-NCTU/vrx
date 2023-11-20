@@ -139,7 +139,7 @@
         args="-x $(arg drone_x) -y $(arg drone_y) -z $(arg drone_z)
               -R $(arg drone_R) -P $(arg drone_P) -Y $(arg drone_Y)
               -sdf -database if750a_with_arm -model drone"/>
-      
+              <!-- if750a_with_arm_reverse if750a_with_arm -->
 
     <!-- Allow user specified thruster configurations
         H = stern trusters on each hull
