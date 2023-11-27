@@ -12,9 +12,8 @@ from gazebo_msgs.srv import GetModelState, GetModelStateRequest, SetModelState, 
 class goal_point():
     def __init__(self):
 
-
         # self.pub_1 = rospy.Publisher("/wamv1/move_base_simple/goal", PoseStamped, queue_size=1)        
-        self.pub_2 = rospy.Publisher("/wamv2/move_base_simple/goal", PoseStamped, queue_size=1)
+        self.pub_2 = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=1)
         self.pub_3 = rospy.Publisher("/wamv3/move_base_simple/goal", PoseStamped, queue_size=1)
         self.pub_4 = rospy.Publisher("/wamv4/move_base_simple/goal", PoseStamped, queue_size=1)
 
@@ -27,7 +26,7 @@ class goal_point():
         self.pub_map1 = rospy.Publisher("/visualization_map1", Marker, queue_size=1)
         self.pub_map2 = rospy.Publisher("/visualization_map2", Marker, queue_size=1)
         
-
+ 
 
         self.timer = rospy.Timer(rospy.Duration(1), self.cb_publish)
         self.wamv2_x = 90
@@ -63,7 +62,7 @@ class goal_point():
     
     def pub_goal(self):
         
-        if self.counter == 5:
+        if self.counter > 5 and self.counter <19:
             pose = PoseStamped()
             pose.header = Header()
             pose.header.frame_id = "map"
@@ -72,7 +71,7 @@ class goal_point():
             self.pub_2.publish(pose)
             print('wamv2 goal published:', self.wamv2_x, self.wamv2_y)
             
-        elif self.counter == 20:
+        elif self.counter > 20 and self.counter <34:
             pose = PoseStamped()
             pose.header = Header()
             pose.header.frame_id = "map"
@@ -81,7 +80,7 @@ class goal_point():
             self.pub_3.publish(pose)
             print('wamv3 goal published:', self.wamv3_x, self.wamv3_y)
             
-        elif self.counter == 35:    
+        elif self.counter > 35 and self.counter <49:    
             pose = PoseStamped()
             pose.header = Header()
             pose.header.frame_id = "map"
