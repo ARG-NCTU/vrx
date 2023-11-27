@@ -1,0 +1,87 @@
+<launch>
+    <env name="ROSCONSOLE_CONFIG_FILE" value="$(find vrx_gazebo)/config/custom_rosconsole.conf"/>
+    <!-- Gazebo world to load -->
+    <arg name="world" default="$(find vrx_gazebo)/worlds/motor_anchoring.world" />
+    <!-- If true, run gazebo GUI -->
+    <arg name="gui" default="true" />
+    <!-- If true, run gazebo in verbose mode -->
+    <arg name="verbose" default="false"/>
+    <!-- Set various other gazebo arguments-->
+    <arg name="extra_gazebo_args" default=""/>
+    <!-- Start in a default namespace -->
+    <arg name="namespace" default="wamv"/>
+    <!-- Do we lock the vessel to the world? -->
+    <arg name="wamv_locked" default="false" />
+    <!-- Start paused? -->
+    <arg name="paused" default="false"/>
+    <!-- Acoustic pinger position(s) -->
+    <arg name="pinger_params" default="$(find vrx_gazebo)/config/pinger.yaml"/>
+
+    <!-- drone namespace -->
+    <arg name="drone_ns" default="/"/>
+    <!-- drone initail position -->
+    <arg name="drone_x" default="0" />
+    <arg name="drone_y" default="0" />
+    <arg name="drone_z" default="2" />
+    <arg name="drone_R" default="0" />
+    <arg name="drone_P" default="0" />
+    <arg name="drone_Y" default="0" />
+
+    <!-- Launch Gazebo -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world)"/>
+        <arg name="verbose" value="$(arg verbose)"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
+    </include>
+
+    <!-- send robot urdf to param server -->
+    <param name="sjtu_drone/robot_description" command="cat '$(find sjtu_drone)/urdf/sjtu_drone.urdf'" />
+
+    <!-- push robot_description to factory and spawn robot in gazebo at the origin, change x,y,z arguments to spawn in a different position -->
+    <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" ns="sjtu_drone" args="-urdf -param robot_description -model sjtu_drone -x $(arg drone_x) -y $(arg drone_y) -z $(arg drone_z)" respawn="false" output="log" />
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+        <remap from="robot_description" to="sjtu_drone/robot_description" />
+        <remap from="joint_states" to="sjtu_drone/joint_states" />
+    </node>
+
+
+    <include file="$(find pozyx_simulation)/launch/uwb_sjtu_gym_training.launch"/>
+
+    <!-- <include file="$(find vrx_gazebo)/launch/pointcloud_to_laserscan.launch"/> -->
+    <arg name="enable_wamv" default="false"/>
+    <group if="$(arg enable_wamv)">
+        <arg name="wamv_ns" default="wamv"/>
+
+        <arg name="wamv_x" default="0" />
+        <arg name="wamv_y" default="0" />
+        <arg name="wamv_z" default="0" />
+        <arg name="wamv_R" default="0" />
+        <arg name="wamv_P" default="0" />
+        <arg name="wamv_Y" default="0" />
+
+        <arg name="thrust_config" default="T" />
+
+        <!-- Do we load the VRX sensor suite? -->
+        <arg name="vrx_sensors_enabled" default="true" />
+
+        <!-- For now - can only use the T configuration! -->
+        <arg name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
+
+        <arg name="wamv_plate" default="true"/>
+
+        <param name="$(arg wamv_ns)/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=$(arg wamv_ns) plate:=$(arg wamv_plate)"/>
+
+        <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv_tf_pub">
+            <remap from="robot_description" to="wamv/robot_description" />
+            <remap from="joint_states" to="wamv/joint_states" />
+        </node>
+
+        <node name="spawn_model_wamv" pkg="gazebo_ros" type="spawn_model" args="-x $(arg wamv_x) -y $(arg wamv_y) -z $(arg wamv_z)
+        -R $(arg wamv_R) -P $(arg wamv_P) -Y $(arg wamv_Y)
+        -urdf -param $(arg wamv_ns)/robot_description -model wamv"/>
+    </group>
+</launch>
