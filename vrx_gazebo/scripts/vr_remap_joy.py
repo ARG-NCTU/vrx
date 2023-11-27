@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+from sensor_msgs.msg import Joy
+import rospy
+ 
+class VR_remap_joy:
+    # This script remaps the VR teleop to the joy topic
+    # For mixed teleop
+    def __init__(self):
+        
+        self.sub_joy = rospy.Subscriber("/vr_teleop", Joy, self.cb_joy, queue_size=1)
+        
+        self.pub_joy = rospy.Publisher("/wamv/joy", Joy, queue_size=1)
+        self.pub_joy_3 = rospy.Publisher("/wamv3/joy", Joy, queue_size=1)
+        self.pub_joy_4 = rospy.Publisher("/wamv4/joy", Joy, queue_size=1)
+
+        self.vr_to_joy = Joy()
+        self.vr_to_joy.header.frame_id = "/dev/input/js0"
+        self.vr_to_joy.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.vr_to_joy.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    def cb_joy(self, msg):
+
+        self.vr_to_joy.header.stamp = rospy.Time.now()
+
+        #button 
+        self.vr_to_joy.buttons[6] = msg.buttons[0] # manual
+        self.vr_to_joy.buttons[7] = msg.buttons[1] # RL
+        self.vr_to_joy.buttons[3] = msg.buttons[2] # DP
+        self.vr_to_joy.buttons[4] = msg.buttons[3] # reset
+        print(msg)
+        #axes
+        self.vr_to_joy.axes[1] = msg.axes[4] # left stick forward/backward
+        self.vr_to_joy.axes[3] = msg.axes[7] # right stick right/left
+        self.vr_to_joy.axes[2] = int(msg.axes[1]) # robot
+        self.vr_to_joy.axes[5] = int(msg.axes[0]) # user_id
+        
+        self.pub_joy.publish(self.vr_to_joy)
+        print(self.vr_to_joy)
+        
+        if self.vr_to_joy.axes[2] == 2:
+            self.pub_joy.publish(self.vr_to_joy)
+        if self.vr_to_joy.axes[2] == 3:
+            self.pub_joy_3.publish(self.vr_to_joy)
+        if self.vr_to_joy.axes[2] == 4:
+            self.pub_joy_4.publish(self.vr_to_joy)
+
+if __name__ == '__main__':
+    rospy.init_node('vr_remap_joy')
+    vr_remap_joy = VR_remap_joy()
+    rospy.spin()
+    

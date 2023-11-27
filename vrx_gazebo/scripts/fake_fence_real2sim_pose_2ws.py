@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import numpy as np
 import rospy
+from std_msgs.msg import Bool
 import tf.transformations as tf_trans
 from gazebo_msgs.msg import ModelState, ModelStates
 from geometry_msgs.msg import PoseStamped, TransformStamped
@@ -13,6 +14,7 @@ class RealtoSimTransform:
     def __init__(self):
         # self.model_sub = rospy.Subscriber("/gazebo/model_states", ModelStates, self.model_callback)
         self.pub_set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
+        self.pub_state_to_mapgrid = rospy.Publisher("/reset_map", Bool, queue_size=1)
         self.pub_pose = rospy.Publisher("/fake_fence_real2sim", PoseStamped, queue_size=1)
         self.sub_wamv_pose = rospy.Subscriber("/wamv/truth_map_posestamped", PoseStamped, self.wamv_pose_callback)
         self.sub_wamv2_pose = rospy.Subscriber("/wamv2/truth_map_posestamped", PoseStamped, self.wamv2_pose_callback)
@@ -55,26 +57,36 @@ class RealtoSimTransform:
         self.wamv2_pose = pose
 
     def joy_callback(self, joy):
-        self.joy = joy
-        joy_trigger = self.joy.buttons[4] or self.joy.buttons[5] #LB /B
+        joy_trigger = joy.buttons[4] and not self.joy.buttons[4]
  
-        if joy_trigger and self.flag ==False:
+        if joy_trigger and self.flag == False:
             print('start sync')
             self.matrix_wamv_origin_to_map = self.pose_to_matrix(self.wamv_pose)
             self.matrix_wamv2_origin_to_map = self.pose_to_matrix(self.wamv2_pose)
             self.flag = True
             print(self.flag)
 
-        elif joy_trigger:
-            #set wamv2 pose
+        elif joy_trigger and self.flag == True :
+            self.flag = False
+            print('stop sync')
             self.init_pose.pose.orientation = self.wamv_pose.pose.orientation
             self.init_pose.pose.orientation.x = 0
             self.init_pose.pose.orientation.y = 0
             self.set_model(model_name = "wamv2", pose = self.init_pose)
-            self.flag = False
-            print('stop sync')
+            print('reset wamv2')    
+            self.pub_state_to_mapgrid.publish(True)
+        self.joy = joy
             
-        
+        # elif self.joy.buttons[5]:
+        #     #set wamv2 pose
+        #     self.init_pose.pose.orientation = self.wamv_pose.pose.orientation
+        #     self.init_pose.pose.orientation.x = 0
+        #     self.init_pose.pose.orientation.y = 0
+        #     self.set_model(model_name = "wamv2", pose = self.init_pose)
+        #     print('reset wamv2')    
+        #     self.pub_state_to_mapgrid.publish(True)
+            
+            
     def obstacle_cb(self, msg):
         cnt = 0
         for circle in msg.circles:
@@ -103,7 +115,7 @@ class RealtoSimTransform:
             else:
                 self.existing_obstacle = []
                 self.init_obstacle()
-                # print('no obstacle detect')
+                print('no obstacle detect')
                 pass
             cnt += 1
 
@@ -143,7 +155,7 @@ class RealtoSimTransform:
             else:
                 for i in range(len(self.existing_obstacle)):
                     dis = self.dist([self.existing_obstacle[i]['pose_x'], self.existing_obstacle[i]['pose_y']], [new_model['pose_x'], new_model['pose_y']])
-                    if dis < 3 : #update obstacle
+                    if dis < 4 : #update obstacle
                         self.existing_obstacle[i]['pose_x'] = new_model['pose_x']
                         self.existing_obstacle[i]['pose_y'] = new_model['pose_y']
                         model_name = self.obstacle_name + str(i) 
@@ -208,6 +220,7 @@ class RealtoSimTransform:
         model_state.model_name = model_name
         model_state.reference_frame = "world"
         model_state.pose = pose.pose
+        
         self.pub_set_model_state.publish(model_state)
         
     def pose_to_matrix(self, pose):
