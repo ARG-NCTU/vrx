@@ -1,6 +1,6 @@
 <launch>
   <node name="obstacle_extractor" pkg="obstacle_detector" type="obstacle_extractor_node">
-    <remap from="scan" to="wamv/RL/more_scan"/>
+    <remap from="scan" to="wamv/RL/more_scan_2"/>
     
     <param name="active"               value="true"/>
     <param name="use_scan"             value="true"/>

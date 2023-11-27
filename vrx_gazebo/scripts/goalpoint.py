@@ -1,299 +1,246 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python
+import numpy as np
 import rospy
-import math
-from geometry_msgs.msg import PoseStamped, Point
-from visualization_msgs.msg import Marker, MarkerArray
-from std_msgs.msg import Header
-from std_msgs.msg import Int32
-from nav_msgs.msg import Odometry
-import queue
-from gazebo_msgs.srv import GetModelState, GetModelStateRequest, SetModelState, SetModelStateRequest
+import tf.transformations as tf_trans
+from gazebo_msgs.msg import ModelState, ModelStates
+from geometry_msgs.msg import PoseStamped, TransformStamped
+from pyexpat import model
+from sensor_msgs.msg import Joy
+from obstacle_detector.msg import Obstacles
+import math 
 
-class goal_point():
+class RealtoSimTransform:
     def __init__(self):
+        # self.model_sub = rospy.Subscriber("/gazebo/model_states", ModelStates, self.model_callback)
+        self.pub_set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
+        self.pub_pose = rospy.Publisher("/fake_fence_real2sim", PoseStamped, queue_size=1)
+        self.sub_wamv_pose = rospy.Subscriber("/wamv/truth_map_posestamped", PoseStamped, self.wamv_pose_callback)
+        self.sub_wamv2_pose = rospy.Subscriber("/wamv2/truth_map_posestamped", PoseStamped, self.wamv2_pose_callback)
+        self.sub_joy = rospy.Subscriber("/joy", Joy, self.joy_callback)
+        self.timer_set_model_state = rospy.Timer(rospy.Duration(0.05), self.timer_callback)
+        self.sub_obstacle = rospy.Subscriber('/raw_obstacles', Obstacles, self.obstacle_cb, queue_size=1)
 
-        # self.pub_1 = rospy.Publisher("/wamv1/move_base_simple/goal", PoseStamped, queue_size=1)        
-        self.pub_2 = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=1)
-        self.pub_3 = rospy.Publisher("/wamv3/move_base_simple/goal", PoseStamped, queue_size=1)
-        self.pub_4 = rospy.Publisher("/wamv4/move_base_simple/goal", PoseStamped, queue_size=1)
+        self.matrix_wamv_origin_to_map = None
+        self.matrix_wamv2_origin_to_map = None
+        self.wamv_pose = PoseStamped()
+        self.wamv2_pose = PoseStamped()
 
-        # self.pub_position_circle = rospy.Publisher("/visualization_circle", Marker, queue_size=1)
-        self.pub_position_circle2 = rospy.Publisher("/visualization_circle2", Marker, queue_size=1)
-        self.pub_position_circle3 = rospy.Publisher("/visualization_circle3", Marker, queue_size=1)
-        self.pub_position_circle4 = rospy.Publisher("/visualization_circle4", Marker, queue_size=1)
-        # self.pub_position_circle5 = rospy.Publisher("/visualization_circle5", Marker, queue_size=1)
-        self.pub_map = rospy.Publisher("/visualization_map", Marker, queue_size=1)
-        self.pub_map1 = rospy.Publisher("/visualization_map1", Marker, queue_size=1)
-        self.pub_map2 = rospy.Publisher("/visualization_map2", Marker, queue_size=1)
+        self.start_x = rospy.get_param("~x", 30)
+        self.start_y = rospy.get_param("~y", 30)
+        self.start_z = rospy.get_param("~z",  -0.090229)
         
+        self.init_pose = PoseStamped()
+        self.init_pose.pose.position.x = self.start_x
+        self.init_pose.pose.position.y = self.start_y
+        self.init_pose.pose.position.z = self.start_z
+        
+        self.flag = False
+        self.obstacle_name = 'real_obstacle_'
+        self.max_num = 0
+        self.existing_obstacle = []
+
+    #     self.sub_scan = rospy.Subscriber("/wamv/RL/more_scan", LaserScan, self.cb_laser_2)
+    #     self.pub_scan_2 = rospy.Publisher("/wamv/RL/more_scan_2", LaserScan, queue_size=1)
+
+    # def cb_laser_2(self, msg):
+    #     laser = msg
+    #     laser.header.stamp = rospy.Time.now()
+    #     laser.header.frame_id = "wamv2/lidar_wamv_link"
+    #     self.pub_scan_2.publish(laser)
+
+    def wamv_pose_callback(self, pose):
+        self.wamv_pose = pose
+
+    def wamv2_pose_callback(self, pose):
+        self.wamv2_pose = pose
+
+    def joy_callback(self, joy):
+        self.joy = joy
+        joy_trigger = self.joy.buttons[4] or self.joy.buttons[5] #LB /B
  
+        if joy_trigger and self.flag ==False:
+            print('start sync')
+            self.matrix_wamv_origin_to_map = self.pose_to_matrix(self.wamv_pose)
+            self.matrix_wamv2_origin_to_map = self.pose_to_matrix(self.wamv2_pose)
+            self.flag = True
+            print(self.flag)
 
-        self.timer = rospy.Timer(rospy.Duration(1), self.cb_publish)
-        self.wamv2_x = 90
-        self.wamv2_y = -30
-        self.wamv3_x = 90
-        self.wamv3_y = 0
-        self.wamv4_x = 90
-        self.wamv4_y = 30
-
-        self.robot_radius = 3
-        self.pi2 = math.radians(360)
-        
-        self.sub_wamv = rospy.Subscriber("/wamv/truth_map_posestamped", PoseStamped, self.cb_wamv, queue_size=1)
-        self.wamv_x, self.wamv_y, self.wamv_z, self.wamv_qx, self.wamv_qy, self.wamv_qz, self.wamv_qw = 0,0,0,0,0,0,0
-        
-        self.set_model = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
-        self.objstate = SetModelStateRequest()
-        
-
-        self.set_wamv_pose(model_name='wamv2', x=30 , y=30, z=self.wamv_z, qx=self.wamv_qx, qy=self.wamv_qy, qz=self.wamv_qz, qw=self.wamv_qw)
-        self.set_wamv_pose(model_name='wamv3', x=20 , y=50, z= -0.090229, qx=0, qy=0, qz=0, qw=0)
-        self.set_wamv_pose(model_name='wamv4', x=10 , y=30, z= -0.090229, qx=0, qy=0, qz=0, qw=0)
-        self.counter = 0
-        
-    def cb_wamv(self, msg):
-        self.wamv_x = msg.pose.position.x
-        self.wamv_y = msg.pose.position.y
-        self.wamv_z = msg.pose.position.z
-        self.wamv_qx = msg.pose.orientation.x
-        self.wamv_qy = msg.pose.orientation.y
-        self.wamv_qz = msg.pose.orientation.z
-        self.wamv_qw = msg.pose.orientation.w
-    
-    def pub_goal(self):
-        
-        if self.counter > 5 and self.counter <19:
-            pose = PoseStamped()
-            pose.header = Header()
-            pose.header.frame_id = "map"
-            pose.pose.position.x = self.wamv2_x
-            pose.pose.position.y = self.wamv2_y
-            self.pub_2.publish(pose)
-            print('wamv2 goal published:', self.wamv2_x, self.wamv2_y)
+        elif joy_trigger:
+            #set wamv2 pose
+            self.init_pose.pose.orientation = self.wamv_pose.pose.orientation
+            self.init_pose.pose.orientation.x = 0
+            self.init_pose.pose.orientation.y = 0
+            self.set_model(model_name = "wamv2", pose = self.init_pose)
+            self.flag = False
+            print('stop sync')
             
-        elif self.counter > 20 and self.counter <34:
-            pose = PoseStamped()
-            pose.header = Header()
-            pose.header.frame_id = "map"
-            pose.pose.position.x = self.wamv3_x
-            pose.pose.position.y = self.wamv3_y
-            self.pub_3.publish(pose)
-            print('wamv3 goal published:', self.wamv3_x, self.wamv3_y)
+        
+    def obstacle_cb(self, msg):
+        cnt = 0
+        for circle in msg.circles:
+            obstacle_pose = PoseStamped()
+            obstacle_pose.pose.position.x = circle.center.x
+            obstacle_pose.pose.position.y = circle.center.y
+            obstacle_pose.pose.position.z = circle.center.z
+            obstacle_pose.pose.orientation.x = 0
+            obstacle_pose.pose.orientation.y = 0
+            obstacle_pose.pose.orientation.z = 0
+            obstacle_pose.pose.orientation.w = 1
+            model_name = self.obstacle_name + str(cnt)
+            new_model = {'model': model_name, 
+                        'pose_x': obstacle_pose.pose.position.x, 
+                        'pose_y': obstacle_pose.pose.position.y}
+            update_name = self.check_obstacle(new_model) 
+            if self.flag == True:
+                if  update_name == False:
+                    self.set_model(model_name = model_name, pose = obstacle_pose)
+                    self.existing_obstacle.append(new_model)
+                    print('new obstacle:', model_name)
+                else:
+                    self.set_model(model_name = update_name, pose = obstacle_pose)
+                    print('update obstacle:', update_name)
+                    
+            else:
+                self.existing_obstacle = []
+                self.init_obstacle()
+                # print('no obstacle detect')
+                pass
+            cnt += 1
+
+    def init_obstacle(self):
+        # print('inint_obstacle')
+        for i in range (25):
+            obstacle_pose = PoseStamped()
+            model_name = self.obstacle_name + str(i)
+            obstacle_pose.pose.position.x = 60
+            obstacle_pose.pose.position.y = i + 2
+            obstacle_pose.pose.position.z = -50 
+            obstacle_pose.pose.orientation.x = 0
+            obstacle_pose.pose.orientation.y = 0
+            obstacle_pose.pose.orientation.z = 0
+            obstacle_pose.pose.orientation.w = 1
+            self.set_model(model_name = model_name, pose = obstacle_pose)
+
+    # def model_callback(self, msg):
+    #     self.existing_obstacle_x = []
+    #     self.existing_obstacle_y = []
+    #     try:
+    #         for i in range (self.max_num):
+    #             model = self.obstacle_name + str(i)
+    #             model_index = msg.name.index(model)
+    #             self.existing_obstacle_x.append(msg.pose[model_index].position.x)
+    #             self.existing_obstacle_y.append(msg.pose[model_index].position.y)          
+    #             print('obstacle_x:', self.existing_obstacle_x)   
+    #             # print(len(self.existing_obstacle_x))
+    #     except ValueError:
+    #         pass
+        
+    def check_obstacle(self, new_model):
+        try:
+            if self.existing_obstacle == None:
+                self.existing_obstacle.append(new_model)
+                return False
+            else:
+                for i in range(len(self.existing_obstacle)):
+                    dis = self.dist([self.existing_obstacle[i]['pose_x'], self.existing_obstacle[i]['pose_y']], [new_model['pose_x'], new_model['pose_y']])
+                    if dis < 3 : #update obstacle
+                        self.existing_obstacle[i]['pose_x'] = new_model['pose_x']
+                        self.existing_obstacle[i]['pose_y'] = new_model['pose_y']
+                        model_name = self.obstacle_name + str(i) 
+                        return model_name
+                    else:
+                        # self.existing_obstacle.append(new_model)
+                        pass
+                return False
             
-        elif self.counter > 35 and self.counter <49:    
-            pose = PoseStamped()
-            pose.header = Header()
-            pose.header.frame_id = "map"
-            pose.pose.position.x = self.wamv4_x
-            pose.pose.position.y = self.wamv4_y
-            self.pub_4.publish(pose)
-            print('wamv4 goal published:', self.wamv4_x, self.wamv4_y)
+        except ValueError:
+            pass
+            
+    def dist(self, p1, p2):
+        dis =  math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+        return dis   
+
+    def timer_callback(self, event):
+        
+        if self.flag == True: 
+            # transform
+            if self.matrix_wamv_origin_to_map is None or self.matrix_wamv2_origin_to_map is None:
+                return
+            matrix_wamv_to_map = self.pose_to_matrix(self.wamv_pose)
+            inv_mat_wamv_origin_to_map = tf_trans.inverse_matrix(self.matrix_wamv_origin_to_map)
+            matrix_wamv_to_origin = np.dot(inv_mat_wamv_origin_to_map, matrix_wamv_to_map)
+
+            matrix_wamv2_to_map = np.dot(self.matrix_wamv2_origin_to_map, matrix_wamv_to_origin)
+            # pub
+            pose_wamv2_to_map = self.matrix_to_pose(matrix_wamv2_to_map, "map")
+            pose_wamv2_to_map.pose.position.z = self.start_z
+            euler = tf_trans.euler_from_quaternion(
+                [
+                    pose_wamv2_to_map.pose.orientation.x,
+                    pose_wamv2_to_map.pose.orientation.y,
+                    pose_wamv2_to_map.pose.orientation.z,
+                    pose_wamv2_to_map.pose.orientation.w,
+                ]
+            )
+            q = tf_trans.quaternion_from_euler(0, 0, euler[2])
+            pose_wamv2_to_map.pose.orientation.x = q[0]
+            pose_wamv2_to_map.pose.orientation.y = q[1]
+            pose_wamv2_to_map.pose.orientation.z = q[2]
+            pose_wamv2_to_map.pose.orientation.w = q[3]
+            model_state = ModelState()
+            model_state.model_name = "wamv2"
+            model_state.reference_frame = "world"
+            model_state.pose = pose_wamv2_to_map.pose
+            self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)
+            self.pub_pose.publish(pose_wamv2_to_map)
+            # print("wamv2 pose to map: ", pose_wamv2_to_map)
+
+            # matrix_wamv2_to_origin = np.dot(tf_trans.inverse_matrix(self.matrix_wamv2_origin_to_map), matrix_wamv2_to_map)
+            # pose_wamv2_to_origin = self.matrix_to_pose(matrix_wamv2_to_origin, "wamv2")
+            # print("wamv2 pose to origin: ", pose_wamv2_to_origin)
+            # print("wamv2 pose to map: ", pose_wamv2_to_map)
             
         else:
             pass
         
-    def cb_publish(self,event):
-
-        self.pub_goal()
+    def set_model(self, model_name, pose):
+        model_state = ModelState()
+        model_state.model_name = model_name
+        model_state.reference_frame = "world"
+        model_state.pose = pose.pose
+        self.pub_set_model_state.publish(model_state)
         
-        marker2 = Marker()
-        marker2.header.stamp = rospy.Time.now()
-        marker2.header.frame_id = 'map'
-        marker2.type = marker2.LINE_STRIP
-        marker2.action = marker2.ADD
-        circumference = []
-        for i in range(16+1):
-            p = Point()
-            p.x = self.wamv2_x + self.robot_radius* math.cos(i*self.pi2/16)
-            p.y = self.wamv2_y + self.robot_radius* math.sin(i*self.pi2/16)
-            p.z = 0.1
-            circumference.append(p)
+    def pose_to_matrix(self, pose):
+        if isinstance(pose, PoseStamped):
+            translation = [pose.pose.position.x, pose.pose.position.y, pose.pose.position.z]
+            rotation = [
+                pose.pose.orientation.x,
+                pose.pose.orientation.y,
+                pose.pose.orientation.z,
+                pose.pose.orientation.w,
+            ]
+            return tf_trans.concatenate_matrices(
+                tf_trans.translation_matrix(translation), tf_trans.quaternion_matrix(rotation)
+            )
 
-        marker2.pose.orientation.w = 1
-        marker2.points = circumference
-        marker2.scale.x = 0.1
-        marker2.color.a = 1.0
-        marker2.color.r = 0
-        marker2.color.g = 1
-        marker2.color.b = 0
-        self.pub_position_circle2.publish(marker2)
+    def matrix_to_pose(self, matrix, frame_id="map"):
+        ret_pose_stamped = PoseStamped()
+        trans = tf_trans.translation_from_matrix(matrix)
+        rot = tf_trans.quaternion_from_matrix(matrix)
+        ret_pose_stamped.header.frame_id = frame_id
+        ret_pose_stamped.header.stamp = rospy.Time.now()
 
-        marker = Marker()
-        marker.header.stamp = rospy.Time.now()
-        marker.header.frame_id = 'map'
-        marker.type = marker.LINE_STRIP
-        marker.action = marker.ADD
-        circumference = []
-        for i in range(16+1):
-            p = Point()
-            p.x = self.wamv3_x + self.robot_radius* math.cos(i*self.pi2/16)
-            p.y = self.wamv3_y + self.robot_radius* math.sin(i*self.pi2/16)
-            p.z = 0.1
-            circumference.append(p)
-
-        marker.pose.orientation.w = 1
-        marker.points = circumference
-        marker.scale.x = 0.1
-        marker.color.a = 1.0
-        marker.color.r = 0
-        marker.color.g = 1
-        marker.color.b = 0
-        self.pub_position_circle3.publish(marker)
-
-        marker = Marker()
-        marker.header.stamp = rospy.Time.now()
-        marker.header.frame_id = 'map'
-        marker.type = marker.LINE_STRIP
-        marker.action = marker.ADD
-        circumference = []
-        for i in range(16+1):
-            p = Point()
-            p.x = self.wamv4_x + self.robot_radius* math.cos(i*self.pi2/16)
-            p.y = self.wamv4_y + self.robot_radius* math.sin(i*self.pi2/16)
-            p.z = 0.1
-            circumference.append(p)
-
-        marker.pose.orientation.w = 1
-        marker.points = circumference
-        marker.scale.x = 0.1
-        marker.color.a = 1.0
-        marker.color.r = 0
-        marker.color.g = 1
-        marker.color.b = 0
-        self.pub_position_circle4.publish(marker)
+        ret_pose_stamped.pose.position.x = trans[0]
+        ret_pose_stamped.pose.position.y = trans[1]
+        ret_pose_stamped.pose.position.z = trans[2]
+        ret_pose_stamped.pose.orientation.x = rot[0]
+        ret_pose_stamped.pose.orientation.y = rot[1]
+        ret_pose_stamped.pose.orientation.z = rot[2]
+        ret_pose_stamped.pose.orientation.w = rot[3]
+        return ret_pose_stamped
 
 
-        #map####################################
-        marker = Marker()
-        marker.header.stamp = rospy.Time.now()
-        marker.header.frame_id = 'map'
-        marker.type = marker.LINE_STRIP
-        marker.action = marker.ADD
-        circumference = []
-        p = Point()
-        p.x = 30
-        p.y = -115
-        p.z = 0.1
-        p1 = Point()
-        p1.x = 30
-        p1.y = -260
-        p1.z = 0.1
-        p2 = Point()
-        p2.x = -150
-        p2.y = -260
-        p2.z = 0.1
-        p3 = Point()
-        p3.x = -150
-        p3.y = -115
-        p3.z = 0.1
-
-        circumference.append(p)
-        circumference.append(p1)
-        circumference.append(p2)
-        circumference.append(p3)
-        circumference.append(p)
-
-        marker.pose.orientation.w = 1
-        marker.points = circumference
-        marker.scale.x = 0.5
-        marker.color.a = 1.0
-        marker.color.r = 0
-        marker.color.g = 0.5
-        marker.color.b = 0.5
-        self.pub_map.publish(marker)
-
-        marker = Marker()
-        marker.header.stamp = rospy.Time.now()
-        marker.header.frame_id = 'map'
-        marker.type = marker.LINE_STRIP
-        marker.action = marker.ADD
-        circumference = []
-
-        p5 = Point()
-        p5.x = -60
-        p5.y = -260
-        p5.z = 0.1
-        p6 = Point()
-        p6.x = -60
-        p6.y = -195
-        p6.z = 0.1
-
-
-        circumference.append(p5)
-        circumference.append(p6)
-
-
-        marker.pose.orientation.w = 1
-        marker.points = circumference
-        marker.scale.x = 0.5
-        marker.color.a = 1.0
-        marker.color.r = 0
-        marker.color.g = 0.5
-        marker.color.b = 0.5
-        self.pub_map1.publish(marker)
-
-        marker = Marker()
-        marker.header.stamp = rospy.Time.now()
-        marker.header.frame_id = 'map'
-        marker.type = marker.LINE_STRIP
-        marker.action = marker.ADD
-        circumference = []
-
-        p4 = Point()
-        p4.x = -60
-        p4.y = -115
-        p4.z = 0.1
-        p7 = Point()
-        p7.x = -60
-        p7.y = -185
-        p7.z = 0.1
-
-
-        circumference.append(p4)
-        circumference.append(p7)
-
-
-        marker.pose.orientation.w = 1
-        marker.points = circumference
-        marker.scale.x = 0.5
-        marker.color.a = 1.0
-        marker.color.r = 0
-        marker.color.g = 0.5
-        marker.color.b = 0.5
-        self.pub_map2.publish(marker)
-
-
-        self.counter += 1
-        # print(self.counter)
-
-
-    def set_wamv_pose(self, model_name='wamv2', x=0 , y=0, z=0, qx=0, qy=0, qz=0, qw=0):
-        self.objstate.model_state.model_name = model_name
-        self.objstate.model_state.reference_frame = 'world'
-        self.objstate.model_state.pose.position.x = x
-        self.objstate.model_state.pose.position.y = y
-        self.objstate.model_state.pose.position.z = z
-        
-        self.objstate.model_state.pose.orientation.x = qx
-        self.objstate.model_state.pose.orientation.y = qy
-        self.objstate.model_state.pose.orientation.z = qz
-        self.objstate.model_state.pose.orientation.w = qw
-        
-        self.objstate.model_state.twist.linear.x = 0
-        self.objstate.model_state.twist.linear.y = 0
-        self.objstate.model_state.twist.linear.z = 0
-        self.objstate.model_state.twist.angular.x = 0
-        self.objstate.model_state.twist.angular.y = 0
-        self.objstate.model_state.twist.angular.z = 0
-        self.set_model(self.objstate)
-
-if __name__ == '__main__':
-    rospy.init_node('goal_point_node',anonymous=False)
-    goal_point_node = goal_point()
-    #rospy.on_shutdown(goal_point_node.on_shutdown)
+if __name__ == "__main__":
+    rospy.init_node("real_to_sim_transform")
+    real_to_sim_transform = RealtoSimTransform()
     rospy.spin()
-    
-    
-    
-
-
