@@ -21,136 +21,136 @@
     </xacro:usv_wind_gazebo>
 
   <!-- right obstacle -->
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_r11</name>
           <pose>95.65 -28.5 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
         <include>
           <uri>model://polyform_a7</uri>
           <name>real_r12</name>
-          <pose>94.8 -29 0.5  0 -0 0</pose>
+          <pose>95 -29 0.5  0 -0 0</pose>
           <static>true</static>
         </include>
 
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_r13</name>
           <pose>94.7 -28 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
       
 
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_r21</name>
           <pose>79.9 -16.3 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
         <include>
           <uri>model://polyform_a7</uri>
           <name>real_r22</name>
-          <pose>78.9 -16.5 0.5  0 -0 0</pose>
+          <pose>80 -16.5 0.5  0 -0 0</pose>
           <static>true</static>
         </include>
 
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_r23</name>
           <pose>79.6 -17.2 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
 
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_r31</name>
           <pose>79 -40 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
         <include>
           <uri>model://polyform_a7</uri>
           <name>real_r32</name>
-          <pose>78 -40.2 0.5  0 -0 0</pose>
+          <pose>80 -40.2 0.5  0 -0 0</pose>
           <static>true</static>
         </include>
-
+<!-- 
         <include>
           <uri>model://polyform_a7</uri>
           <name>real_r33</name>
           <pose>78.6 -41 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
     <!-- left obstacle  -->
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_l11</name>
           <pose>95.65 28.5 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
         <include>
           <uri>model://polyform_a7</uri>
           <name>real_l12</name>
-          <pose>94.8 29 0.5  0 -0 0</pose>
+          <pose>95 29 0.5  0 -0 0</pose>
           <static>true</static>
         </include>
 
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_l13</name>
           <pose>94.7 28 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
       
 
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_l21</name>
           <pose>79.9 16.3 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
         <include>
           <uri>model://polyform_a7</uri>
           <name>real_l22</name>
-          <pose>78.9 16.5 0.5  0 -0 0</pose>
+          <pose>80 16.5 0.5  0 -0 0</pose>
           <static>true</static>
         </include>
 
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_l23</name>
           <pose>79.6 17.2 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
 
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_l31</name>
           <pose>79 40 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
         <include>
           <uri>model://polyform_a7</uri>
           <name>real_l32</name>
-          <pose>78 40.2 0.5  0 -0 0</pose>
+          <pose>80 40.2 0.5  0 -0 0</pose>
           <static>true</static>
         </include>
 
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_l33</name>
           <pose>78.6 41 0.5  0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
   </world>
 </sdf>
