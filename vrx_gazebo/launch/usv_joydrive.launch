@@ -1,26 +1,27 @@
 <?xml version="1.0"?>
 <launch>
   <arg name="veh" default="wamv"/>
+  
   <arg name="use_joy" default="true"/>
 
   <!-- Conditionally launch the Joy node -->
-  <group if="$(arg use_joy)">
-    <node pkg="joy" type="joy_node" name="joy">
-      <param name="dev" value="/dev/input/js0"/>
+  <group ns="$(arg veh)">
+    <group if="$(arg use_joy)">
+      <node pkg="joy" type="joy_node" name="joy">
+        <param name="dev" value="/dev/input/js0"/>
+      </node>
+    </group>
+
+    <!-- Rest of your launch file -->
+
+    <!-- Convert Twist messages to Drive messages -->
+    <node ns="$(arg veh)" pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust1" output="screen">
+      <remap from="left_cmd" to="/$(arg veh)/thrusters/left_thrust_cmd"/>
+      <remap from="right_cmd" to="/$(arg veh)/thrusters/right_thrust_cmd"/>
+      <remap from="left_lateral_cmd" to="/$(arg veh)/thrusters/left_lateral_thrust_cmd"/>
+      <remap from="right_lateral_cmd" to="/$(arg veh)/thrusters/right_lateral_thrust_cmd"/>
+      <remap from="twist" to="/mavros/setpoint_velocity/cmd_vel_unstamped"/>
+      <remap from="/joy" to="/$(arg veh)/joy"/>
     </node>
   </group>
-
-  <!-- Rest of your launch file -->
-  
-  <!-- Convert Twist messages to Drive messages -->
-  <node ns="$(arg veh)" pkg="vrx_gazebo" type="twist2thrust.py" name="twist2thrust1" output="screen">
-    <remap from="left_cmd" to="/$(arg veh)/thrusters/left_thrust_cmd"/>
-    <remap from="right_cmd" to="/$(arg veh)/thrusters/right_thrust_cmd"/>
-    <remap from="left_lateral_cmd" to="/$(arg veh)/thrusters/left_lateral_thrust_cmd"/>
-    <remap from="right_lateral_cmd" to="/$(arg veh)/thrusters/right_lateral_thrust_cmd"/>
-  </node>
 </launch>
-
-
-
-
