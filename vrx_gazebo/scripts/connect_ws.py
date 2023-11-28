@@ -18,7 +18,7 @@ class ROSBridgeConnector:
         if self.ws == 1:
             print("ws1")
             self.pub_wamv_pose = roslibpy.Topic(self.client, "/wamv/truth_map_posestamped", "geometry_msgs/PoseStamped")
-            self.pub_joy = roslibpy.Topic(self.client, "/joy", "sensor_msgs/Joy")
+            self.pub_joy = roslibpy.Topic(self.client, "/wamv/joy", "sensor_msgs/Joy")
             self.pub_scan =  roslibpy.Topic(self.client, "/wamv/RL/more_scan", "sensor_msgs/LaserScan")
 
             # self.pub_obstacle_extractor = roslibpy.Topic(self.client, "/raw_obstacles", "obstacle_detector/Obstacles")
@@ -37,7 +37,7 @@ class ROSBridgeConnector:
     def init_subscribers(self):
         if self.ws == 1:
             rospy.Subscriber("/wamv/truth_map_posestamped", PoseStamped, self.cb_wamv_pose)
-            rospy.Subscriber("/joy", Joy, self.cb_joy)
+            rospy.Subscriber("/wamv/joy", Joy, self.cb_joy)
             # rospy.Subscriber("/raw_obstacles", Obstacles, self.cb_extractor)
             rospy.Subscriber("/wamv/RL/more_scan", LaserScan, self.cb_laser)
             
