@@ -1,7 +1,8 @@
 <launch>
    <arg name="ip" default="140.113.148.92"/>
    <arg name="ws" default="1"/>
-   
+   <arg name="vr" default="false"/>
+
    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
       <arg name="port" value="9090" />
    </include>
@@ -9,6 +10,7 @@
    <node pkg="vrx_gazebo" type="connect_ws.py" name="connect_ws" output="screen">
       <param name="~ip" value="$(arg ip)" />
       <param name="~ws" value="$(arg ws)" />
+      <param name="~vr" value="$(arg vr)" />
    </node>
 
 </launch>

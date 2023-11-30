@@ -10,18 +10,24 @@ class ROSBridgeConnector:
         rospy.init_node("connect_ws", anonymous=True)
         self.ip = rospy.get_param("~ip", '127.0.0.1')
         self.ws = rospy.get_param("~ws",'1')
+        self.vr = rospy.get_param("~vr",'true')
+        
         rosbrideg_address = 'ws://' + self.ip + ':9090'
         print('WS',self.ws ,'publish data to:', rosbrideg_address)    
         self.client = roslibpy.Ros(host=rosbrideg_address)
         self.client.run()
-        
+
+
         if self.ws == 1:
             print("ws1")
             self.pub_wamv_pose = roslibpy.Topic(self.client, "/wamv/truth_map_posestamped", "geometry_msgs/PoseStamped")
-            self.pub_joy = roslibpy.Topic(self.client, "/wamv/joy", "sensor_msgs/Joy")
+            # self.pub_joy = roslibpy.Topic(self.client, "/wamv/joy", "sensor_msgs/Joy")
             self.pub_scan =  roslibpy.Topic(self.client, "/wamv/RL/more_scan", "sensor_msgs/LaserScan")
-
             # self.pub_obstacle_extractor = roslibpy.Topic(self.client, "/raw_obstacles", "obstacle_detector/Obstacles")
+            if self.vr == False:
+                self.pub_joy = roslibpy.Topic(self.client, "/joy", "sensor_msgs/Joy")
+                print('joy : ws1->ws2')
+
         elif self.ws == 2:   
             print("ws2")             
             self.pub_fake_pose = roslibpy.Topic(self.client, "/fake_fence_real2sim", "geometry_msgs/PoseStamped")
@@ -30,24 +36,35 @@ class ROSBridgeConnector:
 
             self.sub_scan = rospy.Subscriber("/wamv/RL/more_scan", LaserScan, self.cb_laser_2)
             self.pub_scan_2 = rospy.Publisher("/wamv/RL/more_scan_2", LaserScan, queue_size=1)
+            if self.vr == True :
+                self.pub_joy = roslibpy.Topic(self.client, "/joy", "sensor_msgs/Joy")
+                print('joy : ws2->ws1')
         else:
             pass
+
         self.init_subscribers()
+
 
     def init_subscribers(self):
         if self.ws == 1:
             rospy.Subscriber("/wamv/truth_map_posestamped", PoseStamped, self.cb_wamv_pose)
-            rospy.Subscriber("/wamv/joy", Joy, self.cb_joy)
+            # rospy.Subscriber("/wamv/joy", Joy, self.cb_joy)
             # rospy.Subscriber("/raw_obstacles", Obstacles, self.cb_extractor)
             rospy.Subscriber("/wamv/RL/more_scan", LaserScan, self.cb_laser)
+            if self.vr == False:
+                rospy.Subscriber("/joy", Joy, self.cb_joy)
             
         elif self.ws == 2:
             rospy.Subscriber("/fake_fence_real2sim", PoseStamped, self.cb_fake_pose)
             rospy.Subscriber("/wamv/cmd_vel", Twist, self.cb_twist)
             rospy.Subscriber("/wamv2/truth_map_posestamped", PoseStamped, self.cb_wamv2_pose)
+            if self.vr == True :
+                rospy.Subscriber("/joy", Joy, self.cb_joy)
         else:
             pass
     
+
+        
     def cb_laser_2(self, msg):
         laser = msg
         laser.header.stamp = rospy.Time.now()
