@@ -8,8 +8,9 @@ class VR_remap_joy:
     def __init__(self):
         
         self.sub_joy = rospy.Subscriber("/vr_teleop", Joy, self.cb_joy, queue_size=1)
-        
-        self.pub_joy = rospy.Publisher("/wamv/joy", Joy, queue_size=1)
+
+        self.pub_joy = rospy.Publisher("/joy", Joy, queue_size=1)
+        self.pub_joy_1 = rospy.Publisher("/wamv/joy", Joy, queue_size=1)
         self.pub_joy_3 = rospy.Publisher("/wamv3/joy", Joy, queue_size=1)
         self.pub_joy_4 = rospy.Publisher("/wamv4/joy", Joy, queue_size=1)
 
@@ -28,12 +29,11 @@ class VR_remap_joy:
         self.vr_to_joy.buttons[3] = msg.buttons[2] # Y: DP
         self.vr_to_joy.buttons[4] = msg.buttons[3] # reset
         self.vr_to_joy.buttons[2] = msg.buttons[4] # X 
+        ## PX4
         self.vr_to_joy.buttons[0] = msg.buttons[5] # A : Arm
         self.vr_to_joy.buttons[1] = msg.buttons[6] # B : offboard
-        ## PX4
-        # self.vr_to_joy.buttons[0] = msg.buttons[4] # A: arm
-        # self.vr_to_joy.buttons[1] = msg.buttons[5] # B: offboard
         print(msg)
+
         #axes
         self.vr_to_joy.axes[1] = msg.axes[4] # left stick forward/backward
         self.vr_to_joy.axes[3] = msg.axes[7] # right stick right/left
@@ -45,7 +45,7 @@ class VR_remap_joy:
         print(self.vr_to_joy)
         
         if self.vr_to_joy.axes[2] == 2:
-            self.pub_joy.publish(self.vr_to_joy)
+            self.pub_joy_1.publish(self.vr_to_joy)
         if self.vr_to_joy.axes[2] == 3:
             self.pub_joy_3.publish(self.vr_to_joy)
         if self.vr_to_joy.axes[2] == 4:

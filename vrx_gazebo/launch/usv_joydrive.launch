@@ -21,5 +21,6 @@
     <remap from="left_lateral_cmd" to="/$(arg veh)/thrusters/left_lateral_thrust_cmd"/>
     <remap from="right_lateral_cmd" to="/$(arg veh)/thrusters/right_lateral_thrust_cmd"/>
   </node>
+  
 </launch>
 
