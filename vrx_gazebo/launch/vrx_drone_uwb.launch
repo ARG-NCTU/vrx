@@ -19,6 +19,7 @@
     <!-- Do we lock the vessel to the world? -->
     <arg name="wamv_locked" default="false" />
 
+    <arg name="paused" default="false"/>
     <!-- Acoustic pinger position(s) -->
     <arg name="pinger_params" default="$(find vrx_gazebo)/config/pinger.yaml"/>
 
@@ -46,7 +47,7 @@
         <include file="$(find mavros)/launch/node.launch">
             <arg name="pluginlists_yaml" value="$(find mavros)/launch/px4_pluginlists.yaml" />
             <!-- Need to change the config file to get the tf topic and get local position in terms of local origin -->
-            <arg name="config_yaml" value="$(find vrx_gazebo)/config/drone_config/px4_config.yaml" />
+            <arg name="config_yaml" value="$(find vrx_gazebo)/config/drone_config/px4_config2.yaml" />
             <arg name="fcu_url" value="$(arg fcu_url)" />
             <arg name="gcs_url" value="$(arg gcs_url)" />
             <arg name="tgt_system" value="$(arg tgt_system)" />
@@ -57,8 +58,12 @@
 
     <!-- Launch Gazebo -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="gui" value="$(arg gui)"/>
-        <arg name="world_name" value="$(arg world)" />
+        <arg name="world_name" value="$(arg world)"/>
+        <arg name="verbose" value="$(arg verbose)"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
     </include>
 
     <!-- drone initail position -->
@@ -114,9 +119,5 @@
         <rosparam command="load" file="$(arg pinger_params)" />
     </node>
     <node name="pinger_visualization" pkg="vrx_gazebo" type="pinger_visualization.py" /> -->
-
-    <node name="spawn_box" pkg="gazebo_ros" type="spawn_model"
-        args="-file $(find vrx_gazebo)/models/box.sdf -sdf -x -745 -y 250 -z 4.5 -R 0 -P 0 -Y 0 -model box"/>
-
 
 </launch>
