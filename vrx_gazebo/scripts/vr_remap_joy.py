@@ -11,6 +11,7 @@ class VR_remap_joy:
 
         self.pub_joy = rospy.Publisher("/joy", Joy, queue_size=1)
         self.pub_joy_1 = rospy.Publisher("/wamv/joy", Joy, queue_size=1)
+        self.pub_joy_2 = rospy.Publisher("/wamv2/joy", Joy, queue_size=1)
         self.pub_joy_3 = rospy.Publisher("/wamv3/joy", Joy, queue_size=1)
         self.pub_joy_4 = rospy.Publisher("/wamv4/joy", Joy, queue_size=1)
 
@@ -42,10 +43,13 @@ class VR_remap_joy:
         
         ##for PX4 and transform wamv pose to wamv2 pose
         self.pub_joy.publish(self.vr_to_joy)
-        print(self.vr_to_joy)
-        
+
+        # Digital twin share the same command 
         if self.vr_to_joy.axes[2] == 2:
+            self.pub_joy_2.publish(self.vr_to_joy)
+            self.vr_to_joy.axes[2] = 1
             self.pub_joy_1.publish(self.vr_to_joy)
+            
         if self.vr_to_joy.axes[2] == 3:
             self.pub_joy_3.publish(self.vr_to_joy)
         if self.vr_to_joy.axes[2] == 4:
@@ -54,5 +58,8 @@ class VR_remap_joy:
 if __name__ == '__main__':
     rospy.init_node('vr_remap_joy')
     vr_remap_joy = VR_remap_joy()
-    rospy.spin()
-    
+    # rospy.spin()
+    while not rospy.is_shutdown():
+        if vr_remap_joy.sub_joy.get_num_connections() == 0:
+            print("No messages received on /vr_teleop yet...")
+    rospy.sleep(0.1) 
