@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="veh" default="wamv2"/>
+  <arg name="veh" default="wamv"/>
 
   <arg name="use_joy" default="true"/>
 
@@ -21,7 +21,7 @@
       <remap from="mavros/set_mode" to="/mavros/set_mode"/>
       <remap from="mavros/param/set" to="/mavros/param/set"/>
       <remap from="mavros/param/get" to="/mavros/param/get"/>
-      <remap from="~twist" to="/mavros/setpoint_velocity/cmd_vel_unstamped_"/>
+      <remap from="~twist" to="/mavros/setpoint_velocity/cmd_vel_unstamped"/>
       <remap from="~joy" to="/$(arg veh)/joy"/>
     </node>
   </group>
