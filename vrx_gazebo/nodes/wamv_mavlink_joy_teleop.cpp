@@ -1,13 +1,13 @@
 #include <geometry_msgs/Twist.h>
 #include <iostream>
-#include <std_msgs/Float32.h>
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/CommandTOL.h>
-#include <mavros_msgs/SetMode.h>
-#include <mavros_msgs/ParamSet.h>
 #include <mavros_msgs/ParamGet.h>
+#include <mavros_msgs/ParamSet.h>
+#include <mavros_msgs/SetMode.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
+#include <std_msgs/Float32.h>
 #include <std_srvs/Empty.h>
 #include <string>
 #include <unordered_map>
@@ -16,7 +16,7 @@ using namespace std;
 
 class Teleop
 {
-  private:
+private:
     // ROS handles
     ros::NodeHandle nh_;
     ros::NodeHandle nh_private_;
@@ -29,6 +29,7 @@ class Teleop
     ros::Publisher pub_thrust_right_lateral_;
 
     ros::ServiceClient srv_arming_;
+    ros::ServiceClient srv_land_;
     ros::ServiceClient srv_offboard_;
     ros::ServiceClient srv_param_set_;
     ros::ServiceClient srv_param_get_;
@@ -56,25 +57,19 @@ class Teleop
     std::unordered_map<std::string, std::string> function_map_;
 
     void getParam();
-    void joyCallback(const sensor_msgs::Joy::ConstPtr& msg);
-    void timerPubCallback(const ros::TimerEvent& event);
+    void joyCallback(const sensor_msgs::Joy::ConstPtr &msg);
+    void timerPubCallback(const ros::TimerEvent &event);
     void initMaps();
-    bool updateInputStandard(const sensor_msgs::Joy::ConstPtr& msg);
-    bool isPressed(std::string function, const sensor_msgs::Joy::ConstPtr& msg);
-    bool isTrigger(std::string function, const sensor_msgs::Joy::ConstPtr& msg);
+    bool updateInputStandard(const sensor_msgs::Joy::ConstPtr &msg);
+    bool isPressed(std::string function, const sensor_msgs::Joy::ConstPtr &msg);
+    bool isTrigger(std::string function, const sensor_msgs::Joy::ConstPtr &msg);
 
-  public:
-    Teleop(ros::NodeHandle& nh, ros::NodeHandle& nh_private);
+public:
+    Teleop(ros::NodeHandle &nh, ros::NodeHandle &nh_private);
 };
 
-Teleop::Teleop(ros::NodeHandle& nh, ros::NodeHandle& nh_private)
-  : nh_(nh)
-  , nh_private_(nh_private)
-  , enable_(true)
-  , enable_mavlink_(false)
-  , speed_mode_(std::string("high"))
-  , vehicle_type_(std::string("wamv"))
-  , input_standard_(std::string("XINPUT"))
+Teleop::Teleop(ros::NodeHandle &nh, ros::NodeHandle &nh_private)
+    : nh_(nh), nh_private_(nh_private), enable_(true), enable_mavlink_(false), speed_mode_(std::string("high")), vehicle_type_(std::string("wamv")), input_standard_(std::string("XINPUT"))
 {
     getParam();
 
@@ -86,6 +81,7 @@ Teleop::Teleop(ros::NodeHandle& nh, ros::NodeHandle& nh_private)
     pub_thrust_right_lateral_ = nh_private_.advertise<std_msgs::Float32>("thrust_right_lateral", 10);
 
     srv_arming_ = nh_.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/arming", true);
+    srv_land_ = nh_.serviceClient<mavros_msgs::CommandTOL>("mavros/cmd/land", true);
     srv_offboard_ = nh_.serviceClient<mavros_msgs::SetMode>("mavros/set_mode", true);
     srv_param_set_ = nh_.serviceClient<mavros_msgs::ParamSet>("mavros/param/set", true);
     srv_param_get_ = nh_.serviceClient<mavros_msgs::ParamGet>("mavros/param/get", true);
@@ -125,7 +121,7 @@ void Teleop::getParam()
     return;
 }
 
-void Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
+void Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr &msg)
 {
     updateInputStandard(msg);
 
@@ -133,15 +129,39 @@ void Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
     {
         ROS_INFO_STREAM("A");
         mavros_msgs::CommandBool srv;
-        srv.request.value = true;
-        auto res = srv_arming_.call(srv);
-        if (res)
+        if (!isPressed("L3", msg))
         {
-            ROS_INFO_STREAM("Arming");
+
+            srv.request.value = true;
         }
         else
         {
-            ROS_ERROR_STREAM("Arming failed");
+            srv.request.value = false;
+        }
+        auto res = srv_arming_.call(srv);
+        if (res)
+        {
+            if (!isPressed("L3", msg))
+            {
+
+                ROS_INFO_STREAM("Arming");
+            }
+            else
+            {
+                ROS_INFO_STREAM("Disarming");
+            }
+        }
+        else
+        {
+            if (!isPressed("L3", msg))
+            {
+
+                ROS_ERROR_STREAM("Arming failed");
+            }
+            else
+            {
+                ROS_ERROR_STREAM("Disarming failed");
+            }
         }
     }
 
@@ -161,6 +181,26 @@ void Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
         }
     }
 
+    if (isTrigger("LAND", msg))
+    {
+        ROS_INFO_STREAM("Y");
+        mavros_msgs::CommandTOL srv;
+        srv.request.min_pitch = 0;
+        srv.request.yaw = 0;
+        srv.request.latitude = 0;
+        srv.request.longitude = 0;
+        srv.request.altitude = 0;
+        auto res = srv_land_.call(srv);
+        if (res)
+        {
+            ROS_INFO_STREAM("Land");
+        }
+        else
+        {
+            ROS_ERROR_STREAM("Land failed");
+        }
+    }
+
     if (isTrigger("INITIALMAVLINK", msg))
     {
         ROS_INFO_STREAM("X");
@@ -168,26 +208,24 @@ void Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
         srv_param_set.request.param_id = "COM_RCL_EXCEPT";
         srv_param_set.request.value.integer = 4;
         srv_param_set_.call(srv_param_set);
-        ROS_INFO_STREAM("COM_RCL_EXCEPT: " << srv_param_set.response.value.integer);
 
         mavros_msgs::ParamGet srv_param_get;
         srv_param_get.request.param_id = "COM_RCL_EXCEPT";
         srv_param_get_.call(srv_param_get);
-        ROS_INFO_STREAM("COM_RCL_EXCEPT: " << srv_param_get.response.value.integer);
+        ROS_INFO_STREAM("Set COM_RCL_EXCEPT: " << srv_param_get.response.value.integer << ". Get COM_RCL_EXCEPT: " << srv_param_get.response.value.integer);
 
         srv_param_set.request.param_id = "COM_OBL_ACT";
         srv_param_set.request.value.integer = -1;
         srv_param_set_.call(srv_param_set);
-        ROS_INFO_STREAM("COM_OBL_ACT: " << srv_param_set.response.value.integer);
 
         srv_param_get.request.param_id = "COM_OBL_ACT";
         srv_param_get_.call(srv_param_get);
-        ROS_INFO_STREAM("COM_OBL_ACT: " << srv_param_get.response.value.integer);
+        ROS_INFO_STREAM("Set COM_OBL_ACT: " << srv_param_get.response.value.integer << ". Get COM_OBL_ACT: " << srv_param_get.response.value.integer);
     }
 
-    if (isPressed("LB_", msg))
+    if (isPressed("LB", msg))
     {
-        if (isTrigger("LB_", msg))
+        if (isTrigger("LB", msg))
         {
             ROS_INFO_STREAM("LB");
         }
@@ -197,8 +235,9 @@ void Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
     {
         enable_mavlink_ = false;
     }
-    if (isTrigger("RB_", msg))
+    if (isTrigger("RB", msg))
     {
+        ROS_INFO_STREAM("RB");
         if (vehicle_type_ == std::string("wamv"))
         {
             vehicle_type_ = std::string("drone");
@@ -229,7 +268,7 @@ void Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
     return;
 }
 
-void Teleop::timerPubCallback(const ros::TimerEvent& event)
+void Teleop::timerPubCallback(const ros::TimerEvent &event)
 {
     if (enable_)
     {
@@ -244,6 +283,8 @@ void Teleop::timerPubCallback(const ros::TimerEvent& event)
             pub_thrust_right_.publish(thrust_right);
             pub_thrust_left_lateral_.publish(thrust_left_lateral);
             pub_thrust_right_lateral_.publish(thrust_right_lateral);
+            ROS_INFO_STREAM_THROTTLE(1.0, "wamv: "
+                                              << "LY: " << axes_[axes_map_["LY"]] << ", RX: " << axes_[axes_map_["RX"]]);
         }
         else if (vehicle_type_ == std::string("drone"))
         {
@@ -252,49 +293,13 @@ void Teleop::timerPubCallback(const ros::TimerEvent& event)
             twist.linear.z = throttle_[speed_mode_]["throttle"] * axes_[axes_map_["LY"]];
             twist.angular.z = throttle_[speed_mode_]["angular"] * axes_[axes_map_["LX"]];
             pub_twist_.publish(twist);
+            ROS_INFO_STREAM_THROTTLE(1.0, "drone: "
+                                              << "RY: " << axes_[axes_map_["RY"]] << ", RX: " << axes_[axes_map_["RX"]] << ", LY: " << axes_[axes_map_["LY"]] << ", LX: " << axes_[axes_map_["LX"]]);
         }
     }
     else
     {
     }
-    // if (enable_)
-    // {
-    //     if (enable_mavlink_)
-    //     {
-    //         twist.linear.x = throttle_[speed_mode_]["linear"] * axes_[axes_map_["RX"]];
-    //         twist.linear.y = throttle_[speed_mode_]["linear"] * axes_[axes_map_["RY"]];
-    //         twist.linear.z = throttle_[speed_mode_]["throttle"] * axes_[axes_map_["LY"]];
-    //         twist.angular.z = throttle_[speed_mode_]["angular"] * axes_[axes_map_["LX"]];
-    //         pub_twist_.publish(twist);
-    //     }
-
-    //     std_msgs::Float32 thrust_left, thrust_right, thrust_left_lateral, thrust_right_lateral;
-    //     thrust_left.data = axes_[axes_map_["LY"]];
-    //     thrust_right.data = axes_[axes_map_["LY"]];
-    //     thrust_left_lateral.data = axes_[axes_map_["RX"]];
-    //     thrust_right_lateral.data = -axes_[axes_map_["RX"]];
-    //     pub_thrust_left_.publish(thrust_left);
-    //     pub_thrust_right_.publish(thrust_right);
-    //     pub_thrust_left_lateral_.publish(thrust_left_lateral);
-    //     pub_thrust_right_lateral_.publish(thrust_right_lateral);
-    // }
-    // else
-    // {
-    //     twist.linear.x = 0.0;
-    //     twist.linear.y = 0.0;
-    //     twist.linear.z = 0.0;
-    //     twist.angular.z = 0.0;
-    //     pub_twist_.publish(twist);
-    //     std_msgs::Float32 thrust_left, thrust_right, thrust_left_lateral, thrust_right_lateral;
-    //     thrust_left.data = 0.0;
-    //     thrust_right.data = 0.0;
-    //     thrust_left_lateral.data = 0.0;
-    //     thrust_right_lateral.data = 0.0;
-    //     pub_thrust_left_.publish(thrust_left);
-    //     pub_thrust_right_.publish(thrust_right);
-    //     pub_thrust_left_lateral_.publish(thrust_left_lateral);
-    //     pub_thrust_right_lateral_.publish(thrust_right_lateral);
-    // }
 }
 
 void Teleop::initMaps()
@@ -307,11 +312,13 @@ void Teleop::initMaps()
     function_map_["AUTO"] = std::string("START");
     function_map_["MANUAL"] = std::string("BACK");
     function_map_["ARM"] = std::string("A");
+    function_map_["LAND"] = std::string("Y");
     function_map_["OFFBOARD"] = std::string("B");
     function_map_["INITIALMAVLINK"] = std::string("X");
 
     if (input_standard_ == std::string("XINPUT"))
     {
+        axes_map_.clear();
         axes_map_["LX"] = 0;
         axes_map_["LY"] = 1;
         axes_map_["LT"] = 2;
@@ -321,6 +328,7 @@ void Teleop::initMaps()
         axes_map_["DPAD_X"] = 6;
         axes_map_["DPAD_Y"] = 7;
 
+        button_map_.clear();
         button_map_["A"] = 0;
         button_map_["B"] = 1;
         button_map_["X"] = 2;
@@ -335,6 +343,7 @@ void Teleop::initMaps()
     }
     else if (input_standard_ == std::string("DIRECTINPUT"))
     {
+        axes_map_.clear();
         axes_map_["LX"] = 0;
         axes_map_["LY"] = 1;
         axes_map_["RX"] = 2;
@@ -342,6 +351,7 @@ void Teleop::initMaps()
         axes_map_["DPAD_X"] = 4;
         axes_map_["DPAD_Y"] = 5;
 
+        button_map_.clear();
         button_map_["X"] = 0;
         button_map_["A"] = 1;
         button_map_["B"] = 2;
@@ -362,7 +372,7 @@ void Teleop::initMaps()
     }
 }
 
-bool Teleop::updateInputStandard(const sensor_msgs::Joy::ConstPtr& msg)
+bool Teleop::updateInputStandard(const sensor_msgs::Joy::ConstPtr &msg)
 {
     if (msg->axes.size() == 6 && msg->buttons.size() == 12)
     {
@@ -396,38 +406,32 @@ bool Teleop::updateInputStandard(const sensor_msgs::Joy::ConstPtr& msg)
     return false;
 }
 
-bool Teleop::isPressed(const std::string function, const sensor_msgs::Joy::ConstPtr& msg)
+bool Teleop::isPressed(const std::string function, const sensor_msgs::Joy::ConstPtr &msg)
 {
-    // if function is not end with _
-    if (function.back() != '_')
+    // if founciton is found in function_map_
+    if (function_map_.find(function) != function_map_.end())
     {
         return msg->buttons[button_map_[function_map_[function]]];
     }
     else
     {
-        // remove _
-        std::string button = function;
-        button.pop_back();
-        return msg->buttons[button_map_[button]];
+        return msg->buttons[button_map_[function]];
     }
 }
 
-bool Teleop::isTrigger(const std::string function, const sensor_msgs::Joy::ConstPtr& msg)
+bool Teleop::isTrigger(const std::string function, const sensor_msgs::Joy::ConstPtr &msg)
 {
-    if (function.back() != '_')
+    if (function_map_.find(function) != function_map_.end())
     {
         return isPressed(function, msg) && !buttons_[button_map_[function_map_[function]]];
     }
     else
     {
-        // remove _
-        std::string button = function;
-        button.pop_back();
-        return isPressed(function, msg) && !buttons_[button_map_[button]];
+        return isPressed(function, msg) && !buttons_[button_map_[function]];
     }
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     ros::init(argc, argv, "drone_teleop");
     ros::NodeHandle nh;

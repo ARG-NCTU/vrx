@@ -18,6 +18,7 @@
       <remap from="~thrust_left_lateral" to="/$(arg veh)/thrusters/left_lateral_thrust_cmd"/>
       <remap from="~thrust_right_lateral" to="/$(arg veh)/thrusters/right_lateral_thrust_cmd"/>
       <remap from="mavros/cmd/arming" to="/mavros/cmd/arming"/>
+      <remap from="mavros/cmd/land" to="/mavros/cmd/land"/>
       <remap from="mavros/set_mode" to="/mavros/set_mode"/>
       <remap from="mavros/param/set" to="/mavros/param/set"/>
       <remap from="mavros/param/get" to="/mavros/param/get"/>
