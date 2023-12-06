@@ -4,7 +4,7 @@
 
     <arg name="veh" default="wamv2" />
     <arg name="x" default="30" />
-    <arg name="y" default="50" />
+    <arg name="y" default="30" />
     <arg name="z" default="-0.090229" />
 
     <arg name="qx" default="0" />
@@ -13,7 +13,7 @@
     <arg name="qw" default="1" />
 
     <group ns="$(arg veh)">
-        <node pkg="vrx_gazebo" type="fake_fence_real2sim_pose_2ws.py" name="fake_fence_real2sim_pose" output="screen">
+        <node pkg="vrx_gazebo" type="fake_fence_real2sim_pose_1ws.py" name="fake_fence_real2sim_pose" output="screen">
             <remap from="joy" to="/joy" />
             <param name="~x" value="$(arg x)" />
             <param name="~y" value="$(arg y)" />

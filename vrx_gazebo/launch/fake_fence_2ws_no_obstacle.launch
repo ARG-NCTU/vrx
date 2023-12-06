@@ -55,7 +55,7 @@
   <arg if="$(arg t_config)" name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
 
   <!-- real_wamv -->
-  <arg name="real_sensors_enabled" default="false" />
+  <arg name="real_sensors_enabled" default="true" />
 
   <param name="$(arg namespace)/robot_description"
       command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'

@@ -84,6 +84,10 @@ add_subdirectory(msgs)
 
 add_definitions(${QT_DEFINITIONS})
 
+add_executable(wamv_mavlink_joy_teleop nodes/wamv_mavlink_joy_teleop.cpp)
+target_link_libraries(wamv_mavlink_joy_teleop ${catkin_LIBRARIES})
+add_dependencies(wamv_mavlink_joy_teleop ${catkin_EXPORTED_TARGETS})
+
 # Library for displaying waypoint markers
 add_library(waypoint_markers src/waypoint_markers.cc)
 target_link_libraries(waypoint_markers ${catkin_LIBRARIES})

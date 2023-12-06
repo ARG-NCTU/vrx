@@ -7,7 +7,14 @@
     <!--Waves-->
     <xacro:include filename="$(find wave_gazebo)/world_models/ocean_waves/model.xacro"/>
     <xacro:ocean_waves scale="2.5"/>
-
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <world_frame_orientation>ENU</world_frame_orientation>
+      <latitude_deg>-33.724223</latitude_deg>
+      <longitude_deg>150.679736</longitude_deg>
+      <elevation>0.0</elevation>
+      <heading_deg>0.0</heading_deg>
+    </spherical_coordinates>
     <!--Wind-->
     <!-- <xacro:include filename="$(find vrx_gazebo)/worlds/xacros/usv_wind_plugin.xacro"/>
     <xacro:usv_wind_gazebo>
@@ -511,5 +518,213 @@
           <pose>60 57.0 0.5 0 -0 0</pose>
           <static>true</static>
         </include>
+
+        <include>
+          <uri>model://dock_block_4x4</uri>
+          <name>dock_block_4x4_1</name>
+          <pose>-20 0 0.2 0 -0 0</pose>
+          <static>true</static>
+        </include>
+        <!--obstacle-->
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_0</name>
+          <pose>258 -7.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_1</name>
+          <pose>2258 -8.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_2</name>
+          <pose>258 -10.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_3</name>
+          <pose>258 -11.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_4</name>
+          <pose>258 -13.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_5</name>
+          <pose>258 -14.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_6</name>
+          <pose>258 -16.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_7</name>
+          <pose>258 -17.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_8</name>
+          <pose>258 -19.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_9</name>
+          <pose>258 -20.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_10</name>
+          <pose>258 -22.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_11</name>
+          <pose>258 -23.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_12</name>
+          <pose>258 -25.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_13</name>
+          <pose>258 -26.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_14</name>
+          <pose>258 -28.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_15</name>
+          <pose>258 -29.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_16</name>
+          <pose>258 -31.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_17</name>
+          <pose>258 -32.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_18</name>
+          <pose>258 -34.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_19</name>
+          <pose>258 -35.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_20</name>
+          <pose>258 -37.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_21</name>
+          <pose>258 -38.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_22</name>
+          <pose>258 -40.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_23</name>
+          <pose>258 -41.9 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
+        
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>real_obstacle_24</name>
+          <pose>258 -43.4 -100 0 -0 0</pose>
+          <static>true</static>
+        </include>
+
   </world>
 </sdf>
