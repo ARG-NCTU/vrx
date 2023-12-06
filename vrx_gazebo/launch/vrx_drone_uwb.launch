@@ -24,14 +24,13 @@
     <arg name="pinger_params" default="$(find vrx_gazebo)/config/pinger.yaml"/>
 
     <!-- drone & mavros config -->
-    <arg name="model" default="iris_depth_camera_downward"/>
+    <arg name="model" default="if750a_camera_pushing"/>
     <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
     <arg name="gcs_url" default="" />
     <!-- GCS link is provided by SITL -->
     <arg name="tgt_system" default="1" />
     <arg name="tgt_component" default="1" />
-    <arg name="UAV" default="iris"/>
-    <param name="use_sim_time" value="true" />
+    <arg name="vehicle" default="if750a"/>
     <arg name="respawn_mavros" default="false" />
 
     <!-- Define a static transform from a camera internal frame to the fcu for every camera used -->
@@ -39,7 +38,7 @@
 
     <!-- Launch PX4 SITL -->
     <include file="$(find px4)/launch/px4.launch">
-        <arg name="vehicle" value="$(arg UAV)"/>
+        <arg name="vehicle" value="$(arg vehicle)"/>
     </include>
 
     <!-- Launch MavROS -->
@@ -72,7 +71,7 @@
     <arg name="drone_z" default="3.7" />
     <arg name="drone_R" default="0" />
     <arg name="drone_P" default="0" />
-    <arg name="drone_Y" default="0" />
+    <arg name="drone_Y" default="0.7" />
 
     <!-- Spawn drone model in Gazebo -->
     <node name="spawn_model_drone" pkg="gazebo_ros" type="spawn_model" args="-x $(arg drone_x) -y $(arg drone_y) -z $(arg drone_z)
@@ -81,7 +80,7 @@
 
     <!-- wamv initail position -->
     <arg name="wamv_x" default="-750" />
-    <arg name="wamv_y" default="420" />
+    <arg name="wamv_y" default="350" />
     <arg name="wamv_z" default="0" />
     <arg name="wamv_R" default="0" />
     <arg name="wamv_P" default="0" />
