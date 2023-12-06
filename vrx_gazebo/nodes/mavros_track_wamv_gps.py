@@ -16,9 +16,9 @@ class MavrosTrackWAMVGPS:
         geo_pose_msg.header.stamp = rospy.Time.now()
         geo_pose_msg.header.frame_id = 'world'
         geo_pose_msg.pose.position.latitude = msg.latitude
-        geo_pose_msg.pose.position.longitude = msg.longitude
+        geo_pose_msg.pose.position.longitude = msg.longitude - 4.0e-5
         geo_pose_msg.pose.position.altitude = 10.0
-        q = quaternion_from_euler(0.0, 0.0, 45.0)
+        q = quaternion_from_euler(0.0, 0.0, 0.0)
         geo_pose_msg.pose.orientation.x = q[0]
         geo_pose_msg.pose.orientation.y = q[1]
         geo_pose_msg.pose.orientation.z = q[2]
