@@ -155,10 +155,10 @@
       args="-x -527 -y 144 -z 1.5
             -R 0 -P 0 -Y 0
             -sdf -database foldable_table -model table"/> -->
-      <node name="spawn_sdf_flag" pkg="gazebo_ros" type="spawn_model"
+      <!-- <node name="spawn_sdf_flag" pkg="gazebo_ros" type="spawn_model"
       args="-x -530 -y 144.5 -z 1.8
             -R 0 -P 0 -Y 0
-            -sdf -database flag -model flag"/>
+            -sdf -database flag -model flag"/> -->
 
 
 </launch>
