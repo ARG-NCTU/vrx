@@ -125,8 +125,11 @@
   <link name="${namespace}/dummy_link">
     <visual>
       <geometry>
-        <mesh filename="package://wamv_description/models/WAM-V-Base/mesh/WAM-V-Base.dae"/>
+        <mesh filename="package://wamv_description/models/WAM-V-Base/mesh/WAM-V-Base.stl"/>
       </geometry>
+      <material name="wamv_visual_material">
+        <color rgba=".175 .175 .175  1.0" />
+      </material>
     </visual>
 
     <!-- Left base collisions -->
@@ -149,6 +152,7 @@
       <inertia ixx="120.0" ixy="0.0" ixz="0.0" iyy="393" iyz="0.0" izz="446.0"/>
     </inertial>
   </link>
-
+  <gazebo reference="${namespace}/dummy_link">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
 </robot>
-
