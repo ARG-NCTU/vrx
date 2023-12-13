@@ -9,46 +9,56 @@ from pyexpat import model
 from sensor_msgs.msg import Joy
 from obstacle_detector.msg import Obstacles
 import math 
+import tf2_ros
 
 class RealtoSimTransform:
     def __init__(self):
         # self.model_sub = rospy.Subscriber("/gazebo/model_states", ModelStates, self.model_callback)
         self.pub_set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
-        self.pub_state_to_mapgrid = rospy.Publisher("/reset_map", Bool, queue_size=1)
         self.pub_pose = rospy.Publisher("/fake_fence_real2sim", PoseStamped, queue_size=1)
         self.sub_wamv_pose = rospy.Subscriber("/wamv/truth_map_posestamped", PoseStamped, self.wamv_pose_callback)
         self.sub_wamv2_pose = rospy.Subscriber("/wamv2/truth_map_posestamped", PoseStamped, self.wamv2_pose_callback)
-        self.sub_joy = rospy.Subscriber("/joy", Joy, self.joy_callback)
+        self.sub_joy = rospy.Subscriber("joy", Joy, self.joy_callback)
+        self.sync_freq = rospy.get_param("sync_freq", 20)
         self.timer_set_model_state = rospy.Timer(rospy.Duration(0.05), self.timer_callback)
-        self.sub_obstacle = rospy.Subscriber('/raw_obstacles', Obstacles, self.obstacle_cb, queue_size=1)
-
+        self.tf_broadcaster = tf2_ros.TransformBroadcaster()
+        self.tf_msg = TransformStamped()
+        
+        self.flag = False
         self.matrix_wamv_origin_to_map = None
         self.matrix_wamv2_origin_to_map = None
         self.wamv_pose = PoseStamped()
         self.wamv2_pose = PoseStamped()
 
-        self.start_x = rospy.get_param("~x", 30)
-        self.start_y = rospy.get_param("~y", 30)
-        self.start_z = rospy.get_param("~z",  -0.090229)
+        self.init_wamv2 = PoseStamped()
+        self.init_wamv2.pose.position.x = 10
+        self.init_wamv2.pose.position.y = 0
+        self.init_wamv2.pose.position.z =  -0.090229
+        self.init_wamv2.pose.orientation.x = 0
+        self.init_wamv2.pose.orientation.y = 0
+        self.init_wamv2.pose.orientation.z = 0
+        self.init_wamv2.pose.orientation.w = 0
         
-        self.init_pose = PoseStamped()
-        self.init_pose.pose.position.x = self.start_x
-        self.init_pose.pose.position.y = self.start_y
-        self.init_pose.pose.position.z = self.start_z
+        self.init_wamv3 = PoseStamped()
+        self.init_wamv3.pose.position.x = 10
+        self.init_wamv3.pose.position.y = 50
+        self.init_wamv3.pose.position.z = -0.090229
+        self.init_wamv3.pose.orientation.x = 0
+        self.init_wamv3.pose.orientation.y = 0
+        self.init_wamv3.pose.orientation.z = 0
+        self.init_wamv3.pose.orientation.w = 0
+
+        self.init_wamv4 = PoseStamped()
+        self.init_wamv4.pose.position.x = 10
+        self.init_wamv4.pose.position.y = -50
+        self.init_wamv4.pose.position.z = -0.090229
+        self.init_wamv4.pose.orientation.x = 0
+        self.init_wamv4.pose.orientation.y = 0
+        self.init_wamv4.pose.orientation.z = 0
+        self.init_wamv4.pose.orientation.w = 0
         
-        self.flag = False
-        self.obstacle_name = 'real_obstacle_'
-        self.max_num = 0
-        self.existing_obstacle = []
-
-    #     self.sub_scan = rospy.Subscriber("/wamv/RL/more_scan", LaserScan, self.cb_laser_2)
-    #     self.pub_scan_2 = rospy.Publisher("/wamv/RL/more_scan_2", LaserScan, queue_size=1)
-
-    # def cb_laser_2(self, msg):
-    #     laser = msg
-    #     laser.header.stamp = rospy.Time.now()
-    #     laser.header.frame_id = "wamv2/lidar_wamv_link"
-    #     self.pub_scan_2.publish(laser)
+        self.time = rospy.Time.now()
+        self.joy = None
 
     def wamv_pose_callback(self, pose):
         self.wamv_pose = pose
@@ -57,121 +67,23 @@ class RealtoSimTransform:
         self.wamv2_pose = pose
 
     def joy_callback(self, joy):
-        joy_trigger = joy.buttons[4] and not self.joy.buttons[4]
- 
-        if joy_trigger and self.flag == False:
-            print('start sync')
+
+        if self.joy is None:
+            self.joy = joy
+            return
+
+        joy_trigger = joy.buttons[4] and not self.joy.buttons[4] 
+        print('joy_trigger', joy_trigger)
+
+        if joy_trigger:
+            print('start sync')   
             self.matrix_wamv_origin_to_map = self.pose_to_matrix(self.wamv_pose)
             self.matrix_wamv2_origin_to_map = self.pose_to_matrix(self.wamv2_pose)
             self.flag = True
-            print(self.flag)
-
-        elif joy_trigger and self.flag == True :
-            self.flag = False
-            print('stop sync')
-            self.init_pose.pose.orientation = self.wamv_pose.pose.orientation
-            self.init_pose.pose.orientation.x = 0
-            self.init_pose.pose.orientation.y = 0
-            self.set_model(model_name = "wamv2", pose = self.init_pose)
-            print('reset wamv2')    
-            self.pub_state_to_mapgrid.publish(True)
-        self.joy = joy
-            
-        # elif self.joy.buttons[5]:
-        #     #set wamv2 pose
-        #     self.init_pose.pose.orientation = self.wamv_pose.pose.orientation
-        #     self.init_pose.pose.orientation.x = 0
-        #     self.init_pose.pose.orientation.y = 0
-        #     self.set_model(model_name = "wamv2", pose = self.init_pose)
-        #     print('reset wamv2')    
-        #     self.pub_state_to_mapgrid.publish(True)
-            
-            
-    def obstacle_cb(self, msg):
-        cnt = 0
-        for circle in msg.circles:
-            obstacle_pose = PoseStamped()
-            obstacle_pose.pose.position.x = circle.center.x
-            obstacle_pose.pose.position.y = circle.center.y
-            obstacle_pose.pose.position.z = circle.center.z
-            obstacle_pose.pose.orientation.x = 0
-            obstacle_pose.pose.orientation.y = 0
-            obstacle_pose.pose.orientation.z = 0
-            obstacle_pose.pose.orientation.w = 1
-            model_name = self.obstacle_name + str(cnt)
-            new_model = {'model': model_name, 
-                        'pose_x': obstacle_pose.pose.position.x, 
-                        'pose_y': obstacle_pose.pose.position.y}
-            update_name = self.check_obstacle(new_model) 
-            if self.flag == True:
-                if  update_name == False:
-                    self.set_model(model_name = model_name, pose = obstacle_pose)
-                    self.existing_obstacle.append(new_model)
-                    print('new obstacle:', model_name)
-                else:
-                    self.set_model(model_name = update_name, pose = obstacle_pose)
-                    print('update obstacle:', update_name)
-                    
-            else:
-                self.existing_obstacle = []
-                self.init_obstacle()
-                print('no obstacle detect')
-                pass
-            cnt += 1
-
-    def init_obstacle(self):
-        # print('inint_obstacle')
-        for i in range (25):
-            obstacle_pose = PoseStamped()
-            model_name = self.obstacle_name + str(i)
-            obstacle_pose.pose.position.x = 60
-            obstacle_pose.pose.position.y = i + 2
-            obstacle_pose.pose.position.z = -50 
-            obstacle_pose.pose.orientation.x = 0
-            obstacle_pose.pose.orientation.y = 0
-            obstacle_pose.pose.orientation.z = 0
-            obstacle_pose.pose.orientation.w = 1
-            self.set_model(model_name = model_name, pose = obstacle_pose)
-
-    # def model_callback(self, msg):
-    #     self.existing_obstacle_x = []
-    #     self.existing_obstacle_y = []
-    #     try:
-    #         for i in range (self.max_num):
-    #             model = self.obstacle_name + str(i)
-    #             model_index = msg.name.index(model)
-    #             self.existing_obstacle_x.append(msg.pose[model_index].position.x)
-    #             self.existing_obstacle_y.append(msg.pose[model_index].position.y)          
-    #             print('obstacle_x:', self.existing_obstacle_x)   
-    #             # print(len(self.existing_obstacle_x))
-    #     except ValueError:
-    #         pass
-        
-    def check_obstacle(self, new_model):
-        try:
-            if self.existing_obstacle == None:
-                self.existing_obstacle.append(new_model)
-                return False
-            else:
-                for i in range(len(self.existing_obstacle)):
-                    dis = self.dist([self.existing_obstacle[i]['pose_x'], self.existing_obstacle[i]['pose_y']], [new_model['pose_x'], new_model['pose_y']])
-                    if dis < 4 : #update obstacle
-                        self.existing_obstacle[i]['pose_x'] = new_model['pose_x']
-                        self.existing_obstacle[i]['pose_y'] = new_model['pose_y']
-                        model_name = self.obstacle_name + str(i) 
-                        return model_name
-                    else:
-                        # self.existing_obstacle.append(new_model)
-                        pass
-                return False
-            
-        except ValueError:
+        else:
             pass
-            
-    def dist(self, p1, p2):
-        dis =  math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
-        return dis   
-
+        self.joy = joy
+       
     def timer_callback(self, event):
         
         if self.flag == True: 
@@ -185,7 +97,7 @@ class RealtoSimTransform:
             matrix_wamv2_to_map = np.dot(self.matrix_wamv2_origin_to_map, matrix_wamv_to_origin)
             # pub
             pose_wamv2_to_map = self.matrix_to_pose(matrix_wamv2_to_map, "map")
-            pose_wamv2_to_map.pose.position.z = self.start_z
+            pose_wamv2_to_map.pose.position.z = -0.090229
             euler = tf_trans.euler_from_quaternion(
                 [
                     pose_wamv2_to_map.pose.orientation.x,
@@ -195,16 +107,29 @@ class RealtoSimTransform:
                 ]
             )
             q = tf_trans.quaternion_from_euler(0, 0, euler[2])
-            pose_wamv2_to_map.pose.orientation.x = q[0]
-            pose_wamv2_to_map.pose.orientation.y = q[1]
+            pose_wamv2_to_map.pose.orientation.x = self.wamv_pose.pose.orientation.x #q[0]
+            pose_wamv2_to_map.pose.orientation.y = self.wamv_pose.pose.orientation.y #q[1]
             pose_wamv2_to_map.pose.orientation.z = q[2]
             pose_wamv2_to_map.pose.orientation.w = q[3]
-            model_state = ModelState()
-            model_state.model_name = "wamv2"
-            model_state.reference_frame = "world"
-            model_state.pose = pose_wamv2_to_map.pose
-            self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)
+            
+            
+            self.tf_msg.header.stamp = rospy.Time.now()
+            self.tf_msg.header.frame_id = "map"
+            self.tf_msg.child_frame_id = "wamv2/base_link"
+            self.tf_msg.transform.translation = pose_wamv2_to_map.pose.position
+            self.tf_msg.transform.rotation = pose_wamv2_to_map.pose.orientation
+            self.tf_broadcaster.sendTransform(self.tf_msg) 
+            
             self.pub_pose.publish(pose_wamv2_to_map)
+            print("wamv2 pose to map: ", pose_wamv2_to_map)
+            
+            # # update wamv2 pose every 1/sync_freq seconds
+            if rospy.Time.now() - self.time > rospy.Duration(1/self.sync_freq):
+                self.time = rospy.Time.now()  
+                print("update wamv2 pose")
+                self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)  
+                
+            # self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)   
             # print("wamv2 pose to map: ", pose_wamv2_to_map)
 
             # matrix_wamv2_to_origin = np.dot(tf_trans.inverse_matrix(self.matrix_wamv2_origin_to_map), matrix_wamv2_to_map)
@@ -213,7 +138,12 @@ class RealtoSimTransform:
             # print("wamv2 pose to map: ", pose_wamv2_to_map)
             
         else:
-            pass
+            self.init_wamv2.pose.orientation = self.wamv_pose.pose.orientation
+            self.init_wamv2.pose.orientation.x = 0
+            self.init_wamv2.pose.orientation.y = 0
+            self.set_model(model_name ='wamv2', pose = self.init_wamv2)
+            self.set_model(model_name='wamv3', pose = self.init_wamv3)
+            self.set_model(model_name='wamv4', pose = self.init_wamv4)
         
     def set_model(self, model_name, pose):
         model_state = ModelState()
