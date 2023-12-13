@@ -22,8 +22,8 @@
   <!-- Initial USV location and attitude-->
 
   <!-- real -->
-  <arg name="real_x" default="30" />
-  <arg name="real_y" default="50" />
+  <arg name="real_x" default="10" />
+  <arg name="real_y" default="0" />
   <arg name="real_z" default="-0.090229" />
   <arg name="real_P" default="0" />
   <arg name="real_R" default="0" />

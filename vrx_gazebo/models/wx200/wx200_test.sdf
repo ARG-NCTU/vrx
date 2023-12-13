@@ -1,45 +1,11 @@
 <?xml version="1.0" ?>
-<sdf version="1.5">
-  <!--in this version arm can rotate  upside down but have problem to load controller because of :: prefix problem-->
-  <model name='if750a_with_arm'>
-
-    <include>
-      <uri>model://if750a_fix_motor</uri>
-      <name>if750a</name>
-    </include>
-
-    <!-- <include>
-      <uri>model://wx200</uri>
-      <pose>0 0 0.3 -3.14 0 0</pose>
-    </include> -->
-
-    <include>
-      <uri>model://depth_camera</uri>
-      <pose>0 0 0.2 0 0 0</pose>
-    </include> 
-
-
-    <joint name="depth_camera_joint" type="revolute">
-      <child>depth_camera::link</child>
-      <parent>if750a::base_link</parent>
-      <axis>
-        <xyz>0 0 1</xyz>
-        <limit>
-          <upper>0</upper>
-          <lower>0</lower>
-        </limit>
-      </axis>
-    </joint>
-
-    <joint name='widowx200_baselink_to_drone_baselink' type='fixed'>
-      <child>wx200/base_link</child>
-      <parent>if750a::base_link</parent>
-    </joint>
+<sdf version="1.4">
+  <model name='wx200'>
     <link name='wx200/base_link'>
-      <pose frame=''>0 0 0.3 -3.14 0 0</pose>
+      <pose frame=''>0 0 0 0 -0 0</pose>
       <inertial>
         <pose frame=''>-0.038175 0.000648 0.019346 0 -0 1.5708</pose>
-        <mass>0.00540142</mass>
+        <mass>0.540142</mass>
         <inertia>
           <ixx>0.002119</ixx>
           <ixy>-1.721e-05</ixy>
@@ -57,6 +23,18 @@
             <uri>/home/argrobotx/robotx-2022/catkin_ws/src/interbotix_arm/interbotix_ros_manipulators/interbotix_ros_xsarms/interbotix_xsarm_descriptions/meshes/wx200_meshes/wx200_1_base.stl</uri>
           </mesh>
         </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <bounce/>
+        </surface>
         <max_contacts>10</max_contacts>
       </collision>
       <visual name='wx200/base_link_visual'>
@@ -83,11 +61,15 @@
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
     </link>
+    <joint name='fixed' type='fixed'>
+      <child>wx200/base_link</child>
+      <parent>world</parent>
+    </joint>
     <link name='wx200/shoulder_link'>
-      <pose frame=''>0 0.000115 0.228 -3.14 0 0</pose>
+      <pose frame=''>0 0 0.072 0 -0 0</pose>
       <inertial>
         <pose frame=''>2.2e-05 4.1e-05 0.006629 0 -0 1.5708</pose>
-        <mass>0.00480879</mass>
+        <mass>0.480879</mass>
         <inertia>
           <ixx>0.000379</ixx>
           <ixy>2.2e-09</ixy>
@@ -105,6 +87,18 @@
             <uri>/home/argrobotx/robotx-2022/catkin_ws/src/interbotix_arm/interbotix_ros_manipulators/interbotix_ros_xsarms/interbotix_xsarm_descriptions/meshes/wx200_meshes/wx200_2_shoulder.stl</uri>
           </mesh>
         </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <bounce/>
+        </surface>
         <max_contacts>10</max_contacts>
       </collision>
       <visual name='wx200/shoulder_link_visual'>
@@ -152,10 +146,10 @@
       </axis>
     </joint>
     <link name='wx200/upper_arm_link'>
-      <pose frame=''>0 0.000176 0.18935 -3.14 0 0</pose>
+      <pose frame=''>0 0 0.11065 0 -0 0</pose>
       <inertial>
         <pose frame=''>0.011971 -0.000118 0.139429 0 -0 1.5708</pose>
-        <mass>0.00297781</mass>
+        <mass>0.297781</mass>
         <inertia>
           <ixx>0.00171</ixx>
           <ixy>-1.1433e-06</ixy>
@@ -173,6 +167,18 @@
             <uri>/home/argrobotx/robotx-2022/catkin_ws/src/interbotix_arm/interbotix_ros_manipulators/interbotix_ros_xsarms/interbotix_xsarm_descriptions/meshes/wx200_meshes/wx200_3_upper_arm.stl</uri>
           </mesh>
         </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <bounce/>
+        </surface>
         <max_contacts>10</max_contacts>
       </collision>
       <visual name='wx200/upper_arm_link_visual'>
@@ -220,10 +226,10 @@
       </axis>
     </joint>
     <link name='wx200/forearm_link'>
-      <pose frame=''>0.05 0.000495 -0.01065 -3.14 0 0</pose>
+      <pose frame=''>0.05 0 0.31065 0 -0 0</pose>
       <inertial>
         <pose frame=''>0.121192 -0.000124 0 0 -0 1.5708</pose>
-        <mass>0.00283651</mass>
+        <mass>0.283651</mass>
         <inertia>
           <ixx>0.001185</ixx>
           <ixy>-2.4317e-06</ixy>
@@ -241,6 +247,18 @@
             <uri>/home/argrobotx/robotx-2022/catkin_ws/src/interbotix_arm/interbotix_ros_manipulators/interbotix_ros_xsarms/interbotix_xsarm_descriptions/meshes/wx200_meshes/wx200_4_forearm.stl</uri>
           </mesh>
         </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <bounce/>
+        </surface>
         <max_contacts>10</max_contacts>
       </collision>
       <visual name='wx200/forearm_link_visual'>
@@ -288,7 +306,7 @@
       </axis>
     </joint>
     <link name='wx200/wrist_link'>
-      <pose frame=''>0.25 0.000495 -0.01065 -3.14 0 0</pose>
+      <pose frame=''>0.25 0 0.31065 0 -0 0</pose>
       <inertial>
         <pose frame=''>0.04236 -1.1e-05 0.010577 0 -0 1.5708</pose>
         <mass>0.084957</mass>
@@ -309,6 +327,18 @@
             <uri>/home/argrobotx/robotx-2022/catkin_ws/src/interbotix_arm/interbotix_ros_manipulators/interbotix_ros_xsarms/interbotix_xsarm_descriptions/meshes/wx200_meshes/wx200_5_wrist.stl</uri>
           </mesh>
         </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <bounce/>
+        </surface>
         <max_contacts>10</max_contacts>
       </collision>
       <visual name='wx200/wrist_link_visual'>
@@ -356,7 +386,7 @@
       </axis>
     </joint>
     <link name='wx200/gripper_link'>
-      <pose frame=''>0.315 0.000495 -0.01065 -3.14 0 0</pose>
+      <pose frame=''>0.315 0 0.31065 0 -0 0</pose>
       <inertial>
         <pose frame=''>0.021631 0 0.01141 0 -0 1.5708</pose>
         <mass>0.072885</mass>
@@ -377,6 +407,18 @@
             <uri>/home/argrobotx/robotx-2022/catkin_ws/src/interbotix_arm/interbotix_ros_manipulators/interbotix_ros_xsarms/interbotix_xsarm_descriptions/meshes/wx200_meshes/wx200_6_gripper.stl</uri>
           </mesh>
         </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <bounce/>
+        </surface>
         <max_contacts>10</max_contacts>
       </collision>
       <visual name='wx200/gripper_link_visual'>
@@ -424,7 +466,7 @@
       </axis>
     </joint>
     <link name='wx200/ee_arm_link'>
-      <pose frame=''>0.358 0.000495 -0.01065 -3.14 0 0</pose>
+      <pose frame=''>0.358 0 0.31065 0 -0 0</pose>
       <inertial>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <mass>0.001</mass>
@@ -468,7 +510,7 @@
       </physics>
     </joint>
     <link name='wx200/gripper_prop_link'>
-      <pose frame=''>0.3635 0.000495 -0.01065 -3.14 0 0</pose>
+      <pose frame=''>0.3635 0 0.31065 0 -0 0</pose>
       <inertial>
         <pose frame=''>0.000846 -2e-06 4.2e-05 0 -0 1.5708</pose>
         <mass>0.00434</mass>
@@ -489,6 +531,18 @@
             <uri>/home/argrobotx/robotx-2022/catkin_ws/src/interbotix_arm/interbotix_ros_manipulators/interbotix_ros_xsarms/interbotix_xsarm_descriptions/meshes/wx200_meshes/wx200_7_gripper_prop.stl</uri>
           </mesh>
         </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <bounce/>
+        </surface>
         <max_contacts>10</max_contacts>
       </collision>
       <visual name='wx200/gripper_prop_link_visual'>
@@ -534,7 +588,7 @@
       </axis>
     </joint>
     <link name='wx200/gripper_bar_link'>
-      <pose frame=''>0.358 0.000495 -0.01065 -3.14 0 0</pose>
+      <pose frame=''>0.358 0 0.31065 0 -0 0</pose>
       <inertial>
         <pose frame=''>0.009687 1e-06 0.004962 0 -0 1.5708</pose>
         <mass>0.034199</mass>
@@ -555,6 +609,18 @@
             <uri>/home/argrobotx/robotx-2022/catkin_ws/src/interbotix_arm/interbotix_ros_manipulators/interbotix_ros_xsarms/interbotix_xsarm_descriptions/meshes/wx200_meshes/wx200_8_gripper_bar.stl</uri>
           </mesh>
         </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <bounce/>
+        </surface>
         <max_contacts>10</max_contacts>
       </collision>
       <visual name='wx200/gripper_bar_link_visual'>
@@ -605,7 +671,7 @@
       </physics>
     </joint>
     <link name='wx200/fingers_link'>
-      <pose frame=''>0.381 0.000495 -0.01065 -3.14 0 0</pose>
+      <pose frame=''>0.381 0 0.31065 0 -0 0</pose>
       <inertial>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <mass>0.001</mass>
@@ -649,7 +715,7 @@
       </physics>
     </joint>
     <link name='wx200/ee_gripper_link'>
-      <pose frame=''>0.408575 0.000495 -0.01065 -3.14 0 0</pose>
+      <pose frame=''>0.408575 0 0.31065 0 -0 0</pose>
       <inertial>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <mass>0.001</mass>
@@ -693,7 +759,7 @@
       </physics>
     </joint>
     <link name='wx200/left_finger_link'>
-      <pose frame=''>0.381 0.000495 -0.01065 -3.14 0 0</pose>
+      <pose frame=''>0.381 0 0.31065 0 -0 0</pose>
       <inertial>
         <pose frame=''>0.013816 0 0 0 -0 -1.5708</pose>
         <mass>0.016246</mass>
@@ -714,6 +780,18 @@
             <uri>/home/argrobotx/robotx-2022/catkin_ws/src/interbotix_arm/interbotix_ros_manipulators/interbotix_ros_xsarms/interbotix_xsarm_descriptions/meshes/wx200_meshes/wx200_9_gripper_finger.stl</uri>
           </mesh>
         </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <bounce/>
+        </surface>
         <max_contacts>10</max_contacts>
       </collision>
       <visual name='wx200/left_finger_link_visual'>
@@ -761,7 +839,7 @@
       </axis>
     </joint>
     <link name='wx200/right_finger_link'>
-      <pose frame=''>0.381 0.000495 -0.01065 -3.14 0 0</pose>
+      <pose frame=''>0.381 0 0.31065 0 -0 0</pose>
       <inertial>
         <pose frame=''>0.013816 0 0 -3.14159 -0 -1.5708</pose>
         <mass>0.016246</mass>
@@ -782,6 +860,18 @@
             <uri>/home/argrobotx/robotx-2022/catkin_ws/src/interbotix_arm/interbotix_ros_manipulators/interbotix_ros_xsarms/interbotix_xsarm_descriptions/meshes/wx200_meshes/wx200_9_gripper_finger.stl</uri>
           </mesh>
         </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+            <torsional>
+              <ode/>
+            </torsional>
+          </friction>
+          <bounce/>
+        </surface>
         <max_contacts>10</max_contacts>
       </collision>
       <visual name='wx200/right_finger_link_visual'>
@@ -834,20 +924,6 @@
       <legacyModeNS>1</legacyModeNS>
       <robotNamespace>/wx200/</robotNamespace>
     </plugin>
-    <plugin name='gazebo_grasp_fix' filename='libgazebo_grasp_fix.so'>
-      <arm>
-        <arm_name>wx200</arm_name>
-        <palm_link>wx200/fingers_link</palm_link>
-        <gripper_link>wx200/left_finger_link</gripper_link>
-        <gripper_link>wx200/right_finger_link</gripper_link>
-      </arm>
-    <forces_angle_tolerance>150</forces_angle_tolerance>
-    <update_rate>100</update_rate>
-    <grip_count_threshold>2</grip_count_threshold>
-    <max_grip_count>8</max_grip_count>
-    <release_tolerance>0.005</release_tolerance>
-    <disable_collisions_on_attach>true</disable_collisions_on_attach>
-    <contact_topic>__default_topic__</contact_topic>
-  </plugin>  
+    <pose frame=''>0 0 0 0 -0 0</pose>
   </model>
 </sdf>

@@ -20,6 +20,7 @@ class VR_remap_joy:
         self.vr_to_joy.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.vr_to_joy.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
+
     def cb_joy(self, msg):
 
         self.vr_to_joy.header.stamp = rospy.Time.now()
@@ -43,6 +44,10 @@ class VR_remap_joy:
         
         ##for PX4 and transform wamv pose to wamv2 pose
         self.pub_joy.publish(self.vr_to_joy)
+
+    
+        if self.vr_to_joy.buttons[3] == 1:
+            self.vr_to_joy.buttons[7] = 1
 
         # Digital twin share the same command 
         if self.vr_to_joy.axes[2] == 2:
