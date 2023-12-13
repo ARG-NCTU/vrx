@@ -36,6 +36,7 @@
 
   <xacro:arg name="plate" default="false" />
   <xacro:arg name="mavlink_enabled" default="false" />
+  <xacro:arg name="red_ball" default="false" />
 
   <!-- === The WAM-V platform === -->
   <xacro:include filename="$(find wamv_gazebo)/urdf/wamv_gazebo.xacro"/>
@@ -207,10 +208,36 @@
         <origin xyz="0 0 1.85"/>
       </joint>
     </xacro:if>
+
     <xacro:if value="$(arg mavlink_enabled)">
       <xacro:wamv_mavlink name="mavlink_wamv"/>
     </xacro:if>
 
+    <xacro:if value="$(arg red_ball)">
+      <link name="$(arg namespace)/red_ball">
+        <visual>
+          <geometry>
+            <sphere radius="0.1"/>
+          </geometry>
+        </visual>
+        <collision>
+          <geometry>
+            <sphere radius="0.1"/>
+          </geometry>
+        </collision>
+      </link>
+
+      <joint name="base_to_red_ball" type="fixed">
+        <parent link="$(arg namespace)/base_link"/>
+        <child link="$(arg namespace)/red_ball"/>
+        <origin xyz="-0.2 0 1.8"/>
+      </joint>
+
+      <gazebo reference="${namespace}/red_ball">
+        <material>Gazebo/Red</material>
+      </gazebo>
+
+    </xacro:if>
   </xacro:unless>
 
 </robot>
