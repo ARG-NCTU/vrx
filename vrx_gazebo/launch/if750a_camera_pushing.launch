@@ -1,0 +1,74 @@
+<launch>
+    <arg name="drone_ns" default="if750a_camera_pushing"/>
+
+    <arg name="fcu_url" default="udp://:14540@localhost:14557" />
+    <arg name="gcs_url" default="" />
+    <arg name="tgt_system" default="1" />
+    <arg name="tgt_component" default="1" />
+    <arg name="log_output" default="screen" />
+    <arg name="fcu_protocol" default="v2.0" />
+    <arg name="respawn_mavros" default="false" />
+
+    <include file="$(find mavros)/launch/node.launch">
+        <arg name="pluginlists_yaml" value="$(find mavros)/launch/px4_pluginlists.yaml" />
+        <arg name="config_yaml" value="$(find vrx_gazebo)/config/drone_config/px4_config_if750a_camera_pushing.yaml" />
+
+        <arg name="fcu_url" value="$(arg fcu_url)" />
+        <arg name="gcs_url" value="$(arg gcs_url)" />
+        <arg name="tgt_system" value="$(arg tgt_system)" />
+        <arg name="tgt_component" value="$(arg tgt_component)" />
+        <arg name="log_output" value="$(arg log_output)" />
+        <arg name="fcu_protocol" value="$(arg fcu_protocol)" />
+        <arg name="respawn_mavros" default="$(arg respawn_mavros)" />
+    </include>
+
+    <arg name="est" default="ekf2"/>
+    <arg name="vehicle" default="if750a"/>
+    <arg name="ID" default="0"/>
+    <arg name="interactive" default="true"/>
+
+    <include file="$(find px4)/launch/px4.launch">
+        <arg name="est" value="$(arg est)"/>
+        <arg name="vehicle" value="$(arg vehicle)"/>
+        <arg name="ID" value="$(arg ID)"/>
+        <arg name="interactive" value="$(arg interactive)"/>
+    </include>
+
+    <arg name="model" default="if750a_camera_pushing"/>
+
+    <arg name="x" default="-738" />
+    <arg name="y" default="316" />
+    <arg name="z" default="0.59" />
+    <arg name="R" default="0" />
+    <arg name="P" default="0" />
+    <arg name="Y" default="0" />
+
+    <!-- Spawn drone model in Gazebo -->
+    <node name="$(arg drone_ns)_spawn_model" pkg="gazebo_ros" type="spawn_model" args="-x $(arg x) -y $(arg y) -z $(arg z)
+              -R $(arg R) -P $(arg P) -Y $(arg Y)
+              -sdf -database $(arg model) -model $(arg drone_ns)"/>
+
+    <param name="$(arg drone_ns)/robot_description" command="cat '/home/argrobotx/robotx-2022/Firmware/Tools/sitl_gazebo/models/$(arg model)/$(arg model).urdf'" />
+
+    <group ns="$(arg drone_ns)">
+        <node pkg="vrx_gazebo" type="model_state_to_tf.py" name="model_state_to_tf">
+            <param name="model_name" value="$(arg drone_ns)"/>
+            <param name="model_tf_suffix" value="base_link"/>
+            <param name="broadcast_rate" value="50"/>
+        </node>
+
+        <node pkg="vrx_gazebo" type="model_state_to_pose_stamped.py" name="model_state_to_pose_stamped" output="log">
+            <param name="model_name" value="$(arg drone_ns)"/>
+            <param name="publish_rate" value="50"/>
+        </node>
+
+        <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+            <remap from="robot_description" to="robot_description" />
+            <remap from="joint_states" to="joint_states" />
+            <param name="tf_prefix" value="$(arg drone_ns)" />
+        </node>
+
+        <node pkg="vrx_gazebo" type="if750a_joint_state_publisher.py" name="joint_state_publisher"/>
+    </group>
+
+</launch>

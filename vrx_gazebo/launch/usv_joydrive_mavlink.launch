@@ -17,13 +17,14 @@
       <remap from="~thrust_right" to="/$(arg veh)/thrusters/right_thrust_cmd"/>
       <remap from="~thrust_left_lateral" to="/$(arg veh)/thrusters/left_lateral_thrust_cmd"/>
       <remap from="~thrust_right_lateral" to="/$(arg veh)/thrusters/right_lateral_thrust_cmd"/>
-      <remap from="mavros/cmd/arming" to="/mavros/cmd/arming"/>
-      <remap from="mavros/cmd/land" to="/mavros/cmd/land"/>
-      <remap from="mavros/set_mode" to="/mavros/set_mode"/>
-      <remap from="mavros/param/set" to="/mavros/param/set"/>
-      <remap from="mavros/param/get" to="/mavros/param/get"/>
       <remap from="~twist" to="/mavros/setpoint_velocity/cmd_vel_unstamped"/>
-      <remap from="~joy" to="/$(arg veh)/joy"/>
+      <rosparam>
+        throttle_high_throttle: 2.0
+        throttle_high_linear: 5.0
+        throttle_high_angular: 1.0
+      </rosparam>
     </node>
+    
+    <!-- <node pkg="vrx_gazebo" type="mavros_track_wamv_uwb.py" name="mavros_track_wamv_uwb" output="screen"/> -->
   </group>
 </launch>
