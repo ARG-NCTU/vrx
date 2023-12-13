@@ -37,8 +37,8 @@ class ROSBridgeConnector:
             self.sub_scan = rospy.Subscriber("/wamv/RL/more_scan", LaserScan, self.cb_laser_2)
             self.pub_scan_2 = rospy.Publisher("/wamv/RL/more_scan_2", LaserScan, queue_size=1)
             if self.vr == True :
-                self.pub_joy = roslibpy.Topic(self.client, "/joy", "sensor_msgs/Joy")
-                print('joy : ws2->ws1')
+                self.pub_joy = roslibpy.Topic(self.client, "/wamv/joy", "sensor_msgs/Joy")
+                print('joy : ws2-> ws1')
         else:
             pass
 
@@ -59,7 +59,7 @@ class ROSBridgeConnector:
             rospy.Subscriber("/wamv/cmd_vel", Twist, self.cb_twist)
             rospy.Subscriber("/wamv2/truth_map_posestamped", PoseStamped, self.cb_wamv2_pose)
             if self.vr == True :
-                rospy.Subscriber("/joy", Joy, self.cb_joy)
+                rospy.Subscriber("/wamv/joy", Joy, self.cb_joy)
         else:
             pass
     
