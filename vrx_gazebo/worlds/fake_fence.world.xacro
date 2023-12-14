@@ -28,7 +28,7 @@
     </xacro:usv_wind_gazebo> -->
 
   <!-- left obstacle -->
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>block_l17</name>
           <pose>60 -57.5 0.5 0 -0 0</pose>
@@ -54,7 +54,7 @@
           <name>block_l20</name>
           <pose>60 -53.0 0.5 0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
         
         <include>
           <uri>model://polyform_a7</uri>
@@ -491,7 +491,7 @@
           <static>true</static>
         </include>
         
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>block_r33</name>
           <pose>60 52.5 0.5 0 -0 0</pose>
@@ -517,7 +517,7 @@
           <name>block_r36</name>
           <pose>60 57.0 0.5 0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
         <include>
           <uri>model://dock_block_4x4</uri>
@@ -525,7 +525,8 @@
           <pose>-20 0 0.2 0 -0 0</pose>
           <static>true</static>
         </include>
-        <!--obstacle-->
+        <!-- obstacle -->
+
       
         <include>
           <uri>model://polyform_a7</uri>
@@ -894,7 +895,7 @@
           <static>true</static>
         </include>
 
-        
+<!--         
         <include>
           <uri>model://polyform_a7</uri>
           <name>real_obstacle_46</name>
@@ -932,10 +933,10 @@
           <name>real_obstacle_50</name>
           <pose>300 -125.0 -100 0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
         
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_obstacle_51</name>
           <pose>300 -126.5 -100 0 -0 0</pose>
@@ -1012,10 +1013,10 @@
           <name>real_obstacle_60</name>
           <pose>300 -140.0 -100 0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
         
-        <include>
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>real_obstacle_61</name>
           <pose>300 -141.5 -100 0 -0 0</pose>
@@ -1132,9 +1133,9 @@
           <name>real_obstacle_75</name>
           <pose>300 -162.5 -100 0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
-        
+<!--         
         <include>
           <uri>model://polyform_a7</uri>
           <name>real_obstacle_76</name>
@@ -1324,7 +1325,7 @@
           <name>real_obstacle_99</name>
           <pose>300 -198.5 -100 0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
         
   </world>

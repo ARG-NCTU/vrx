@@ -67,7 +67,7 @@
 
 
     <node pkg="tf" type="static_transform_publisher" name="tf_arm_link"
-          args="0 0 0 -3.14 0 0 fcu wx200/base_link 10"/>
+          args="0 0 0.3 -3.14 -3.14 0 base_link wx200/base_link 10"/>
 
     <!-- forward -->
     <!-- <node pkg="tf" type="static_transform_publisher" name="tf_front_camera_link"
@@ -121,19 +121,21 @@
 		<arg name="robot_model" value="wx200"/>
             <arg name="use_position_controllers" value="true"/>
             <arg name="use_world_frame" value="false"/> 
-
 	</include>
-
-
-    <node name="spawn_model_drone" pkg="gazebo_ros" type="spawn_model"
+   
+      <!-- if750a drone discription-->
+      
+      <arg name="drone_model" default="/home/argrobotx/robotx-2022/Firmware/Tools/sitl_gazebo/models/if750a_fix_motor/if750a_fix_motor.urdf"/>
+      <param name="robot_description" command="$(find xacro)/xacro.py $(arg drone_model)" />
+      <!-- <param name="use_gui" value="$(arg gui)"/> -->
+      <node name="if750a_joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+      <node name="if750a_robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />  
+          
+      <!--spawn if750a_revere_arm model-->
+      <node name="spawn_model_drone" pkg="gazebo_ros" type="spawn_model"
         args="-x $(arg drone_x) -y $(arg drone_y) -z $(arg drone_z)
               -R $(arg drone_R) -P $(arg drone_P) -Y $(arg drone_Y)
-              -sdf -database if750a_with_arm -model drone_with_wx200"/>
-
-       <!-- <node name="spawn_model_drone" pkg="gazebo_ros" type="spawn_model"
-        args="-x $(arg drone_x) -y $(arg drone_y) -z $(arg drone_z)
-              -R $(arg drone_R) -P $(arg drone_P) -Y $(arg drone_Y)
-              -sdf -database if750a_fix_motor -model drone"/> -->
+              -sdf -database if750a_reverse_arm -model drone"/>
 
     <!-- Allow user specified thruster configurations
         H = stern trusters on each hull
