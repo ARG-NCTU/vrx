@@ -73,13 +73,15 @@ class RealtoSimObstacle:
         self.pub_set_model_state.publish(model_state)
         
     def check_obstacle(self, obstacle_first, obstacle_last):
-        threshold = 1
+        threshold = 2
         # print(obstacle_first, obstacle_last)
         try: 
             if self.existing_obstacle == []:
+                print('first time')
                 self.existing_obstacle = [obstacle_first, obstacle_last]
                 # return -1
             else:
+                print('existing_obstacle:')
                 print(self.existing_obstacle)
                 #compare with existing obstacle
                 for i in range (len(self.existing_obstacle[0])):
@@ -90,11 +92,19 @@ class RealtoSimObstacle:
                         dis_last = self.dist(obstacle_last[j], self.existing_obstacle[1][i])
                         # print('Compare:',dis_first, dis_last)
                         # print('---------------------')
-                        if dis_first < threshold and dis_last < threshold:  
-                            # self.existing_obstacle[0][i] = obstacle_first[j]
-                            # self.existing_obstacle[1][i] = obstacle_last[j]
+                        if dis_first < threshold and dis_last < threshold: 
+                            # print(type(self.obstacle_first[j]))
+                            # igore 
+                            self.existing_obstacle[0][i] = obstacle_first[j] # new_first 
+                            self.existing_obstacle[1][i] = obstacle_last[j] # new_last  
                             print('update obstacle')
-                            # return True
+
+                        #     # return True
+                        # else:
+                        #     print('new obstacle')
+                        #     self.existing_obstacle[0].append(obstacle_first[j])
+                        #     self.existing_obstacle[1].append(obstacle_last[j])
+                        #     # return True
                 pass            
             
         except ValueError:
@@ -133,9 +143,11 @@ class RealtoSimObstacle:
         num_points = int(total_distance / distance_between_points)
         intermediate_points = []
         
+        intermediate_points.append(first_point.tolist())
         for i in range(1, num_points):
             intermediate_point = first_point + normalized_direction * (i * distance_between_points)
             intermediate_points.append(intermediate_point.tolist())
+        intermediate_points.append(last_point.tolist())
         # print(intermediate_points)
         
         return intermediate_points
@@ -180,25 +192,28 @@ class RealtoSimObstacle:
         
         # Define the boundaries of the block
         if self.ws == 1:
-            top_boundary = 65
-            bottom_boundary = 55
-            left_boundary = 63
-            right_boundary = -63
-        elif self.ws == 2:
             top_boundary = 45
             bottom_boundary = 35
             left_boundary = 25
             right_boundary = -25
-        
+    
+        elif self.ws == 2:
+            top_boundary = 70
+            bottom_boundary = 50
+            left_boundary = 68
+            right_boundary = -68
+              
         # filter out wamv3 4
         if self.dist(first_point, last_point) < 10:
+            print('wamv3 4')
             return False
         
         #filter out original obstacles
-        elif left_boundary <= x1 <= right_boundary and \
-            bottom_boundary <= y1 <= top_boundary and \
-            left_boundary <= x2 <= right_boundary and \
-            bottom_boundary <= y2 <= top_boundary :
+        elif right_boundary <= y1 <= left_boundary and \
+            bottom_boundary <= x1 <= top_boundary and \
+            right_boundary <= y2 <= left_boundary and \
+            bottom_boundary <= x2 <= top_boundary :
+            print('original obstacle')
             return False    
         
         else:
@@ -223,14 +238,20 @@ class RealtoSimObstacle:
                     pass
                 
             # print('*************************')
-            if self.flag == True:
-                self.check_obstacle(obstacle_first, obstacle_last)
-                order = 0
-                for i in range (len(self.existing_obstacle[0])):
-                    points = self.generate_points(self.existing_obstacle[0][i], self.existing_obstacle[1][i], 1.5)     
-                    print(points)
-                    self.point_to_pose_to_set_model(points, order)
-                    order += len(points)
+            print('obstacle_first:', obstacle_first)
+            print('obstacle_last:', obstacle_last)
+            
+            self.check_obstacle(obstacle_first, obstacle_last)
+            order = 0
+            print(self.existing_obstacle)
+            for i in range (len(self.existing_obstacle[0])):
+                
+                # print('i', i)
+                points = self.generate_points(self.existing_obstacle[0][i], self.existing_obstacle[1][i], 1.5)     
+                # print(points)
+                self.point_to_pose_to_set_model(points, order)
+                order += len(points)
+                # print('order:', order)
                 
 
 
