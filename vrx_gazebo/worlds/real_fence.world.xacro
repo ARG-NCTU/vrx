@@ -20,8 +20,70 @@
       </wind_objs>
     </xacro:usv_wind_gazebo>
 
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>block_real_1</name>
+          <pose>45 0 0.5 0 0 0</pose>
+          <static>true</static>
+        </include>
 
         <include>
+          <uri>model://polyform_a7</uri>
+          <name>block_real_2</name>
+          <pose>30 -10.0 0.5 0 0 0</pose>
+          <static>true</static>
+        </include>
+
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>block_real_3</name>
+          <pose>30 10 0.5 0 0 0</pose>
+          <static>true</static>
+        </include>
+
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>block_real_4</name>
+          <pose>45 -20 0.5 0 0 0</pose>
+          <static>true</static>
+        </include>
+
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>block_real_5</name>
+          <pose>45 20 0.5 0 0 0</pose>
+          <static>true</static>
+        </include>
+
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>block_real_6</name>
+          <pose>30 -30 0.5 0 0 0</pose>
+          <static>true</static>
+        </include>
+
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>block_real_7</name>
+          <pose>30 30 0.5 0 0 0 0</pose>
+          <static>true</static>
+        </include>
+
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>block_real_8</name>
+          <pose>45 -40 0.5 0 0 0</pose>
+          <static>true</static>
+        </include>
+
+        <include>
+          <uri>model://polyform_a7</uri>
+          <name>block_real_9</name>
+          <pose>45 40 0.5 0 0 0</pose>
+          <static>true</static>
+        </include>
+
+        <!-- <include>
           <uri>model://polyform_a7</uri>
           <name>block_real_1</name>
           <pose>40 20.0 0.5 0 -0 0</pose>
@@ -215,7 +277,7 @@
           <name>block_real_28</name>
           <pose>40 -20.5 0.5 0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
         <!--obstacle-->
         
