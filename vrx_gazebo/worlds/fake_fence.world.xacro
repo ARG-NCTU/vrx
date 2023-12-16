@@ -775,7 +775,7 @@
           <static>true</static>
         </include>
 
-        
+<!--         
         <include>
           <uri>model://polyform_a7</uri>
           <name>real_obstacle_31</name>
@@ -893,7 +893,7 @@
           <name>real_obstacle_45</name>
           <pose>300 -117.5 -100 0 -0 0</pose>
           <static>true</static>
-        </include>
+        </include> -->
 
 <!--         
         <include>
