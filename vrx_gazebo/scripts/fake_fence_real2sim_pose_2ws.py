@@ -113,7 +113,7 @@ class RealtoSimTransform:
             pose_wamv2_to_map.pose.orientation.w = q[3]
             
             
-            self.tf_msg.header.stamp = self.time
+            self.tf_msg.header.stamp = rospy.Time.now()
             self.tf_msg.header.frame_id = "map"
             self.tf_msg.child_frame_id = "wamv2/base_link"
             self.tf_msg.transform.translation = pose_wamv2_to_map.pose.position
