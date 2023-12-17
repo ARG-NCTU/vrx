@@ -2,52 +2,55 @@
 import rospy
 import math
 from geometry_msgs.msg import PoseStamped, Point
-from visualization_msgs.msg import Marker, MarkerArray
+from visualization_msgs.msg import Marker
 from std_msgs.msg import Header
-from std_msgs.msg import Int32
 from std_msgs.msg import Bool
-from nav_msgs.msg import Odometry
-import queue
-from gazebo_msgs.srv import GetModelState, GetModelStateRequest, SetModelState, SetModelStateRequest
 from sensor_msgs.msg import Joy
-
+from gazebo_msgs.msg import ModelState
 class goal_point():
     def __init__(self):
 
-        # self.pub_1 = rospy.Publisher("/wamv1/move_base_simple/goal", PoseStamped, queue_size=1)        
-        self.pub_2 = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=1)
+        # self.pub_1 = rospy.Publisher("/wamv1/move_base_simple/goal", PoseStamped, queue_size=1)   
+        self.pub_1 = rospy.Publisher("/wamv/move_base_simple/goal", PoseStamped, queue_size=1)     
+        self.pub_2 = rospy.Publisher("/wamv2/move_base_simple/goal", PoseStamped, queue_size=1)
         self.pub_3 = rospy.Publisher("/wamv3/move_base_simple/goal", PoseStamped, queue_size=1)
         self.pub_4 = rospy.Publisher("/wamv4/move_base_simple/goal", PoseStamped, queue_size=1)
 
         # self.pub_position_circle = rospy.Publisher("/visualization_circle", Marker, queue_size=1)
+        self.pub_position_circle1 = rospy.Publisher("/visualization_circle1", Marker, queue_size=1)
         self.pub_position_circle2 = rospy.Publisher("/visualization_circle2", Marker, queue_size=1)
         self.pub_position_circle3 = rospy.Publisher("/visualization_circle3", Marker, queue_size=1)
         self.pub_position_circle4 = rospy.Publisher("/visualization_circle4", Marker, queue_size=1)
         # self.pub_position_circle5 = rospy.Publisher("/visualization_circle5", Marker, queue_size=1)
-        self.pub_map = rospy.Publisher("/visualization_map", Marker, queue_size=1)
         self.pub_map1 = rospy.Publisher("/visualization_map1", Marker, queue_size=1)
         self.pub_map2 = rospy.Publisher("/visualization_map2", Marker, queue_size=1)
+        self.pub_map3 = rospy.Publisher("/visualization_map3", Marker, queue_size=1)
+        self.pub_map4 = rospy.Publisher("/visualization_map4", Marker, queue_size=1)
+        
         
         self.pub_state_to_mapgrid = rospy.Publisher("/reset_map", Bool, queue_size=1)
         self.joy = rospy.Subscriber("/joy", Joy, self.cb_joy, queue_size=1)
 
         self.timer = rospy.Timer(rospy.Duration(1), self.cb_publish)
+        
+        
         self.wamv2_x = 90
-        self.wamv2_y = -30
+        self.wamv2_y = 0
+        
         self.wamv3_x = 90
-        self.wamv3_y = 0
+        self.wamv3_y = -30
+        
         self.wamv4_x = 90
         self.wamv4_y = 30
 
         self.robot_radius = 3
         self.pi2 = math.radians(360)
         
-        self.sub_wamv = rospy.Subscriber("/wamv/truth_map_posestamped", PoseStamped, self.cb_wamv, queue_size=1)
+        self.sub_wamv = rospy.Subscriber("/gazebo/wamv/pose", PoseStamped, self.cb_wamv, queue_size=1)
         self.wamv_x, self.wamv_y, self.wamv_z, self.wamv_qx, self.wamv_qy, self.wamv_qz, self.wamv_qw = 0,0,0,0,0,0,0
         
-        self.set_model = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
-        self.objstate = SetModelStateRequest()
-        
+        self.set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
+        self.counter = 0
         print('reset USV pose')
 
 
@@ -81,7 +84,9 @@ class goal_point():
             pose.header.frame_id = "map"
             pose.pose.position.x = self.wamv2_x
             pose.pose.position.y = self.wamv2_y
+            self.pub_1.publish(pose)
             self.pub_2.publish(pose)
+            
             print('wamv2 goal published:', self.wamv2_x, self.wamv2_y)
             
         elif self.counter > 20 and self.counter <34:
@@ -108,7 +113,6 @@ class goal_point():
     def cb_publish(self,event):
 
         self.pub_goal()
-        
         marker2 = Marker()
         marker2.header.stamp = rospy.Time.now()
         marker2.header.frame_id = 'map'
@@ -129,6 +133,8 @@ class goal_point():
         marker2.color.r = 0
         marker2.color.g = 1
         marker2.color.b = 0
+        #wamv & wamv2
+        self.pub_position_circle1.publish(marker2)
         self.pub_position_circle2.publish(marker2)
 
         marker = Marker()
@@ -213,7 +219,7 @@ class goal_point():
         marker.color.r = 0
         marker.color.g = 0.5
         marker.color.b = 0.5
-        self.pub_map.publish(marker)
+        self.pub_map1.publish(marker)
 
         marker = Marker()
         marker.header.stamp = rospy.Time.now()
@@ -243,7 +249,7 @@ class goal_point():
         marker.color.r = 0
         marker.color.g = 0.5
         marker.color.b = 0.5
-        self.pub_map1.publish(marker)
+        self.pub_map2.publish(marker)
 
         marker = Marker()
         marker.header.stamp = rospy.Time.now()
@@ -273,32 +279,25 @@ class goal_point():
         marker.color.r = 0
         marker.color.g = 0.5
         marker.color.b = 0.5
-        self.pub_map2.publish(marker)
-
+        self.pub_map3.publish(marker)
 
         self.counter += 1
         # print(self.counter)
 
-
-    def set_wamv_pose(self, model_name='wamv2', x=0 , y=0, z=0, qx=0, qy=0, qz=0, qw=0):
-        self.objstate.model_state.model_name = model_name
-        self.objstate.model_state.reference_frame = 'world'
-        self.objstate.model_state.pose.position.x = x
-        self.objstate.model_state.pose.position.y = y
-        self.objstate.model_state.pose.position.z = z
+    def set_wamv_pose(self, model_name='wamv2',x=0 , y=0, z=0, qx=0, qy=0, qz=0, qw=0):
+        model_state = ModelState()
+        model_state.model_name = model_name
+        model_state.reference_frame = "world"
+        model_state.pose.position.x = x
+        model_state.pose.position.y = y
+        model_state.pose.position.z = z
+        model_state.pose.orientation.x = qx
+        model_state.pose.orientation.y = qy
+        model_state.pose.orientation.z = qz
+        model_state.pose.orientation.w = qw
         
-        self.objstate.model_state.pose.orientation.x = qx
-        self.objstate.model_state.pose.orientation.y = qy
-        self.objstate.model_state.pose.orientation.z = qz
-        self.objstate.model_state.pose.orientation.w = qw
+        self.pub_set_model_state.publish(model_state)
         
-        self.objstate.model_state.twist.linear.x = 0
-        self.objstate.model_state.twist.linear.y = 0
-        self.objstate.model_state.twist.linear.z = 0
-        self.objstate.model_state.twist.angular.x = 0
-        self.objstate.model_state.twist.angular.y = 0
-        self.objstate.model_state.twist.angular.z = 0
-        self.set_model(self.objstate)
 
 if __name__ == '__main__':
     rospy.init_node('goal_point_node',anonymous=False)
