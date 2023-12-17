@@ -64,7 +64,8 @@ class RealtoSimObstacle:
             obstacle_pose.pose.orientation.z = 0
             obstacle_pose.pose.orientation.w = 1
             self.set_model(model_name = model_name, pose = obstacle_pose)
-            
+        self.existing_obstacle = []
+        
     def set_model(self, model_name, pose):
         model_state = ModelState()
         model_state.model_name = model_name
@@ -73,40 +74,48 @@ class RealtoSimObstacle:
         self.pub_set_model_state.publish(model_state)
         
     def check_obstacle(self, obstacle_first, obstacle_last):
-        threshold = 2
+        threshold = 4
         # print(obstacle_first, obstacle_last)
         try: 
-            if self.existing_obstacle == []:
+            if not self.existing_obstacle:
                 print('first time')
                 self.existing_obstacle = [obstacle_first, obstacle_last]
-                # return -1
-            else:
-                print('existing_obstacle:')
-                print(self.existing_obstacle)
-                #compare with existing obstacle
-                for i in range (len(self.existing_obstacle[0])):
-                    for j in range (len(obstacle_first)):
-                        # print('existing_obstacle:', self.existing_obstacle[0][i], self.existing_obstacle[1][i])
-                        # print('obstacle:', obstacle_first[j], obstacle_last[j])
-                        dis_first = self.dist(obstacle_first[j], self.existing_obstacle[0][i])
-                        dis_last = self.dist(obstacle_last[j], self.existing_obstacle[1][i])
-                        # print('Compare:',dis_first, dis_last)
-                        # print('---------------------')
-                        if dis_first < threshold and dis_last < threshold: 
-                            # print(type(self.obstacle_first[j]))
-                            # igore 
-                            self.existing_obstacle[0][i] = obstacle_first[j] # new_first 
-                            self.existing_obstacle[1][i] = obstacle_last[j] # new_last  
-                            print('update obstacle')
-
-                        #     # return True
-                        # else:
-                        #     print('new obstacle')
-                        #     self.existing_obstacle[0].append(obstacle_first[j])
-                        #     self.existing_obstacle[1].append(obstacle_last[j])
-                        #     # return True
-                pass            
             
+            else:
+                #compare with existing obstacle
+                for j in range (len(obstacle_first)):
+                    obstacle_updated = False
+                    new_obstacle_length = self.dist(obstacle_first[j], obstacle_last[j])
+                              
+                    for i in range (len(self.existing_obstacle[0])):
+                        existing_obstacle_length = self.dist(self.existing_obstacle[0][i], self.existing_obstacle[1][i])
+                        
+                        if new_obstacle_length > existing_obstacle_length:
+                            dis_first = self.dist(obstacle_first[j], self.existing_obstacle[0][i])
+                            dis_last = self.dist(obstacle_last[j], self.existing_obstacle[1][i])
+                            if dis_first < threshold and dis_last < threshold: 
+                                # update obstacle
+                                # self.existing_obstacle[0][i] = obstacle_first[j] # new_first 
+                                # self.existing_obstacle[1][i] = obstacle_last[j] # new_last  
+                                obstacle_updated = True
+                                break
+                            #     # return True 
+                            elif dis_first < threshold or dis_last < threshold: # Extended obstacles
+                                if dis_first < threshold:
+                                    self.existing_obstacle[0][i] = obstacle_first[j]
+                                    print('update first')
+                                elif dis_last < threshold:
+                                    self.existing_obstacle[1][i] = obstacle_last[j]
+                                    print('update last')
+                                obstacle_updated = True
+                                break
+                        else:
+                            pass  
+                    
+                    # if not obstacle_updated:
+                    #     self.existing_obstacle[0].append(obstacle_first[j])
+                    #     self.existing_obstacle[1].append(obstacle_last[j])
+                  
         except ValueError:
             pass
         
@@ -193,9 +202,9 @@ class RealtoSimObstacle:
         # Define the boundaries of the block
         if self.ws == 1:
             top_boundary = 45
-            bottom_boundary = 35
+            bottom_boundary = 40
             left_boundary = 25
-            right_boundary = -25
+            right_boundary = -40
     
         elif self.ws == 2:
             top_boundary = 70
@@ -204,8 +213,8 @@ class RealtoSimObstacle:
             right_boundary = -68
               
         # filter out wamv3 4
-        if self.dist(first_point, last_point) < 10:
-            print('wamv3 4')
+        if self.dist(first_point, last_point) < 7:
+            # print('wamv3 4')
             return False
         
         #filter out original obstacles
@@ -238,20 +247,17 @@ class RealtoSimObstacle:
                     pass
                 
             # print('*************************')
-            print('obstacle_first:', obstacle_first)
-            print('obstacle_last:', obstacle_last)
+            # print('obstacle_first:', obstacle_first)
+            # print('obstacle_last:', obstacle_last)
             
             self.check_obstacle(obstacle_first, obstacle_last)
             order = 0
-            print(self.existing_obstacle)
+            print('existing_obstacle:',self.existing_obstacle)
             for i in range (len(self.existing_obstacle[0])):
-                
-                # print('i', i)
                 points = self.generate_points(self.existing_obstacle[0][i], self.existing_obstacle[1][i], 1.5)     
-                # print(points)
                 self.point_to_pose_to_set_model(points, order)
                 order += len(points)
-                # print('order:', order)
+                print('order:', order)
                 
 
 

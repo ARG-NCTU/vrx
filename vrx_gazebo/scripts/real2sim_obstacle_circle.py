@@ -62,6 +62,10 @@ class RealtoSimObstacle:
             obstacle_pose.pose.orientation.z = 0
             obstacle_pose.pose.orientation.w = 1
             self.set_model(model_name = model_name, pose = obstacle_pose)
+            
+        # clear existing obstacle
+        self.max_num = 0
+        self.existing_obstacle = []
         
     def set_model(self, model_name, pose):
         model_state = ModelState()
@@ -103,8 +107,11 @@ class RealtoSimObstacle:
                     for i in range(len(self.existing_obstacle[0])):
                         dis = self.dist([self.existing_obstacle[0][i], self.existing_obstacle[1][i]], [new_model[0][j], new_model[1][j]])
                         if dis < threshold:  # update obstacle
-                            self.existing_obstacle[0][i] = new_model[0][j]
-                            self.existing_obstacle[1][i] = new_model[1][j]
+                            # assume the obstacle got at the first time is correct 
+                            ## obstacle pose updated
+                            # self.existing_obstacle[0][i] = new_model[0][j]
+                            # self.existing_obstacle[1][i] = new_model[1][j]
+                            
                             obstacle_updated = True
                             break  # Stop searching once an obstacle is updated
                     if not obstacle_updated:
@@ -161,9 +168,10 @@ class RealtoSimObstacle:
             self.check_obstacle(new_model) 
             print('existing obstacle:', len(self.existing_obstacle[0]))
             
-            for i in range (self.max_num, len(self.existing_obstacle[0])):
+            for i in range (len(self.existing_obstacle[0])):
+                # print('i:', i)
                 self.generate_points(self.existing_obstacle[0][i], self.existing_obstacle[1][i], i)
-       
+                self.max_num = len(self.existing_obstacle[0])
             # print('existing_obstacle:', self.existing_obstacle)
         else:
             pass
