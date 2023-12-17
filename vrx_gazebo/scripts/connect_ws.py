@@ -4,6 +4,7 @@ import rospy
 from geometry_msgs.msg import PoseStamped, Twist
 from sensor_msgs.msg import Joy, LaserScan
 from obstacle_detector.msg import Obstacles
+from visualization_msgs.msg import Marker
 
 class ROSBridgeConnector:
     def __init__(self):
@@ -37,6 +38,8 @@ class ROSBridgeConnector:
             self.pub_wamv2 = roslibpy.Topic(self.client, "/gazebo/wamv2/pose", "geometry_msgs/PoseStamped")
             # self.pub_cmd = roslibpy.Topic(self.client, "/wamv/cmd_vel", "Twist")
             self.pub_scan2 =  roslibpy.Topic(self.client, "/wamv2/RL/scan", "sensor_msgs/LaserScan")
+            self.pub_wamv_goal = roslibpy.Topic(self.client, "/wamv/move_base_simple/goal", "geometry_msgs/PoseStamped")
+            # self.pub_position_circle1 = roslibpy.Topic(self.client, "/visualization_circle1", "visualization_msgs/Marker")
             
             self.sub_scan = rospy.Subscriber("/wamv/RL/scan", LaserScan, self.cb_laser_2sub1)
             self.pub_1scan_for2 = rospy.Publisher("/wamv/RL/scan_2", LaserScan, queue_size=1)
@@ -62,6 +65,8 @@ class ROSBridgeConnector:
             rospy.Subscriber("/fake_fence_real2sim", PoseStamped, self.cb_fake_pose)
             # rospy.Subscriber("/wamv/cmd_vel", Twist, self.cb_twist)
             rospy.Subscriber("/gazebo/wamv2/pose", PoseStamped, self.cb_wamv2_pose)
+            rospy.Subscriber("/wamv/move_base_simple/goal", PoseStamped, self.cb_wamv_goal)
+            # rospy.Subscriber("/visualization_circle1", Marker, self.cb_position_circle1)
             rospy.Subscriber("/wamv2/RL/scan", LaserScan, self.cb_wamv2_laser)
             if self.vr == True :
                 rospy.Subscriber("/wamv/joy", Joy, self.cb_joy)
@@ -168,8 +173,37 @@ class ROSBridgeConnector:
                 "buttons": data.buttons
             }
         )
+
         self.pub_joy.publish(roslib_msg)
 
+    # def cb_position_circle1(self, data):
+
+    #     roslib_msg = roslibpy.Message({
+    #         "header": {
+    #             "seq": data.header.seq,
+    #             "stamp": {"secs": data.header.stamp.secs, "nsecs": data.header.stamp.nsecs},
+    #             "frame_id": data.header.frame_id
+    #         },
+    #         "ns": data.ns,
+    #         "id": data.id,
+    #         "type": data.type,
+    #         "action": data.action,
+    #         "pose": {
+    #             "position": {"x": data.pose.position.x,"y": data.pose.position.y,"z": data.pose.position.z},
+    #             "orientation": {"x": data.pose.orientation.x,"y": data.pose.orientation.y,"z": data.pose.orientation.z,"w": data.pose.orientation.w}
+    #         },
+    #         "scale": {"x": data.scale.x,"y": data.scale.y,"z": data.scale.z},
+    #         "color": {"r": data.color.r,"g": data.color.g,"b": data.color.b,"a": data.color.a},
+    #         "lifetime": {"secs": data.lifetime.secs, "nsecs": data.lifetime.nsecs},
+    #         "frame_locked": data.frame_locked,
+    #         "points": data.points,
+    #         "colors": data.colors,
+    #         "text": data.text,
+    #         "mesh_resource": data.mesh_resource,
+    #         "mesh_use_embedded_materials": data.mesh_use_embedded_materials
+    #     })
+    #     self.pub_position_circle1.publish(roslib_msg)
+        
     def cb_wamv_pose(self, data):
         self.cb_posestamped(data, self.pub_wamv_pose)
 
@@ -179,6 +213,9 @@ class ROSBridgeConnector:
     def cb_wamv2_pose(self, data):
         self.cb_posestamped(data, self.pub_wamv2)
         
+    def cb_wamv_goal(self, data):
+        self.cb_posestamped(data, self.pub_wamv_goal)
+            
 if __name__ == '__main__':
     connector = ROSBridgeConnector()
     while not rospy.is_shutdown():
