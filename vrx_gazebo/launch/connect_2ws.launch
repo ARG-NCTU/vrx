@@ -1,7 +1,7 @@
 <launch>
    <arg name="ip" default="140.113.148.92"/>
    <arg name="ws" default="1"/>
-   <arg name="vr" default="true"/>
+   <arg name="vr" default="false"/>
 
    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
       <arg name="port" value="9090" />
@@ -12,5 +12,11 @@
       <param name="~ws" value="$(arg ws)" />
       <param name="~vr" value="$(arg vr)" />
    </node>
+
+   <!-- for testing allow to use joystick to control 4 vehicle  -->
+   <group if="$(eval vr == 'false' and ws == '2')">
+      <node pkg="vrx_gazebo" type="joy_map_joy.py" name="joy_map_joy" output="screen">
+      </node>
+   </group>
 
 </launch>
