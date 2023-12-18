@@ -2,7 +2,7 @@
   <arg name="veh" default="wamv2" />
     <group ns="$(arg veh)">
     <node name="obstacle_extractor" pkg="obstacle_detector" type="obstacle_extractor_node">
-      <remap from="scan" to="/$(arg veh)/RL/scan_2"/>
+      <remap from="scan" to="/$(arg veh)/RL/more_scan_2"/>
       
       <param name="active"               value="true"/>
       <param name="use_scan"             value="true"/>

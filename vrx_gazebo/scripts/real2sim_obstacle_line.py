@@ -18,7 +18,8 @@ class RealtoSimObstacle:
         self.pub_set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
         self.pub_state_to_mapgrid = rospy.Publisher("/reset_map", Bool, queue_size=1)
         self.sub_joy = rospy.Subscriber("joy", Joy, self.joy_callback)
-        self.timer_set_model_state = rospy.Timer(rospy.Duration(0.01), self.timer_callback)
+        self.timer_set_model_state = rospy.Timer(rospy.Duration(0.05), self.timer_callback)
+        self.timer_reset_model_state = rospy.Timer(rospy.Duration(0.02), self.timer_cb_reset)
         self.sub_obstacle = rospy.Subscriber("raw_obstacles", Obstacles, self.obstacle_cb, queue_size=1)
         
         self.ws = rospy.get_param('~ws', '1')
@@ -35,15 +36,14 @@ class RealtoSimObstacle:
             self.joy = joy
             return
         joy_trigger = joy.buttons[4] and not self.joy.buttons[4]
-        print('joy_trigger:', joy_trigger)
+        # print('joy_trigger:', joy_trigger)
         
         if joy_trigger:
             self.flag = not self.flag 
-            print('self.flag:', self.flag)
-            
+            # print('self.flag:', self.flag)       
             if self.flag == True: # reset done
                 print('pub true')
-                self.pub_state_to_mapgrid.publish(True)
+                # self.pub_state_to_mapgrid.publish(True)
             else:
                 pass
             
@@ -89,30 +89,54 @@ class RealtoSimObstacle:
                               
                     for i in range (len(self.existing_obstacle[0])):
                         existing_obstacle_length = self.dist(self.existing_obstacle[0][i], self.existing_obstacle[1][i])
-                        
+                        dis_first = self.dist(obstacle_first[j], self.existing_obstacle[0][i])
+                        dis_last = self.dist(obstacle_last[j], self.existing_obstacle[1][i])
                         if new_obstacle_length > existing_obstacle_length:
-                            dis_first = self.dist(obstacle_first[j], self.existing_obstacle[0][i])
-                            dis_last = self.dist(obstacle_last[j], self.existing_obstacle[1][i])
                             if dis_first < threshold and dis_last < threshold: 
+                                #new line and existing line have overlap and new line is longer than existing line
                                 # update obstacle
-                                # self.existing_obstacle[0][i] = obstacle_first[j] # new_first 
-                                # self.existing_obstacle[1][i] = obstacle_last[j] # new_last  
+                                self.existing_obstacle[0][i] = obstacle_first[j] # new_first 
+                                self.existing_obstacle[1][i] = obstacle_last[j] # new_last  
                                 obstacle_updated = True
                                 break
                             #     # return True 
                             elif dis_first < threshold or dis_last < threshold: # Extended obstacles
-                                if dis_first < threshold:
-                                    self.existing_obstacle[0][i] = obstacle_first[j]
-                                    print('update first')
-                                elif dis_last < threshold:
+                                new_first_old_last = self.dist(obstacle_first[j], self.existing_obstacle[1][i])
+                                old_first_new_last = self.dist(self.existing_obstacle[0][i], obstacle_last[j])
+                                
+                                if new_first_old_last < old_first_new_last:
                                     self.existing_obstacle[1][i] = obstacle_last[j]
-                                    print('update last')
+                                elif new_first_old_last > old_first_new_last:
+                                    # update obstacle
+                                    self.existing_obstacle[0][i] = obstacle_first[j]
+                                else:
+                                    print('bobobobobo')
+                                obstacle_updated = True
+                                break
+                        elif new_obstacle_length < existing_obstacle_length:
+                            # new line is shorter than existing line 
+                            if dis_first < threshold and dis_last < threshold: 
+                                #have overlap 
+                                obstacle_updated = True
+                                break
+                            elif dis_first < threshold or dis_last < threshold: #Extended obstacles
+                                new_first_old_last = self.dist(obstacle_first[j], self.existing_obstacle[1][i])
+                                old_first_new_last = self.dist(self.existing_obstacle[0][i], obstacle_last[j])                              
+                                if new_first_old_last < old_first_new_last:
+                                    self.existing_obstacle[1][i] = obstacle_last[j]
+                                elif new_first_old_last > old_first_new_last:
+                                    # update obstacle
+                                    self.existing_obstacle[0][i] = obstacle_first[j]
+                                else:
+                                    print('bibibibibi')
                                 obstacle_updated = True
                                 break
                         else:
                             pass  
                     
-                    # if not obstacle_updated:
+                    if not obstacle_updated:
+                        print('notupdate:', obstacle_first[j], obstacle_last[j])
+
                     #     self.existing_obstacle[0].append(obstacle_first[j])
                     #     self.existing_obstacle[1].append(obstacle_last[j])
                   
@@ -163,9 +187,9 @@ class RealtoSimObstacle:
     
     def point_to_pose_to_set_model(self, point, order):
         pose = PoseStamped()  
-        print('****************')
-        print(len(point))   
-        print('****************')
+        # print('****************')
+        # print(len(point))   
+        # print('****************')
         
         for i in range (len(point)):
             model_name = self.obstacle_name + str(order + i)
@@ -227,15 +251,19 @@ class RealtoSimObstacle:
         
         else:
             return True
-                
-    def timer_callback(self, event):    
-
+    
+    
+    def timer_cb_reset(self, event):
         if self.flag == False:
             self.init_obstacle()   
             print('reset map')
             self.existing_obstacle = []
             return
         else:
+            pass
+              
+    def timer_callback(self, event):    
+        if self.flag == True:
             cnt = 0
             obstacle_first = []
             obstacle_last = []
@@ -252,13 +280,14 @@ class RealtoSimObstacle:
             
             self.check_obstacle(obstacle_first, obstacle_last)
             order = 0
-            print('existing_obstacle:',self.existing_obstacle)
+            # print('existing_obstacle:',self.existing_obstacle)
             for i in range (len(self.existing_obstacle[0])):
                 points = self.generate_points(self.existing_obstacle[0][i], self.existing_obstacle[1][i], 1.5)     
                 self.point_to_pose_to_set_model(points, order)
                 order += len(points)
-                print('order:', order)
-                
+                # print('order:', order)
+        else:
+            pass# print('*************************'       
 
 
 if __name__ == "__main__":
