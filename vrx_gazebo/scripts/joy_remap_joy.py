@@ -53,19 +53,25 @@ class Joy_remap_joy:
         print('pub:',self.publisher_to_use)
         # # Keep publishing on the selected topic until a condition changes
         if self.publisher_to_use == 1:
+            self.joy_to_joy.axes[2] = 1
             self.pub_joy_1.publish(self.joy_to_joy)
             self.joy_to_joy.axes[2] = 2
             self.pub_joy_2.publish(self.joy_to_joy)
 
         elif self.publisher_to_use == 2:
+            self.joy_to_joy.axes[2] = 2
             self.pub_joy_2.publish(self.joy_to_joy)
             self.joy_to_joy.axes[2] = 1
             self.pub_joy_1.publish(self.joy_to_joy)
             
         elif self.publisher_to_use == 3:
+            self.joy_to_joy.axes[2] = 3
             self.pub_joy_3.publish(self.joy_to_joy)
+            
         elif self.publisher_to_use == 4:
+            self.joy_to_joy.axes[2] = 4
             self.pub_joy_4.publish(self.joy_to_joy)
+            
         else:
             pass
 

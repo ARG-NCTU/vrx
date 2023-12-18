@@ -11,7 +11,7 @@ class ROSBridgeConnector:
         rospy.init_node("connect_ws", anonymous=True)
         self.ip = rospy.get_param("~ip", '127.0.0.1')
         self.ws = rospy.get_param("~ws",'1')
-        # self.vr = rospy.get_param("~vr",'true')
+        self.vr = rospy.get_param("~vr",'true')
         
         rosbrideg_address = 'ws://' + self.ip + ':9090'
         print('WS',self.ws ,'publish data to:', rosbrideg_address)    
@@ -39,13 +39,15 @@ class ROSBridgeConnector:
             # self.pub_cmd = roslibpy.Topic(self.client, "/wamv/cmd_vel", "Twist")
             self.pub_scan2 =  roslibpy.Topic(self.client, "/wamv2/RL/more_scan", "sensor_msgs/LaserScan")
             self.pub_wamv_goal = roslibpy.Topic(self.client, "/wamv/move_base_simple/goal", "geometry_msgs/PoseStamped")
-            # self.pub_position_circle1 = roslibpy.Topic(self.client, "/visualization_circle1", "visualization_msgs/Marker")
+            self.pub_position_circle1 = roslibpy.Topic(self.client, "/visualization_circle1", "visualization_msgs/Marker")
             
             self.sub_scan = rospy.Subscriber("/wamv/RL/more_scan", LaserScan, self.cb_laser_2sub1)
             self.pub_1scan_for2 = rospy.Publisher("/wamv/RL/more_scan_2", LaserScan, queue_size=1)
             # if self.vr == True :
             self.pub_joy = roslibpy.Topic(self.client, "/wamv/joy", "sensor_msgs/Joy")
-                # print('joy : ws2-> ws1')
+            if self.vr == False: 
+                self.pub_joy = roslibpy.Topic(self.client, "/joy", "sensor_msgs/Joy")
+                print('joy : ws2-> ws1')
         else:
             pass
 
@@ -66,10 +68,13 @@ class ROSBridgeConnector:
             # rospy.Subscriber("/wamv/cmd_vel", Twist, self.cb_twist)
             rospy.Subscriber("/gazebo/wamv2/pose", PoseStamped, self.cb_wamv2_pose)
             rospy.Subscriber("/wamv/move_base_simple/goal", PoseStamped, self.cb_wamv_goal)
-            # rospy.Subscriber("/visualization_circle1", Marker, self.cb_position_circle1)
+            rospy.Subscriber("/visualization_circle1", Marker, self.cb_position_circle1)
             rospy.Subscriber("/wamv2/RL/more_scan", LaserScan, self.cb_wamv2_laser)
             # if self.vr == True :
-            rospy.Subscriber("/wamv/joy", Joy, self.cb_joy)
+            rospy.Subscriber("/wamv/joy", Joy, self.cb_joy_wamv)
+            if self.vr == False:
+                rospy.Subscriber("/joy", Joy, self.cb_joy_all)
+                
         else:
             pass
         
@@ -161,7 +166,7 @@ class ROSBridgeConnector:
         )
         self.pub_cmd.publish(roslib_msg)
 
-    def cb_joy(self, data):
+    def cb_joy(self, data, publisher):
         roslib_msg = roslibpy.Message(
             {
                 "header": {
@@ -174,36 +179,42 @@ class ROSBridgeConnector:
             }
         )
 
-        self.pub_joy.publish(roslib_msg)
-
-    # def cb_position_circle1(self, data):
-
-    #     roslib_msg = roslibpy.Message({
-    #         "header": {
-    #             "seq": data.header.seq,
-    #             "stamp": {"secs": data.header.stamp.secs, "nsecs": data.header.stamp.nsecs},
-    #             "frame_id": data.header.frame_id
-    #         },
-    #         "ns": data.ns,
-    #         "id": data.id,
-    #         "type": data.type,
-    #         "action": data.action,
-    #         "pose": {
-    #             "position": {"x": data.pose.position.x,"y": data.pose.position.y,"z": data.pose.position.z},
-    #             "orientation": {"x": data.pose.orientation.x,"y": data.pose.orientation.y,"z": data.pose.orientation.z,"w": data.pose.orientation.w}
-    #         },
-    #         "scale": {"x": data.scale.x,"y": data.scale.y,"z": data.scale.z},
-    #         "color": {"r": data.color.r,"g": data.color.g,"b": data.color.b,"a": data.color.a},
-    #         "lifetime": {"secs": data.lifetime.secs, "nsecs": data.lifetime.nsecs},
-    #         "frame_locked": data.frame_locked,
-    #         "points": data.points,
-    #         "colors": data.colors,
-    #         "text": data.text,
-    #         "mesh_resource": data.mesh_resource,
-    #         "mesh_use_embedded_materials": data.mesh_use_embedded_materials
-    #     })
-    #     self.pub_position_circle1.publish(roslib_msg)
+        publisher.publish(roslib_msg)
         
+    def cb_joy_wamv(self, data):
+        self.cb_joy(data, self.pub_joy)
+        
+    def cb_joy_all(self, data):
+        self.cb_joy(data, self.pub_joy)
+        
+    def cb_position_circle1(self, data):
+
+        roslib_msg = roslibpy.Message({
+            "header": {
+                "seq": data.header.seq,
+                "stamp": {"secs": data.header.stamp.secs, "nsecs": data.header.stamp.nsecs},
+                "frame_id": data.header.frame_id
+            },
+            "ns": data.ns,
+            "id": data.id,
+            "type": data.type,
+            "action": data.action,
+            "pose": {
+                "position": {"x": data.pose.position.x,"y": data.pose.position.y,"z": data.pose.position.z},
+                "orientation": {"x": data.pose.orientation.x,"y": data.pose.orientation.y,"z": data.pose.orientation.z,"w": data.pose.orientation.w}
+            },
+            "scale": {"x": data.scale.x,"y": data.scale.y,"z": data.scale.z},
+            "color": {"r": data.color.r,"g": data.color.g,"b": data.color.b,"a": data.color.a},
+            "lifetime": {"secs": data.lifetime.secs, "nsecs": data.lifetime.nsecs},
+            "frame_locked": data.frame_locked,
+            "points": [{"x":point.x, "y":point.y, "z":point.z} for point in data.points],
+            "colors": data.colors,
+            "text": data.text,
+            "mesh_resource": data.mesh_resource,
+            "mesh_use_embedded_materials": data.mesh_use_embedded_materials
+        })
+        self.pub_position_circle1.publish(roslib_msg)
+
     def cb_wamv_pose(self, data):
         self.cb_posestamped(data, self.pub_wamv_pose)
 
