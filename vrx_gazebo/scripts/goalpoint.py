@@ -107,9 +107,12 @@ class goal_point():
             self.pub_4.publish(pose)
             print('wamv4 goal published:', self.wamv4_x, self.wamv4_y)
             
+        # elif self.counter >= 55:
+        #     rospy.signal_shutdown("Counter reached 50, shutting down.")
+            # return
         else:
             pass
-        
+            
     def cb_publish(self,event):
 
         self.pub_goal()
@@ -296,7 +299,7 @@ class goal_point():
         model_state.pose.orientation.z = qz
         model_state.pose.orientation.w = qw
         
-        self.pub_set_model_state.publish(model_state)
+        self.set_model_state.publish(model_state)
         
 
 if __name__ == '__main__':

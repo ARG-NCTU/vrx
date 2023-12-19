@@ -96,7 +96,7 @@ class RealtoSimObstacle:
 
 
     def check_obstacle(self, new_model):
-        threshold = 3
+        threshold = 10
         try:
             if self.existing_obstacle == []:
                 self.existing_obstacle = new_model
