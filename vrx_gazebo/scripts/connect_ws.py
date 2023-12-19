@@ -1,9 +1,10 @@
 #! /usr/bin/env python3
+import fix_python3_path
 import roslibpy
 import rospy
 from geometry_msgs.msg import PoseStamped, Twist
 from sensor_msgs.msg import Joy, LaserScan
-from obstacle_detector.msg import Obstacles
+# from obstacle_detector.msg import Obstacles
 from visualization_msgs.msg import Marker
 
 class ROSBridgeConnector:
