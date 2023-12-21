@@ -529,7 +529,7 @@
 
       
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_0</name>
           <pose>300 -50.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -537,7 +537,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_1</name>
           <pose>300 -51.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -545,7 +545,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_2</name>
           <pose>300 -53.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -553,7 +553,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_3</name>
           <pose>300 -54.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -561,7 +561,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_4</name>
           <pose>300 -56.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -569,7 +569,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_5</name>
           <pose>300 -57.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -577,7 +577,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_6</name>
           <pose>300 -59.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -585,7 +585,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_7</name>
           <pose>300 -60.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -593,7 +593,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_8</name>
           <pose>300 -62.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -601,7 +601,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_9</name>
           <pose>300 -63.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -609,7 +609,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_10</name>
           <pose>300 -65.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -617,7 +617,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_11</name>
           <pose>300 -66.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -625,7 +625,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_12</name>
           <pose>300 -68.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -633,7 +633,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_13</name>
           <pose>300 -69.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -641,7 +641,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_14</name>
           <pose>300 -71.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -649,15 +649,15 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_15</name>
           <pose>300 -72.5 -100 0 -0 0</pose>
           <static>true</static>
         </include>
 
         
-        <!-- <include>
-          <uri>model://polyform_a7_redglow</uri>
+        <include>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_16</name>
           <pose>300 -74.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -665,7 +665,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_17</name>
           <pose>300 -75.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -673,7 +673,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_18</name>
           <pose>300 -77.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -681,7 +681,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_19</name>
           <pose>300 -78.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -689,7 +689,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_20</name>
           <pose>300 -80.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -697,7 +697,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_21</name>
           <pose>300 -81.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -705,7 +705,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_22</name>
           <pose>300 -83.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -713,7 +713,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_23</name>
           <pose>300 -84.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -721,7 +721,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_24</name>
           <pose>300 -86.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -729,7 +729,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_25</name>
           <pose>300 -87.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -737,7 +737,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_26</name>
           <pose>300 -89.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -745,7 +745,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_27</name>
           <pose>300 -90.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -753,7 +753,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_28</name>
           <pose>300 -92.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -761,7 +761,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_29</name>
           <pose>300 -93.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -769,11 +769,11 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7</uri>
           <name>real_obstacle_30</name>
           <pose>300 -95.0 -100 0 -0 0</pose>
           <static>true</static>
-        </include> -->
+        </include>
 
 <!--         
         <include>
