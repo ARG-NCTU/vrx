@@ -51,7 +51,7 @@ class RealtoSimObstacle:
         self.obstacle_msg = msg
 
     def init_obstacle(self):
-        for i in range (31):
+        for i in range (16):
             obstacle_pose = PoseStamped()
             model_name = self.obstacle_name + str(i)
             obstacle_pose.pose.position.x = 258
