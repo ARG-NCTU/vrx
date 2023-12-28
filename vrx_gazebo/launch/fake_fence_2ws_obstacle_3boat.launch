@@ -60,7 +60,7 @@
 
 
   <!-- wamv 2-->
-  <param name="wamv2/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) mavlink_enabled:=false namespace:=wamv2 "/>
+  <param name="wamv2/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) mavlink_enabled:=false namespace:=wamv2 red_ball:=true"/>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv2_tf_pub">
     <remap from="robot_description" to="wamv2/robot_description" />
@@ -83,6 +83,7 @@
               -R $(arg R) -P $(arg P) -Y $(arg Y)
               -urdf -param wamv3/robot_description -model wamv3"/>
 
+
   <!-- wamv 4-->
   <param name="wamv4/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=wamv4 "/>
 
@@ -94,6 +95,7 @@
   <node name="spawn_model_4" pkg="gazebo_ros" type="spawn_model" args="-x $(arg x_4) -y $(arg y_4) -z $(arg z)
               -R $(arg R) -P $(arg P) -Y $(arg Y)
               -urdf -param wamv4/robot_description -model wamv4"/>
+              
   <!-- Spawn drone model in Gazebo -->
   <arg name="drone_ns" default="/"/>
   <arg name="model" default="iris"/>
