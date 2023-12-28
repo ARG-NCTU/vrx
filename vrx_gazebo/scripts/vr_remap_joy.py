@@ -38,7 +38,7 @@ class VR_remap_joy:
 
         #axes
         self.vr_to_joy.axes[1] = msg.axes[4] # left stick forward/backward
-        self.vr_to_joy.axes[3] = msg.axes[7] # right stick right/left
+        self.vr_to_joy.axes[3] = msg.axes[5] # right stick right/left
         self.vr_to_joy.axes[2] = int(msg.axes[1]) # robot
         self.vr_to_joy.axes[5] = int(msg.axes[0]) # user_id
         

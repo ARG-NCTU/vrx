@@ -88,6 +88,14 @@ add_executable(wamv_mavlink_joy_teleop nodes/wamv_mavlink_joy_teleop.cpp)
 target_link_libraries(wamv_mavlink_joy_teleop ${catkin_LIBRARIES})
 add_dependencies(wamv_mavlink_joy_teleop ${catkin_EXPORTED_TARGETS})
 
+add_executable(model_state_to_pose_stamped nodes/ros_tools/model_state_to_pose_stamped.cpp)
+target_link_libraries(model_state_to_pose_stamped ${catkin_LIBRARIES})
+add_dependencies(model_state_to_pose_stamped ${catkin_EXPORTED_TARGETS})
+
+add_executable(model_state_to_tf nodes/ros_tools/model_state_to_tf.cpp)
+target_link_libraries(model_state_to_tf ${catkin_LIBRARIES})
+add_dependencies(model_state_to_tf ${catkin_EXPORTED_TARGETS})
+
 # Library for displaying waypoint markers
 add_library(waypoint_markers src/waypoint_markers.cc)
 target_link_libraries(waypoint_markers ${catkin_LIBRARIES})

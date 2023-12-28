@@ -51,12 +51,12 @@
     </node>
 
     <group ns="sjtu_drone">
-        <node pkg="vrx_gazebo" type="model_state_to_tf.py" name="model_state_to_tf">
+        <node pkg="vrx_gazebo" type="model_state_to_tf" name="model_state_to_tf">
             <param name="model_name" value="sjtu_drone" />
             <param name="model_tf_suffix" value="base_link" />
             <param name="broadcast_rate" value="50" />
         </node>
-        <node pkg="vrx_gazebo" type="model_state_to_pose_stamped.py"
+        <node pkg="vrx_gazebo" type="model_state_to_pose_stamped"
             name="model_state_to_pose_stamped" output="log">
             <param name="model_name" value="sjtu_drone" />
             <param name="publish_rate" value="50" />
@@ -101,15 +101,15 @@
         -urdf -param $(arg wamv_ns)/robot_description -model wamv" />
 
         <group ns="$(arg wamv_ns)">
-            <node pkg="vrx_gazebo" type="model_state_to_tf.py" name="model_state_to_tf">
+            <node pkg="vrx_gazebo" type="model_state_to_tf" name="model_state_to_tf">
                 <param name="model_name" value="$(arg wamv_ns)" />
                 <param name="model_tf_suffix" value="base_link" />
-                <param name="broadcast_rate" value="50" />
+                <param name="broadcast_rate" value="10" />
             </node>
-            <node pkg="vrx_gazebo" type="model_state_to_pose_stamped.py"
+            <node pkg="vrx_gazebo" type="model_state_to_pose_stamped"
                 name="model_state_to_pose_stamped" output="log">
                 <param name="model_name" value="$(arg wamv_ns)" />
-                <param name="publish_rate" value="50" />
+                <param name="publish_rate" value="10" />
             </node>
         </group>
 

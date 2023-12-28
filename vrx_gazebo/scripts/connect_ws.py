@@ -1,5 +1,4 @@
 #! /usr/bin/env python3
-import fix_python3_path
 import roslibpy
 import rospy
 from geometry_msgs.msg import PoseStamped, Twist
@@ -45,10 +44,12 @@ class ROSBridgeConnector:
             self.sub_scan = rospy.Subscriber("/wamv/RL/more_scan", LaserScan, self.cb_laser_2sub1)
             self.pub_1scan_for2 = rospy.Publisher("/wamv/RL/more_scan_2", LaserScan, queue_size=1)
             # if self.vr == True :
-            self.pub_joy = roslibpy.Topic(self.client, "/wamv/joy", "sensor_msgs/Joy")
-            if self.vr == False: 
-                self.pub_joy = roslibpy.Topic(self.client, "/joy", "sensor_msgs/Joy")
-                print('joy : ws2-> ws1')
+            self.pub_joy_wamv = roslibpy.Topic(self.client, "/wamv/joy", "sensor_msgs/Joy")
+            self.pub_joy = roslibpy.Topic(self.client, "/joy", "sensor_msgs/Joy")
+            
+            # if self.vr == False: 
+            #     self.pub_joy = roslibpy.Topic(self.client, "/joy", "sensor_msgs/Joy")
+            print('joy : ws2-> ws1')
         else:
             pass
 
@@ -73,8 +74,8 @@ class ROSBridgeConnector:
             rospy.Subscriber("/wamv2/RL/more_scan", LaserScan, self.cb_wamv2_laser)
             # if self.vr == True :
             rospy.Subscriber("/wamv/joy", Joy, self.cb_joy_wamv)
-            if self.vr == False:
-                rospy.Subscriber("/joy", Joy, self.cb_joy_all)
+            # if self.vr == False:
+            rospy.Subscriber("/joy", Joy, self.cb_joy_all)
                 
         else:
             pass
@@ -183,7 +184,7 @@ class ROSBridgeConnector:
         publisher.publish(roslib_msg)
         
     def cb_joy_wamv(self, data):
-        self.cb_joy(data, self.pub_joy)
+        self.cb_joy(data, self.pub_joy_wamv)
         
     def cb_joy_all(self, data):
         self.cb_joy(data, self.pub_joy)
