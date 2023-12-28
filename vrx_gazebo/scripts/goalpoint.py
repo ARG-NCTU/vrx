@@ -55,13 +55,13 @@ class goal_point():
 
 
     def cb_joy(self, msg):
-        if msg.buttons[4] == 1:
-            self.set_wamv_pose(model_name='wamv2', x=10 , y=0, z=self.wamv_z, qx=self.wamv_qx, qy=self.wamv_qy, qz=self.wamv_qz, qw=self.wamv_qw)
-            self.set_wamv_pose(model_name='wamv3', x=10 , y=50, z= -0.090229, qx=0, qy=0, qz=0, qw=0)
-            self.set_wamv_pose(model_name='wamv4', x=10 , y=-50, z= -0.090229, qx=0, qy=0, qz=0, qw=0)
-            self.counter = 0
-        else:
-            pass
+        # if msg.buttons[4] == 1:
+        self.set_wamv_pose(model_name='wamv2', x=10 , y=0, z=self.wamv_z, qx=self.wamv_qx, qy=self.wamv_qy, qz=self.wamv_qz, qw=self.wamv_qw)
+        self.set_wamv_pose(model_name='wamv3', x=10 , y=50, z= -0.090229, qx=0, qy=0, qz=0, qw=0)
+        self.set_wamv_pose(model_name='wamv4', x=10 , y=-50, z= -0.090229, qx=0, qy=0, qz=0, qw=0)
+        self.counter = 0
+        # else:
+            # pass
         
     def cb_wamv(self, msg):
         self.wamv_x = msg.pose.position.x
@@ -107,9 +107,6 @@ class goal_point():
             self.pub_4.publish(pose)
             print('wamv4 goal published:', self.wamv4_x, self.wamv4_y)
             
-        # elif self.counter >= 55:
-        #     rospy.signal_shutdown("Counter reached 50, shutting down.")
-            # return
         else:
             pass
             
@@ -302,11 +299,20 @@ class goal_point():
         self.set_model_state.publish(model_state)
         
 
+    def run(self): 
+        while not rospy.is_shutdown():
+            if self.counter >= 55:
+                rospy.loginfo('Process finished')
+                rospy.signal_shutdown('Process finished')
+                break
+            rospy.sleep(0.1)
+
 if __name__ == '__main__':
     rospy.init_node('goal_point_node',anonymous=False)
     goal_point_node = goal_point()
+    goal_point_node.run()
     #rospy.on_shutdown(goal_point_node.on_shutdown)
-    rospy.spin()
+    # rospy.spin()
     
     
     
