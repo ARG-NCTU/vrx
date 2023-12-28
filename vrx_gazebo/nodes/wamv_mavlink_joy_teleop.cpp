@@ -31,6 +31,7 @@ class Teleop
     ros::Publisher pub_thrust_left_lateral_;
     ros::Publisher pub_thrust_right_lateral_;
     ros::Publisher pub_track_trigger_;
+    ros::Publisher pub_enable_auto_mode_success_;
 
     ros::ServiceClient srv_arming_;
     ros::ServiceClient srv_land_;
@@ -91,6 +92,7 @@ Teleop::Teleop(ros::NodeHandle& nh, ros::NodeHandle& nh_private)
     pub_thrust_left_lateral_ = nh_private_.advertise<std_msgs::Float32>("thrust_left_lateral", 10);
     pub_thrust_right_lateral_ = nh_private_.advertise<std_msgs::Float32>("thrust_right_lateral", 10);
     pub_track_trigger_ = nh_.advertise<std_msgs::Bool>("track_trigger", 10);
+    pub_enable_auto_mode_success_ = nh_.advertise<std_msgs::Bool>("/enable_auto_mode_success", 10);
 
     srv_arming_ = nh_.serviceClient<mavros_msgs::CommandBool>("/mavros/cmd/arming");
     srv_land_ = nh_.serviceClient<mavros_msgs::CommandTOL>("/mavros/cmd/land");
@@ -360,6 +362,7 @@ void Teleop::timerPubCallback(const ros::TimerEvent& event)
     {
     }
     pub_track_trigger_.publish(trigger_);
+    pub_enable_auto_mode_success_.publish(trigger_);
 }
 
 void Teleop::initMaps()
