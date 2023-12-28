@@ -51,7 +51,7 @@ class RealtoSimObstacle:
         self.obstacle_msg = msg
 
     def init_obstacle(self):
-        for i in range (31):
+        for i in range (16):
             obstacle_pose = PoseStamped()
             model_name = self.obstacle_name + str(i)
             obstacle_pose.pose.position.x = 258
@@ -96,7 +96,7 @@ class RealtoSimObstacle:
 
 
     def check_obstacle(self, new_model):
-        threshold = 10
+        threshold = 5
         try:
             if self.existing_obstacle == []:
                 self.existing_obstacle = new_model
@@ -165,6 +165,7 @@ class RealtoSimObstacle:
                     pass
   
             # update obstacle pose and add new obstacle
+            print(new_model)
             self.check_obstacle(new_model) 
             print('existing obstacle:', len(self.existing_obstacle[0]))
             
