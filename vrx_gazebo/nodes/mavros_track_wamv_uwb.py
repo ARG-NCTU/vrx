@@ -14,7 +14,7 @@ class MavrosTrackWAMVUWBPose:
     def __init__(self):
         self.trigger_timeout = rospy.get_param("~trigger_timeout", 1.0)
 
-        self.trigger_sub = rospy.Subscriber("track_trigger", Bool, self.trigger_callback)
+        self.trigger_sub = rospy.Subscriber("/track_trigger", Bool, self.trigger_callback)
 
         self.drone_pose_to_wamv_sub = rospy.Subscriber(
             "/pozyx_simulation/drone/pose/optim", PoseStamped, self.drone_pose_to_wamv_callback
@@ -36,7 +36,7 @@ class MavrosTrackWAMVUWBPose:
 
         self.active = Active()
 
-        self.trigger = False
+        self.trigger = True
 
         self.drone_pose_to_wamv = np.identity(4)
         self.drone_pose_to_local = np.identity(4)
@@ -93,6 +93,8 @@ class MavrosTrackWAMVUWBPose:
             status.id = self.active.id
             status.status = self.FAIL
             self.behavior_status_pub.publish(status)
+        rospy.loginfo("active: {}".format(self.active.active))
+        rospy.loginfo("status: {}".format(self.active.id))
 
     def pose_stamped_to_matrix(self, pose):
         matrix = tft.quaternion_matrix(
