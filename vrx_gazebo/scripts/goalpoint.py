@@ -28,8 +28,8 @@ class goal_point():
         self.pub_map4 = rospy.Publisher("/visualization_map4", Marker, queue_size=1)
         
         
-        self.pub_state_to_mapgrid = rospy.Publisher("/reset_map", Bool, queue_size=1)
-        self.joy = rospy.Subscriber("/joy", Joy, self.cb_joy, queue_size=1)
+        # self.pub_state_to_mapgrid = rospy.Publisher("/reset_map", Bool, queue_size=1)
+        # self.joy = rospy.Subscriber("/joy", Joy, self.cb_joy, queue_size=1)
 
         self.timer = rospy.Timer(rospy.Duration(1), self.cb_publish)
         
@@ -46,37 +46,36 @@ class goal_point():
         self.robot_radius = 3
         self.pi2 = math.radians(360)
         
-        self.sub_wamv = rospy.Subscriber("/gazebo/wamv/pose", PoseStamped, self.cb_wamv, queue_size=1)
-        self.wamv_x, self.wamv_y, self.wamv_z, self.wamv_qx, self.wamv_qy, self.wamv_qz, self.wamv_qw = 0,0,0,0,0,0,0
+        # self.sub_wamv = rospy.Subscriber("/gazebo/wamv/pose", PoseStamped, self.cb_wamv, queue_size=1)
+        # self.wamv_x, self.wamv_y, self.wamv_z, self.wamv_qx, self.wamv_qy, self.wamv_qz, self.wamv_qw = 0,0,0,0,0,0,0
         
         self.set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
         self.counter = 0
         print('reset USV pose')
 
-
-    def cb_joy(self, msg):
-        # if msg.buttons[4] == 1:
-        self.set_wamv_pose(model_name='wamv2', x=10 , y=0, z=self.wamv_z, qx=self.wamv_qx, qy=self.wamv_qy, qz=self.wamv_qz, qw=self.wamv_qw)
-        self.set_wamv_pose(model_name='wamv3', x=10 , y=50, z= -0.090229, qx=0, qy=0, qz=0, qw=0)
-        self.set_wamv_pose(model_name='wamv4', x=10 , y=-50, z= -0.090229, qx=0, qy=0, qz=0, qw=0)
-        self.counter = 0
+    # def cb_joy(self, msg):
+    #     # if msg.buttons[4] == 1:
+    #     # self.set_wamv_pose(model_name='wamv2', x=10 , y=0, z=self.wamv_z, qx=self.wamv_qx, qy=self.wamv_qy, qz=self.wamv_qz, qw=self.wamv_qw)
+    #     self.set_wamv_pose(model_name='wamv3', x=10 , y=50, z= -0.090229, qx=0, qy=0, qz=0, qw=1)
+    #     self.set_wamv_pose(model_name='wamv4', x=10 , y=-50, z= -0.090229, qx=0, qy=0, qz=0, qw=1)
+        # self.counter = 0
         # else:
             # pass
         
-    def cb_wamv(self, msg):
-        self.wamv_x = msg.pose.position.x
-        self.wamv_y = msg.pose.position.y
-        self.wamv_z = msg.pose.position.z
-        self.wamv_qx = msg.pose.orientation.x
-        self.wamv_qy = msg.pose.orientation.y
-        self.wamv_qz = msg.pose.orientation.z
-        self.wamv_qw = msg.pose.orientation.w
+    # def cb_wamv(self, msg):
+    #     self.wamv_x = msg.pose.position.x
+    #     self.wamv_y = msg.pose.position.y
+    #     self.wamv_z = msg.pose.position.z
+    #     self.wamv_qx = msg.pose.orientation.x
+    #     self.wamv_qy = msg.pose.orientation.y
+    #     self.wamv_qz = msg.pose.orientation.z
+    #     self.wamv_qw = msg.pose.orientation.w
     
     def pub_goal(self):
         print('counter:', self.counter)
         
-        if self.counter == 2 :
-            self.pub_state_to_mapgrid.publish(True)
+        # if self.counter == 2 :
+        #     self.pub_state_to_mapgrid.publish(True)
         
         if self.counter > 5 and self.counter <19:
             pose = PoseStamped()
