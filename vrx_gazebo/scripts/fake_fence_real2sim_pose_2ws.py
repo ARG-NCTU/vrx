@@ -30,33 +30,7 @@ class RealtoSimTransform:
         self.wamv_pose = PoseStamped()
         self.wamv2_pose = PoseStamped()
 
-        self.init_wamv2 = PoseStamped()
-        self.init_wamv2.pose.position.x = 10
-        self.init_wamv2.pose.position.y = 0
-        self.init_wamv2.pose.position.z =  -0.090229
-        self.init_wamv2.pose.orientation.x = 0
-        self.init_wamv2.pose.orientation.y = 0
-        self.init_wamv2.pose.orientation.z = 0
-        self.init_wamv2.pose.orientation.w = 0
-        
-        self.init_wamv3 = PoseStamped()
-        self.init_wamv3.pose.position.x = 10
-        self.init_wamv3.pose.position.y = 50
-        self.init_wamv3.pose.position.z = -0.090229
-        self.init_wamv3.pose.orientation.x = 0
-        self.init_wamv3.pose.orientation.y = 0
-        self.init_wamv3.pose.orientation.z = 0
-        self.init_wamv3.pose.orientation.w = 0
-
-        self.init_wamv4 = PoseStamped()
-        self.init_wamv4.pose.position.x = 10
-        self.init_wamv4.pose.position.y = -50
-        self.init_wamv4.pose.position.z = -0.090229
-        self.init_wamv4.pose.orientation.x = 0
-        self.init_wamv4.pose.orientation.y = 0
-        self.init_wamv4.pose.orientation.z = 0
-        self.init_wamv4.pose.orientation.w = 0
-        
+        self.init_wamv2 = PoseStamped()        
         self.time = rospy.Time.now()
         self.joy = None
 
@@ -65,7 +39,7 @@ class RealtoSimTransform:
 
     def wamv2_pose_callback(self, pose):
         self.wamv2_pose = pose
-
+        
     def joy_callback(self, joy):
 
         if self.joy is None:
@@ -73,8 +47,7 @@ class RealtoSimTransform:
             return
 
         joy_trigger = joy.buttons[4] and not self.joy.buttons[4] 
-        print('joy_trigger', joy_trigger)
-
+    
         if joy_trigger:
             print('start sync')   
             self.matrix_wamv_origin_to_map = self.pose_to_matrix(self.wamv_pose)
@@ -83,9 +56,8 @@ class RealtoSimTransform:
         else:
             pass
         self.joy = joy
-       
+
     def timer_callback(self, event):
-        
         if self.flag == True: 
             # transform
             if self.matrix_wamv_origin_to_map is None or self.matrix_wamv2_origin_to_map is None:
@@ -120,9 +92,8 @@ class RealtoSimTransform:
             self.tf_msg.transform.rotation = pose_wamv2_to_map.pose.orientation
             self.tf_broadcaster.sendTransform(self.tf_msg)
             
-            
             self.pub_pose.publish(pose_wamv2_to_map)
-            print("wamv2 pose to map: ", pose_wamv2_to_map)
+            print('pose:', pose_wamv2_to_map)
             self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)    
             
             # # update wamv2 pose every 1/sync_freq seconds
@@ -138,12 +109,13 @@ class RealtoSimTransform:
             # print("wamv2 pose to map: ", pose_wamv2_to_map)
             
         else:
+            self.init_wamv2 = self.wamv2_pose
             self.init_wamv2.pose.orientation = self.wamv_pose.pose.orientation
             self.init_wamv2.pose.orientation.x = 0
             self.init_wamv2.pose.orientation.y = 0
             self.set_model(model_name ='wamv2', pose = self.init_wamv2)
-            self.set_model(model_name='wamv3', pose = self.init_wamv3)
-            self.set_model(model_name='wamv4', pose = self.init_wamv4)
+        #     self.set_model(model_name='wamv3', pose = self.init_wamv3)
+        #     self.set_model(model_name='wamv4', pose = self.init_wamv4)
         
     def set_model(self, model_name, pose):
         model_state = ModelState()
