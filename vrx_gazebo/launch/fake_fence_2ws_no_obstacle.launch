@@ -18,6 +18,9 @@
   <arg name="paused" default="false"/>
   <!-- Acoustic pinger position(s) -->
   <arg name="pinger_params" default="$(find vrx_gazebo)/config/pinger.yaml"/>
+  
+  <arg name="drone_ns" default="drone"/>
+  <arg name="red_ball" default="true"/>
 
   <!-- Initial USV location and attitude-->
 
@@ -62,7 +65,8 @@
       locked:=$(arg wamv_locked)		   
       thruster_config:=$(arg thrust_config)
       vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
-      namespace:=$(arg namespace) "/>
+      namespace:=$(arg namespace)
+      red_ball:=$(arg red_ball) "/>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv_tf_pub" >
     <remap from="robot_description" to="wamv/robot_description" />
@@ -74,4 +78,10 @@
               -R $(arg real_R) -P $(arg real_P) -Y $(arg real_Y)
               -urdf -param $(arg namespace)/robot_description -model wamv"/>
 
+    <include file="$(find vrx_gazebo)/launch/if750a_camera_pushing.launch">
+        <arg name="drone_ns" value="$(arg drone_ns)"/>
+        <arg name="x" value="-20.0"/>
+        <arg name="y" value="0.0"/>
+        <arg name="z" value="1.0"/>
+    </include>
 </launch>
