@@ -16,7 +16,6 @@ class RealtoSimObstacle:
         # self.model_sub = rospy.Subscriber("/gazebo/model_states", ModelStates, self.model_callback)
         # self.spawn_model = rospy.ServiceProxy("/gazebo/spawn_sdf_model", SpawnModel)
         self.pub_set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
-        self.pub_state_to_mapgrid = rospy.Publisher("/reset_map", Bool, queue_size=1)
         self.sub_joy = rospy.Subscriber("joy", Joy, self.joy_callback)
         self.timer_set_model_state = rospy.Timer(rospy.Duration(0.05), self.timer_callback)
         self.timer_reset_model_state = rospy.Timer(rospy.Duration(0.02), self.timer_cb_reset)
@@ -41,7 +40,6 @@ class RealtoSimObstacle:
             self.flag = not self.flag 
             if self.flag == True: # reset done
                 print('pub true')
-                self.pub_state_to_mapgrid.publish(True)
             else:
                 pass
             
@@ -63,7 +61,6 @@ class RealtoSimObstacle:
             obstacle_pose.pose.orientation.w = 1
             self.set_model(model_name = model_name, pose = obstacle_pose)
         
-        # print(obstacle_pose)
         # clear existing obstacle
         self.max_num = 0
         self.existing_obstacle = []
@@ -75,21 +72,15 @@ class RealtoSimObstacle:
         model_state.reference_frame = "world"
         model_state.pose = pose.pose     
         self.pub_set_model_state.publish(model_state)
-        if pose.pose.position.z == -50:
-            return
-        else:
-            self.pub_obstacle_to_vr.publish(pose)
 
     def rm_original_obstacles(self, point):
         x = point[0]
         y = point[1]
-        # elif self.ws == 2:
         top_boundary = 70
         bottom_boundary = 50
         left_boundary = 68
         right_boundary = -68
               
-
         #filter out original obstacles
         # print('x:', x, 'y:', y)
         if  bottom_boundary <= x <= top_boundary and \
@@ -116,8 +107,8 @@ class RealtoSimObstacle:
                         if dis < threshold:  # update obstacle
                             # assume the obstacle got at the first time is correct 
                             ## obstacle pose updated
-                            # self.existing_obstacle[0][i] = new_model[0][j]
-                            # self.existing_obstacle[1][i] = new_model[1][j]
+                            self.existing_obstacle[0][i] = new_model[0][j]
+                            self.existing_obstacle[1][i] = new_model[1][j]
                             
                             obstacle_updated = True
                             break  # Stop searching once an obstacle is updated
@@ -146,7 +137,10 @@ class RealtoSimObstacle:
         model_name = self.obstacle_name + str(order)
         
         self.set_model(model_name = model_name, pose = pose)
-        
+        self.pub_obstacle_to_vr.publish(pose)
+        print('pub:',[pose.pose.position.x, pose.pose.position.y])
+
+
     def timer_cb_reset(self, event):
         if self.flag == False:
             self.init_obstacle()   
@@ -165,19 +159,15 @@ class RealtoSimObstacle:
 
                 #remove original obstacles if detected
                 if self.rm_original_obstacles([x,y]):
-                    # model_name = self.obstacle_name + str(cnt)
                     new_model[0].append(x)
                     new_model[1].append(y)
                 else: 
                     pass
   
             # update obstacle pose and add new obstacle
-            print(new_model)
             self.check_obstacle(new_model) 
-            print('existing obstacle:', len(self.existing_obstacle[0]))
-            
+           
             for i in range (len(self.existing_obstacle[0])):
-                # print('i:', i)
                 self.generate_points(self.existing_obstacle[0][i], self.existing_obstacle[1][i], i)
                 self.max_num = len(self.existing_obstacle[0])
             # print('existing_obstacle:', self.existing_obstacle)
