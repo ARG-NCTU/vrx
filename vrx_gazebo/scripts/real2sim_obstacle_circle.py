@@ -20,7 +20,7 @@ class RealtoSimObstacle:
         self.sub_joy = rospy.Subscriber("joy", Joy, self.joy_callback)
         self.timer_set_model_state = rospy.Timer(rospy.Duration(0.05), self.timer_callback)
         self.timer_reset_model_state = rospy.Timer(rospy.Duration(0.02), self.timer_cb_reset)
-        
+        self.pub_obstacle_to_vr = rospy.Publisher("/obstacle_from_real",PoseStamped, queue_size=1)
         self.sub_obstacle = rospy.Subscriber('/raw_obstacles', Obstacles, self.obstacle_cb, queue_size=1)
         
         self.flag = False
@@ -29,7 +29,7 @@ class RealtoSimObstacle:
         self.existing_obstacle = []
         self.init_obstacle()
         self.joy = None
-        
+    
     def joy_callback(self, joy):
         if self.joy == None:
             self.joy = joy
@@ -62,17 +62,23 @@ class RealtoSimObstacle:
             obstacle_pose.pose.orientation.z = 0
             obstacle_pose.pose.orientation.w = 1
             self.set_model(model_name = model_name, pose = obstacle_pose)
-            
+        
+        # print(obstacle_pose)
         # clear existing obstacle
         self.max_num = 0
         self.existing_obstacle = []
         
+     
     def set_model(self, model_name, pose):
         model_state = ModelState()
         model_state.model_name = model_name
         model_state.reference_frame = "world"
         model_state.pose = pose.pose     
         self.pub_set_model_state.publish(model_state)
+        if pose.pose.position.z == -50:
+            return
+        else:
+            self.pub_obstacle_to_vr.publish(pose)
 
     def rm_original_obstacles(self, point):
         x = point[0]
@@ -98,7 +104,8 @@ class RealtoSimObstacle:
     def check_obstacle(self, new_model):
         threshold = 5
         try:
-            if self.existing_obstacle == []:
+            if not self.existing_obstacle or len(self.existing_obstacle[0]) != len(self.existing_obstacle[1]):
+                print('no existing obstacle')
                 self.existing_obstacle = new_model
                 return 
             else:

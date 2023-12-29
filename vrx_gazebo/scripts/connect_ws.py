@@ -46,7 +46,9 @@ class ROSBridgeConnector:
             # if self.vr == True :
             self.pub_joy_wamv = roslibpy.Topic(self.client, "/wamv/joy", "sensor_msgs/Joy")
             self.pub_joy = roslibpy.Topic(self.client, "/joy", "sensor_msgs/Joy")
-            
+
+            self.pub_obstacle_to_wamv = roslibpy.Topic(self.client, "/obstacle_from_real", "geometry_msgs/PoseStamped")
+
             # if self.vr == False: 
             #     self.pub_joy = roslibpy.Topic(self.client, "/joy", "sensor_msgs/Joy")
             print('joy : ws2-> ws1')
@@ -72,6 +74,7 @@ class ROSBridgeConnector:
             rospy.Subscriber("/wamv/move_base_simple/goal", PoseStamped, self.cb_wamv_goal)
             rospy.Subscriber("/visualization_circle1", Marker, self.cb_position_circle1)
             rospy.Subscriber("/wamv2/RL/more_scan", LaserScan, self.cb_wamv2_laser)
+            rospy.Subscriber("/obstacle_from_real", PoseStamped, self.cb_obstacle_to_wamv)
             # if self.vr == True :
             rospy.Subscriber("/wamv/joy", Joy, self.cb_joy_wamv)
             # if self.vr == False:
@@ -91,7 +94,10 @@ class ROSBridgeConnector:
         laser.header.stamp = rospy.Time.now()
         laser.header.frame_id = "wamv/lidar_wamv_link"
         self.pub_2scan_for1.publish(laser)
-        
+
+    def cb_obstacle_to_wamv(self, data):
+        self.cb_posestamped(data, self.pub_obstacle_to_wamv)
+
     def cb_laser(self, data, publisher):
         
         roslib_msg = roslibpy.Message(
