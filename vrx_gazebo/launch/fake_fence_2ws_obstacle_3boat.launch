@@ -60,7 +60,7 @@
 
 
   <!-- wamv 2-->
-  <param name="wamv2/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) mavlink_enabled:=false namespace:=wamv2 red_ball:=true"/>
+  <param name="wamv2/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=wamv2" />
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv2_tf_pub">
     <remap from="robot_description" to="wamv2/robot_description" />
@@ -72,7 +72,7 @@
               -urdf -param wamv2/robot_description -model wamv2"/>
 
   <!-- wamv 3-->
-  <param name="wamv3/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=wamv3 "/>
+  <param name="wamv3/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=wamv3"/>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv3_tf_pub">
     <remap from="robot_description" to="wamv3/robot_description" />
@@ -97,12 +97,12 @@
               -urdf -param wamv4/robot_description -model wamv4"/>
               
   <!-- Spawn drone model in Gazebo -->
-  <arg name="drone_ns" default="/"/>
+  <!-- <arg name="drone_ns" default="/"/>
   <arg name="model" default="iris"/>
   <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
-  <arg name="gcs_url" default="" />
+  <arg name="gcs_url" default="" /> -->
   <!-- GCS link is provided by SITL -->
-  <arg name="tgt_system" default="1" />
+  <!-- <arg name="tgt_system" default="1" />
   <arg name="tgt_component" default="1" />
   <arg name="vehicle" default="iris"/>
   <param name="use_sim_time" value="true" />
@@ -110,10 +110,10 @@
 
   <include file="$(find px4)/launch/px4.launch">
     <arg name="vehicle" value="$(arg vehicle)"/>
-  </include>
+  </include> -->
 
   <!-- Launch MavROS -->
-  <group ns="$(arg drone_ns)">
+  <!-- <group ns="$(arg drone_ns)">
     <include file="$(find mavros)/launch/node.launch">
       <arg name="pluginlists_yaml" value="$(find mavros)/launch/px4_pluginlists.yaml" />
       <arg name="config_yaml" value="$(find vrx_gazebo)/config/drone_config/px4_config.yaml" />
@@ -123,9 +123,9 @@
       <arg name="tgt_component" value="$(arg tgt_component)" />
       <arg name="respawn_mavros" default="$(arg respawn_mavros)" />
     </include>
-  </group>
+  </group> -->
 
-  <arg name="drone_x" default="-20" />
+  <!-- <arg name="drone_x" default="-20" />
   <arg name="drone_y" default="0" />
   <arg name="drone_z" default="0.5" />
   <arg name="drone_R" default="0" />
@@ -134,5 +134,5 @@
 
   <node name="spawn_model_drone" pkg="gazebo_ros" type="spawn_model" args="-x $(arg drone_x) -y $(arg drone_y) -z $(arg drone_z)
               -R $(arg drone_R) -P $(arg drone_P) -Y $(arg drone_Y)
-              -sdf -database $(arg model) -model drone"/>
+              -sdf -database $(arg model) -model drone"/> -->
 </launch>

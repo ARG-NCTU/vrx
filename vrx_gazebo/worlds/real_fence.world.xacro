@@ -20,6 +20,13 @@
       </wind_objs>
     </xacro:usv_wind_gazebo>
 
+    <include>
+      <uri>model://dock_block_4x4</uri>
+      <name>dock_block_4x4_1</name>
+      <pose>-20 0 0.2 0 -0 0</pose>
+      <static>true</static>
+    </include>
+    
         <include>
           <uri>model://polyform_a7_redglow</uri>
           <name>block_real_1</name>
