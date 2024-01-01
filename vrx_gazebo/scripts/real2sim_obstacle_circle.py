@@ -87,38 +87,37 @@ class RealtoSimObstacle:
             right_boundary <= y <= left_boundary :
             print('original obstacle')
             return False    
-        
+        elif -30 <= x <= -10 and \
+            -10 <= y <= 10: 
+            print('drone plate')
+            return False
         else:
             return True
 
-
     def check_obstacle(self, new_model):
         threshold = 5
-        try:
-            if not self.existing_obstacle or len(self.existing_obstacle[0]) != len(self.existing_obstacle[1]):
-                print('no existing obstacle')
-                self.existing_obstacle = new_model
-                return 
-            else:
-                for j in range(len(new_model[0])):
-                    obstacle_updated = False
-                    for i in range(len(self.existing_obstacle[0])):
-                        dis = self.dist([self.existing_obstacle[0][i], self.existing_obstacle[1][i]], [new_model[0][j], new_model[1][j]])
-                        if dis < threshold:  # update obstacle
-                            # assume the obstacle got at the first time is correct 
-                            ## obstacle pose updated
-                            self.existing_obstacle[0][i] = new_model[0][j]
-                            self.existing_obstacle[1][i] = new_model[1][j]
-                            
-                            obstacle_updated = True
-                            break  # Stop searching once an obstacle is updated
-                    if not obstacle_updated:
-                        # Add new obstacle
-                        self.existing_obstacle[0].append(new_model[0][j])  # x
-                        self.existing_obstacle[1].append(new_model[1][j])  # y
-                    
-        except ValueError:
-            pass
+        if not self.existing_obstacle:
+            print('no existing obstacle')
+            self.existing_obstacle = new_model
+            return
+        else:
+            # Check for each new obstacle
+            for j in range(len(new_model[0])):
+                obstacle_updated = False
+                # Compare with each existing obstacle
+                for i in range(len(self.existing_obstacle[0])):
+                    dis = self.dist([self.existing_obstacle[0][i], self.existing_obstacle[1][i]], [new_model[0][j], new_model[1][j]])
+                    if dis < threshold:  # update obstacle
+                        self.existing_obstacle[0][i] = new_model[0][j]
+                        self.existing_obstacle[1][i] = new_model[1][j]
+                        obstacle_updated = True
+                        break  # Stop searching once an obstacle is updated
+
+                if not obstacle_updated:
+                    # Add new obstacle
+                    self.existing_obstacle[0].append(new_model[0][j])  # x
+                    self.existing_obstacle[1].append(new_model[1][j])  # y
+
             
     def dist(self, p1, p2):
         dis =  math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
