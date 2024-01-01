@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <launch>
-    <arg name="veh" default="wamv2" />
-    <arg name="ws" default="1" />"
+    <arg name="veh" default="wamv" />
+    <arg name="ws" default="2" />"
 
     
     <group if="$(eval veh == 'wamv')">

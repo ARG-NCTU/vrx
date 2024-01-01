@@ -13,7 +13,7 @@
     <arg name="qw" default="1" />
 
     <group ns="$(arg veh)">
-        <node pkg="vrx_gazebo" type="fake_fence_real2sim_pose_1ws.py" name="fake_fence_real2sim_pose" output="screen">
+        <node pkg="vrx_gazebo" type="real2sim_pose_1ws.py" name="real2sim_pose_1ws" output="screen">
             <remap from="joy" to="/joy" />
             <param name="~x" value="$(arg x)" />
             <param name="~y" value="$(arg y)" />
