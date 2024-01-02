@@ -115,7 +115,7 @@ class ROSBridgeConnector:
     def cb_laser_2sub1_RL(self, msg):
         laser = msg
         laser.header.stamp = rospy.Time.now()
-        laser.header.frame_id = "wamv/lidar_wamv_link"
+        laser.header.frame_id = "wamv2/lidar_wamv_link"
         self.pub_1scan_for2_RL.publish(laser)
             
     def cb_obstacle_to_wamv(self, data):
