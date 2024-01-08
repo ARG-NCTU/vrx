@@ -38,10 +38,6 @@ class RealtoSimObstacle:
         
         if joy_trigger:
             self.flag = not self.flag 
-            if self.flag == True: # reset done
-                print('pub true')
-            else:
-                pass
             
         self.joy = joy
             
