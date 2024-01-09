@@ -28,7 +28,8 @@ class RealtoSimObstacle:
         self.existing_obstacle = []
         self.init_obstacle()
         self.joy = None
-    
+        self.cnt_vr = 0
+        
     def joy_callback(self, joy):
         if self.joy == None:
             self.joy = joy
@@ -130,10 +131,14 @@ class RealtoSimObstacle:
         pose.pose.orientation.w = 1
         
         model_name = self.obstacle_name + str(order)
-        
+
         self.set_model(model_name = model_name, pose = pose)
-        self.pub_obstacle_to_vr.publish(pose)
-        print('pub:',[pose.pose.position.x, pose.pose.position.y])
+
+        self.cnt_vr += 1
+        if self.cnt_vr == 100:
+            self.pub_obstacle_to_vr.publish(pose)
+            self.cnt_vr = 0
+            print('pub:',[pose.pose.position.x, pose.pose.position.y])
 
 
     def timer_cb_reset(self, event):
