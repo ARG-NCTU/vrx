@@ -11,6 +11,7 @@ class MavrosTrackWAMVUWBPose:
     FAIL = 0
     RUNNING = 1
     SUCCESS = 2
+
     def __init__(self):
         self.trigger_timeout = rospy.get_param("~trigger_timeout", 1.0)
 
@@ -25,7 +26,7 @@ class MavrosTrackWAMVUWBPose:
         self.setpoint_position_local_pub = rospy.Publisher(
             "/mavros/setpoint_position/local", PoseStamped, queue_size=10
         )
-        
+
         node_name = rospy.get_name().split("/")[-1]
         print(node_name)
 
@@ -59,12 +60,12 @@ class MavrosTrackWAMVUWBPose:
     def timer_callback(self, event):
         current_time = rospy.Time.now()
 
-        if not self.trigger:
-            return
+        # if not self.trigger:
+        #     return
 
-        if current_time - self.trigger_time > rospy.Duration(self.trigger_timeout):
-            self.trigger = False
-            return
+        # if current_time - self.trigger_time > rospy.Duration(self.trigger_timeout):
+        #     self.trigger = False
+        #     return
 
         if not np.allclose(self.drone_pose_to_wamv, np.identity(4)):
             if not np.allclose(self.drone_pose_to_local, np.identity(4)):
@@ -74,7 +75,7 @@ class MavrosTrackWAMVUWBPose:
                 wamv_to_local = np.dot(self.drone_pose_to_local, wamv_to_drone)
                 pose_stamped = self.matrix_to_pose_stamped(wamv_to_local, "map")
                 # pose_stamped.pose.position.z = 0.0
-                if self.active.active:
+                if 1 or self.active.active:
                     self.setpoint_position_local_pub.publish(pose_stamped)
                 # rospy.loginfo_throttle(1.0, "WAMV to local: \n%s", wamv_to_local)
                 # rospy.loginfo_throttle(1.0, "WAMV to local: \n%s", pose_stamped)
@@ -82,7 +83,7 @@ class MavrosTrackWAMVUWBPose:
                 rospy.loginfo_throttle(1.0, "Drone pose to local is not available.")
         else:
             rospy.loginfo_throttle(1.0, "Drone pose to WAMV is not available.")
-        
+
         if self.active.active:
             status = Status()
             status.id = self.active.id
