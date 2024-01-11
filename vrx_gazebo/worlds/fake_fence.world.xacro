@@ -473,7 +473,7 @@
         
         <!-- obstacle -->
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_0</name>
           <pose>300 -50.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -481,7 +481,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_1</name>
           <pose>300 -51.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -489,7 +489,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_2</name>
           <pose>300 -53.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -497,7 +497,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_3</name>
           <pose>300 -54.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -505,7 +505,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_4</name>
           <pose>300 -56.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -513,7 +513,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_5</name>
           <pose>300 -57.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -521,7 +521,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_6</name>
           <pose>300 -59.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -529,7 +529,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_7</name>
           <pose>300 -60.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -537,7 +537,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_8</name>
           <pose>300 -62.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -545,7 +545,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_9</name>
           <pose>300 -63.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -553,7 +553,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_10</name>
           <pose>300 -65.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -561,7 +561,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_11</name>
           <pose>300 -66.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -569,7 +569,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_12</name>
           <pose>300 -68.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -577,7 +577,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_13</name>
           <pose>300 -69.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -585,7 +585,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_14</name>
           <pose>300 -71.0 -100 0 -0 0</pose>
           <static>true</static>
@@ -593,7 +593,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_15</name>
           <pose>300 -72.5 -100 0 -0 0</pose>
           <static>true</static>
@@ -601,7 +601,7 @@
 
         
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>real_obstacle_16</name>
           <pose>300 -74.0 -100 0 -0 0</pose>
           <static>true</static>

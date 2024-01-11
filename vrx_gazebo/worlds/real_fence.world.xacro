@@ -34,7 +34,7 @@
     </include>
     
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>block_real_1</name>
           <pose>45 0 0.5 0 0 0</pose>
           <static>true</static>
