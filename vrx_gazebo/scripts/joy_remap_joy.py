@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from sensor_msgs.msg import Joy
 import rospy
- 
+from std_msgs.msg import Bool
 class Joy_remap_joy:
     # This script remaps the joy to the joy topic
     # For mixed teleop
@@ -19,8 +19,11 @@ class Joy_remap_joy:
         self.joy_to_joy.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.joy_to_joy.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.publisher_to_use = None
-
-
+        self.sub_shutdown_joy_remap_joy = rospy.Subscriber("/shutdown_joy_remap_joy", Bool, self.shutdown_cb, queue_size=1)
+        self.flag = False
+    def shutdown_cb(self, msg):
+        self.flag = msg.data
+        
     def cb_joy(self, msg):
         self.joy_to_joy.header.stamp = rospy.Time.now()
         self.joy_to_joy.axes = list(msg.axes)
@@ -74,10 +77,17 @@ class Joy_remap_joy:
             
         else:
             pass
-
+    def run(self):
+        while not rospy.is_shutdown():
+            if self.flag:
+                rospy.loginfo('Process finished')
+                break
+            rospy.sleep(0.1)
+            
 if __name__ == '__main__':
     rospy.init_node('joy_remap_joy')
     joy_remap_joy = Joy_remap_joy()
-    rospy.spin()
+    joy_remap_joy.run()
+    # rospy.spin()
     
-    rospy.sleep(0.1) 
+    # rospy.sleep(0.1) 
