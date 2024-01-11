@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+import fix_python3_path
 import rospy
 import math
 from geometry_msgs.msg import PoseStamped, Point
