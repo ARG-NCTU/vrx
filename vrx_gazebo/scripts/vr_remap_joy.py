@@ -23,7 +23,24 @@ class VR_remap_joy:
     def cb_joy(self, msg):
         if self.pub_once:
             self.pub_shutdown_joy_remap_joy.publish(True)
-        
+            # DP in th beginning
+            self.vr_to_joy.buttons[3] = 1
+            self.vr_to_joy.buttons[7] = 1
+            
+            #wamv2 DP
+            self.vr_to_joy.axes[2] == 2
+            self.pub_joy_2.publish(self.vr_to_joy)
+            #wamv DP
+            self.vr_to_joy.axes[2] = 1
+            self.pub_joy_1.publish(self.vr_to_joy)
+            #wamv3 DP
+            self.vr_to_joy.axes[2] = 3
+            self.pub_joy_3.publish(self.vr_to_joy)
+            #wamv4 DP
+            self.vr_to_joy.axes[2] = 4
+            self.pub_joy_4.publish(self.vr_to_joy)
+            
+            self.pub_once = False
         self.vr_to_joy.header.stamp = rospy.Time.now()
 
         #button 

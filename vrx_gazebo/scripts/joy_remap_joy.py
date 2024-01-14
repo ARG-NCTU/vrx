@@ -17,18 +17,37 @@ class Joy_remap_joy:
         self.joy_to_joy = Joy()
         self.joy_to_joy.header.frame_id = "/dev/input/js0"
         self.joy_to_joy.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.joy_to_joy.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.joy_to_joy.buttons = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
         self.publisher_to_use = None
         self.sub_shutdown_joy_remap_joy = rospy.Subscriber("/shutdown_joy_remap_joy", Bool, self.shutdown_cb, queue_size=1)
         self.flag = False
+        self.first_time = True
     def shutdown_cb(self, msg):
         self.flag = msg.data
         
     def cb_joy(self, msg):
-        self.joy_to_joy.header.stamp = rospy.Time.now()
+        self.joy_to_joy.header.stamp = rospy.Time.now()        
+        if self.first_time:
+            # DP in th beginning
+            self.joy_to_joy.buttons[3] = 1
+            self.joy_to_joy.buttons[7] = 1
+            
+            self.joy_to_joy.axes[2] = 1
+            self.pub_joy_1.publish(self.joy_to_joy)
+            
+            self.joy_to_joy.axes[2] = 2   
+            self.pub_joy_2.publish(self.joy_to_joy)
+            
+            self.joy_to_joy.axes[2] = 3
+            self.pub_joy_3.publish(self.joy_to_joy)
+            
+            self.joy_to_joy.axes[2] = 4
+            self.pub_joy_4.publish(self.joy_to_joy)
+            self.first_time = False
+        
+
         self.joy_to_joy.axes = list(msg.axes)
         self.joy_to_joy.buttons = list(msg.buttons)
-
         #DP  then switch to Auto
         if self.joy_to_joy.buttons[3] == 1:
             self.joy_to_joy.buttons[7] = 1
