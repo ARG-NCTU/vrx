@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Run joy_remap_joy.py -->
+    <node name="joy_remap_joy" pkg="vrx_gazebo" type="joy_remap_joy_jackal.py" output="screen"/>
+
+    <!-- Run joy_node -->
+    <node name="joy_control" pkg="joy" type="joy_node" output="screen"/>
+</launch>
