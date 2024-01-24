@@ -9,7 +9,7 @@ from gazebo_msgs.msg import ModelState
 
 class goal_point():
     def __init__(self):
-        self.pub_1 = rospy.Publisher("/jackal/move_base_simple/goal", PoseStamped, queue_size=1)      
+        self.pub_1 = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=1)      
         self.pub_2 = rospy.Publisher("/wamv2/move_base_simple/goal", PoseStamped, queue_size=1)
         self.pub_3 = rospy.Publisher("/wamv3/move_base_simple/goal", PoseStamped, queue_size=1)
         self.pub_4 = rospy.Publisher("/wamv4/move_base_simple/goal", PoseStamped, queue_size=1)
@@ -58,7 +58,7 @@ class goal_point():
         x3 = self.real_pose.pose.position.x
         y3 = self.real_pose.pose.position.y
         
-        distance_ratio = 10
+        distance_ratio = 15
         distance1 = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
         distance2 = distance1 / distance_ratio
         

@@ -29,7 +29,7 @@ class ROSBridgeConnector:
             # pose            
             self.pub_wamv2 = roslibpy.Topic(self.client, "/gazebo/wamv2/pose", "geometry_msgs/PoseStamped")
             self.pub_scan2_RL =  roslibpy.Topic(self.client, "/wamv2/RL/scan", "sensor_msgs/LaserScan")
-            self.pub_jackal_goal = roslibpy.Topic(self.client, "/jackal/move_base_simple/goal", "geometry_msgs/PoseStamped")
+            self.pub_jackal_goal = roslibpy.Topic(self.client, "/move_base_simple/goal", "geometry_msgs/PoseStamped")
             self.pub_position_circle1 = roslibpy.Topic(self.client, "/visualization_circle1", "visualization_msgs/Marker")
             self.pub_jackal_joy = roslibpy.Topic(self.client, "/jackal/bluetooth_teleop/joy", "sensor_msgs/Joy")
             # transform frame from wamv to wamv2
@@ -53,7 +53,7 @@ class ROSBridgeConnector:
 
         elif self.ws == 2:
             rospy.Subscriber("/gazebo/wamv2/pose", PoseStamped, self.cb_wamv2_pose)       
-            rospy.Subscriber("/jackal/move_base_simple/goal", PoseStamped, self.cb_jackal_goal)
+            rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.cb_jackal_goal)
             rospy.Subscriber("/visualization_circle1", Marker, self.cb_position_circle1)  
             rospy.Subscriber("/wamv2/RL/scan", LaserScan, self.cb_wamv2_laser_RL)
             rospy.Subscriber("/jackal/bluetooth_teleop/joy", Joy, self.cb_joy_jackal)
