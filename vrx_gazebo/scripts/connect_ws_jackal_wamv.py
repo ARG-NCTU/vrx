@@ -6,7 +6,8 @@ from geometry_msgs.msg import PoseStamped, Twist
 from sensor_msgs.msg import Joy, LaserScan
 from visualization_msgs.msg import Marker
 from std_msgs.msg import Bool
-# from obstacle_detector.msg import Obstacles
+from obstacle_detector.msg import Obstacles
+
 class ROSBridgeConnector:
     def __init__(self):
         rospy.init_node("connect_ws_jackal", anonymous=True)
