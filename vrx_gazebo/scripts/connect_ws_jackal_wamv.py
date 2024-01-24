@@ -114,7 +114,6 @@ class ROSBridgeConnector:
         )
         
         publisher.publish(roslib_msg)
-        # self.pub_scan.publish(roslib_msg)
     
     def cb_wamv2_laser_RL(self, data):
         self.cb_laser(data, self.pub_scan2_RL)
