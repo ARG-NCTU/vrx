@@ -95,7 +95,18 @@
   <node name="spawn_model_4" pkg="gazebo_ros" type="spawn_model" args="-x $(arg x_4) -y $(arg y_4) -z $(arg z)
               -R $(arg R) -P $(arg P) -Y $(arg Y)
               -urdf -param wamv4/robot_description -model wamv4"/>
-              
+  
+  <arg name="drone_ns" default="drone"/>
+  <include file="$(find vrx_gazebo)/launch/if750a_camera_pushing.launch">
+    <arg name="gcs_url" value="udp://@192.168.0.33" />
+    <arg name="drone_ns" value="$(arg drone_ns)"/>
+    <arg name="x" value="1480.0"/>
+    <arg name="y" value="-50.0"/>
+    <arg name="R" value="0.0"/>
+    <arg name="P" value="0.0"/>
+    <arg name="Y" value="1.5708"/>
+  </include>
+
   <!-- Spawn drone model in Gazebo -->
   <!-- <arg name="drone_ns" default="/"/>
   <arg name="model" default="iris"/>

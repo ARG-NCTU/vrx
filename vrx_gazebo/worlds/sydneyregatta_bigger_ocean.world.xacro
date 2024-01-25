@@ -18,5 +18,11 @@
         </wind_obj>
       </wind_objs>
     </xacro:usv_wind_gazebo>
+    <include>
+      <uri>model://dock_block_4x4</uri>
+      <name>dock_block_4x4_1</name>
+      <pose>1480.0 -50.0 0.2 0 0 1.5708</pose>
+      <static>true</static>
+    </include>
   </world>
 </sdf>
