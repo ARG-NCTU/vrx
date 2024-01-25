@@ -1,0 +1,19 @@
+<launch>
+    <include file="$(find localization)/launch/localization_gps_imu_wamv.launch">
+        <arg name="num" value="1"/>
+    </include>
+    <include file="$(find drone_teleop)/launch/drone_vr_teleop_demo.launch">
+    </include>
+    <include file="$(find pozyx_simulation)/launch/uwb_wamv_uav_simulation.launch">
+    </include>
+    <node pkg="drone_controller" type="track_wamv_uwb_pose.py" name="track_wamv_uwb_pose"/>
+    <node pkg="drone_controller" type="track_wamv_gps_pose.py" name="track_wamv_gps_pose"/>
+    <include file="$(find behavior_tree)/launch/behavior_tree.launch">
+        <arg name="tree" value="track_wamv_full.tree"/>
+        <arg name="wait_for_generation" value="false"/>
+    </include>
+    <include file="$(find drone_perception)/launch/ball_visual_servoing_compressed.launch">
+    </include>
+    <include file="$(find drone_controller)/launch/fusion_control_ball_wamv_circle.launch">
+    </include>
+</launch>

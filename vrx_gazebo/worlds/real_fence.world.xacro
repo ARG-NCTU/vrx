@@ -19,6 +19,19 @@
         </wind_obj>
       </wind_objs>
     </xacro:usv_wind_gazebo>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <world_frame_orientation>ENU</world_frame_orientation>
+      <latitude_deg>-33.724223</latitude_deg>
+      <longitude_deg>150.679736</longitude_deg>
+      <elevation>0.0</elevation>
+      <heading_deg>0.0</heading_deg>
+    </spherical_coordinates>
+    <physics type='ode'>
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+    </physics>
 
     <include>
       <uri>model://dock_block_4x4</uri>
@@ -28,7 +41,7 @@
     </include>
     
         <include>
-          <uri>model://polyform_a7_redglow</uri>
+          <uri>model://polyform_a7_greenglow</uri>
           <name>block_real_1</name>
           <pose>45 0 0.5 0 0 0</pose>
           <static>true</static>

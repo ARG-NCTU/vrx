@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 from sensor_msgs.msg import Joy
 import rospy
- 
+from std_msgs.msg import Bool
 class VR_remap_joy:
     # This script remaps the VR teleop to the joy topic
     # For mixed teleop
     def __init__(self):
-        
+        self.pub_shutdown_joy_remap_joy = rospy.Publisher("/shutdown_joy_remap_joy", Bool, queue_size=1)
         self.sub_joy = rospy.Subscriber("/vr_teleop", Joy, self.cb_joy, queue_size=1)
-
         self.pub_joy = rospy.Publisher("/joy", Joy, queue_size=1)
         self.pub_joy_1 = rospy.Publisher("/wamv/joy", Joy, queue_size=1)
         self.pub_joy_2 = rospy.Publisher("/wamv2/joy", Joy, queue_size=1)
@@ -19,10 +18,29 @@ class VR_remap_joy:
         self.vr_to_joy.header.frame_id = "/dev/input/js0"
         self.vr_to_joy.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.vr_to_joy.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
-
+        self.pub_once = True
+        
     def cb_joy(self, msg):
-
+        if self.pub_once:
+            self.pub_shutdown_joy_remap_joy.publish(True)
+            # DP in th beginning
+            self.vr_to_joy.buttons[3] = 1
+            self.vr_to_joy.buttons[7] = 1
+            
+            #wamv2 DP
+            self.vr_to_joy.axes[2] == 2
+            self.pub_joy_2.publish(self.vr_to_joy)
+            #wamv DP
+            self.vr_to_joy.axes[2] = 1
+            self.pub_joy_1.publish(self.vr_to_joy)
+            #wamv3 DP
+            self.vr_to_joy.axes[2] = 3
+            self.pub_joy_3.publish(self.vr_to_joy)
+            #wamv4 DP
+            self.vr_to_joy.axes[2] = 4
+            self.pub_joy_4.publish(self.vr_to_joy)
+            
+            self.pub_once = False
         self.vr_to_joy.header.stamp = rospy.Time.now()
 
         #button 

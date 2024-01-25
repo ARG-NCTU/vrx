@@ -366,6 +366,7 @@ xacro_add_files(
   worlds/drone_sizihwan.world.xacro
   worlds/example_course_narrow.world.xacro
   worlds/example_course.world.xacro
+  worlds/example_course_no_object.world.xacro
   worlds/bamboo_lake.world.xacro
   worlds/collision_avoidance.world.xacro
   worlds/collision_avoidance_forest.world.xacro
@@ -387,6 +388,8 @@ xacro_add_files(
   worlds/motor_anchoring.world.xacro
   worlds/fake_fence.world.xacro
   worlds/real_fence.world.xacro
+  worlds/empty_sea.world.xacro
+  worlds/sydneyregatta_bigger_ocean.world.xacro
   ${XACRO_INORDER} INSTALL DESTINATION worlds
 )
 # Generate obstacle course

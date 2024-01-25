@@ -59,8 +59,9 @@
 
     <arg name="wamv_plate" default="false"/>
     <arg name="red_ball" default="true"/>
+    <arg name="red_torus" default="true"/>
 
-    <param name="$(arg wamv_ns)/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=$(arg wamv_ns) plate:=$(arg wamv_plate) red_ball:=$(arg red_ball)"/>
+    <param name="$(arg wamv_ns)/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=$(arg wamv_ns) plate:=$(arg wamv_plate) red_ball:=$(arg red_ball) red_torus:=$(arg red_torus)"/>
 
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv_tf_pub">
         <remap from="robot_description" to="wamv/robot_description" />

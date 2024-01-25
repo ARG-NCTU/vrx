@@ -1,0 +1,36 @@
+<launch>
+  <arg name="veh" default="jackal" />
+    <group ns="$(arg veh)">
+    <node name="obstacle_extractor" pkg="obstacle_detector" type="obstacle_extractor_node">
+      <!-- <remap from="scan" to="/$(arg veh)/scan/filtered"/> -->
+      <remap from="scan" to="/$(arg veh)/RL/scan"/>
+
+      <param name="active"               value="true"/>
+      <param name="use_scan"             value="true"/>
+      <param name="use_pcl"              value="false"/>
+
+      <param name="use_split_and_merge"    value="true"/>
+      <param name="circles_from_visibles"  value="false"/>
+      <param name="discard_converted_segments" value="true"/>
+      <param name="transform_coordinates"  value="true"/>
+
+
+      <param name="min_group_points"     value="5"/>
+      <param name="max_group_distance"   value="0.5"/>
+      <param name="distance_proportion"  value="0.00628"/> 
+      <param name="max_split_distance"   value="0.4"/>
+      <param name="max_merge_separation" value="0.3"/>
+      <param name="max_merge_spread"     value="0.3"/>
+      <param name="min_circle_radius"    value="0.15"/>
+      <param name="max_circle_radius"    value="0.4"/>
+      <param name="radius_enlargement"   value="0.1"/>
+
+      <param name="min_x_limit" value="-10.0"/>
+      <param name="max_x_limit" value="10.0"/>
+      <param name="min_y_limit" value="-10.0"/>
+      <param name="max_y_limit" value="10.0"/>
+
+      <param name="frame_id"      value="map"/>
+    </node>
+  </group>
+</launch>

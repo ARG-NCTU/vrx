@@ -5,6 +5,7 @@
     <arg name="veh" default="wamv2" />
     <arg name="sync_freq" default="10" />
 
+    <node pkg="vrx_gazebo" type="init_pose.py" name="init_pose_to_origin" output="screen"/>
 
     <node pkg="vrx_gazebo" type="real2sim_pose_2ws.py" name="real2sim_pose_2ws" output="screen">
         <remap from="joy" to="/joy" />

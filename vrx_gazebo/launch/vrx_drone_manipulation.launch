@@ -1,5 +1,5 @@
 <launch>
-    <arg name="world" default="$(find vrx_gazebo)/worlds/example_course.world" />
+    <arg name="world" default="$(find vrx_gazebo)/worlds/example_course_no_object.world" />
 
     <!-- If true, run gazebo GUI -->
     <arg name="gui" default="true" />
@@ -99,6 +99,11 @@
     args="-x -594.11 -y 259.9 -z 1.21
             -R 0 -P 0 -Y -1.025
             -sdf -database red_pole  -model red_pole"/>
+
+    <!-- <node name="spawn_model_basket" pkg="gazebo_ros" type="spawn_model"
+    args="-x -594.11 -y 259.7 -z 1.21
+            -R 0 -P 0 -Y -1.025
+            -sdf -database basket -model basket"/> -->
 
     <node pkg="vrx_gazebo" type="model_state_to_pose_stamped.py" name="model_state_to_pose_stamped" output="log">
         <param name="model_name" value="red_pole"/>
