@@ -32,15 +32,6 @@
         <arg name="veh" value="wamv4"/>
     </include>
 
-    <!-- Launch lidar extractor for wamv2 -->
-    <include file="$(find lidar_crop)/launch/lidar_extractor_obstacle.launch">
-        <arg name="veh" value="wamv2"/>
-        <arg name="obstacle_veh" value="wamv"/>
-        <arg name="obstacle_extractor" value="true"/>
-    </include>
-
-    <!-- Repeat the above for wamv3 and wamv4 as needed -->
-
     <!-- Launch usv_joydrive for wamv2 -->
     <include file="$(find vrx_gazebo)/launch/usv_joydrive.launch">
         <arg name="veh" value="wamv2"/>
