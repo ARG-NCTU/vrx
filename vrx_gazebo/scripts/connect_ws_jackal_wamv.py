@@ -41,7 +41,7 @@ class ROSBridgeConnector:
         else:
             pass
         
-        self.sub_joy = rospy.Subscriber("/vr_teleop", Joy, self.cb_joy)
+        # self.sub_joy = rospy.Subscriber("/vr_teleop", Joy, self.cb_joy)
         self.init_subscribers()
 
     def init_subscribers(self):
@@ -58,7 +58,7 @@ class ROSBridgeConnector:
             rospy.Subscriber("/visualization_circle1", Marker, self.cb_position_circle1)  
             rospy.Subscriber("/wamv2/RL/scan", LaserScan, self.cb_wamv2_laser_RL)
             rospy.Subscriber("/jackal/bluetooth_teleop/joy", Joy, self.cb_joy_jackal)
-            rospy.Subscriber("/vr_teleop", Joy, self.cb_vr_joy)
+            # rospy.Subscriber("/vr_teleop", Joy, self.cb_vr_joy)
             
         else:
             pass
@@ -67,8 +67,8 @@ class ROSBridgeConnector:
     def cb_joy_jackal(self, data):
         self.cb_joy(data, self.pub_jackal_joy)
         
-    def cb_vr_joy(self, data):
-        self.cb_joy(data, self.pub_jackal_joy)
+    # def cb_vr_joy(self, data):
+    #     self.cb_joy(data, self.pub_jackal_joy)
         
     def cb_reset(self, data):
         roslib_msg = roslibpy.Message(
