@@ -89,14 +89,6 @@ class VR_remap_joy:
         if self.vr_to_joy.axes[2] == 4: #robot_id
             self.pub_joy_4.publish(self.vr_to_joy)
 
-        
-
-
-
-        # self.vr_to_joy.axes[5] = int(msg.axes[0]) # user_id
-        
-        # if self.vr_to_joy.axes[2] == 2:
-        # self.pub_joy.publish(self.vr_to_joy)
         self.pub_joy.publish(self.vr_to_joy)
 
 if __name__ == '__main__':
