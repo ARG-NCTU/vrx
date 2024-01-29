@@ -34,7 +34,7 @@ class VR_remap_joy:
             self.vr_to_joy.buttons[3] = 1
             self.vr_to_joy.buttons[7] = 1
             #wamv2 DP
-            self.vr_to_joy.axes[2] == 2
+            self.vr_to_joy.axes[2] = 2
             self.pub_joy_2.publish(self.vr_to_joy)
             #wamv3 DP
             self.vr_to_joy.axes[2] = 3
@@ -66,7 +66,7 @@ class VR_remap_joy:
         self.vr_to_joy.axes[5] = int(msg.axes[0]) # user_id
 
 
-        # wamv DP then jackal switch to auto
+        # wamv DP then switch to auto
         if self.vr_to_joy.buttons[3] == 1:
             self.vr_to_joy.buttons[7] = 1
         
