@@ -22,6 +22,9 @@ class ObstaclesToGrid:
         self.origin_yaw = rospy.get_param("~origin_yaw", 0)
         self.obstacles_sub = rospy.Subscriber("/jackal/raw_obstacles", Obstacles, self.obstacles_callback)
         self.sub_wamv2 = rospy.Subscriber("/gazebo/wamv2/pose", PoseStamped, self.wamv2_pose_callback)
+        self.sub_wamv3 = rospy.Subscriber("/gazebo/wamv3/pose", PoseStamped, self.wamv3_pose_callback)
+        self.sub_wamv4 = rospy.Subscriber("/gazebo/wamv4/pose", PoseStamped, self.wamv4_pose_callback)
+        
         self.reset_sub = rospy.Subscriber("reset_map", Bool, self.reset_callback)
         # self.joy_sub = rospy.Subscriber("/joy", Joy, self.joy_callback)
         self.grid_pub = rospy.Publisher("grid_map", Int8MultiArray, queue_size=1)
@@ -96,6 +99,12 @@ class ObstaclesToGrid:
         self.cnt = 0
     def wamv2_pose_callback(self, msg):
         self.wamv2_pose = msg
+    
+    def wamv3_pose_callback(self, msg):
+        self.wamv3_pose = msg
+        
+    def wamv4_pose_callback(self, msg):
+        self.wamv4_pose = msg
 
     def transform_obstacle_to_map_frame(self, obstacle_x, obstacle_y):
         theta = self.origin_yaw
@@ -160,6 +169,10 @@ class ObstaclesToGrid:
             scale_x, scale_y = self.scale_obstacle(center.center.x, center.center.y)
             if 27.0<= scale_y <= 33.0:
                 return
+            elif self.distance(self.wamv3_pose, scale_x, scale_y) <= 5.0:
+                return
+            elif self.distance(self.wamv4_pose, scale_x, scale_y) <= 5.0:
+                return
             map_x, map_y = self.transform_obstacle_to_map_frame(scale_x, scale_y)
 
             # map_x, map_y = self.transform_obstacle_to_map_frame(center.center.x, center.center.y)
@@ -173,7 +186,12 @@ class ObstaclesToGrid:
                 self.occupancy_grid.data[int(index)] = 100
             else:
                 rospy.logwarn("Obstacle out of map bounds: ({}, {})".format(map_x, map_y))
-
+                
+    def distance(self,pose , x2, y2):
+        x1 = pose.pose.position.x
+        y1 = pose.pose.position.y
+        return math.sqrt((x1-x2)**2 + (y1-y2)**2)
+    
     def timer_callback_grid_pub(self, event):
         self.cnt += 1
         if self.cnt % 2 == 0:
