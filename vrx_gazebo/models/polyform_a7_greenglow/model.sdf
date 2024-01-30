@@ -22,7 +22,7 @@
       </visual>
       <collision name="collision">
         <geometry>
-          <sphere><radius>0.991</radius></sphere>
+          <sphere><radius>0.4955</radius></sphere>
         </geometry>
       </collision>
     </link>
@@ -36,7 +36,7 @@
       <buoyancy name="buoyancy">
         <link_name>base_link</link_name>
         <geometry>
-          <sphere><radius>0.991</radius></sphere>
+          <sphere><radius>0.4955</radius></sphere>
         </geometry>
       </buoyancy>
     </plugin>

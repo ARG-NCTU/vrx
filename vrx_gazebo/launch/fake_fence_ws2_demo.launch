@@ -60,7 +60,7 @@
 
 
   <!-- wamv 2-->
-  <param name="wamv2/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=wamv2" />
+  <param name="wamv2/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=wamv2 red_ball:=true" />
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv2_tf_pub">
     <remap from="robot_description" to="wamv2/robot_description" />
@@ -104,7 +104,7 @@
     <arg name="y" value="-50.0"/>
     <arg name="R" value="0.0"/>
     <arg name="P" value="0.0"/>
-    <arg name="Y" value="1.5708"/>
+    <arg name="Y" value="0"/>
   </include>
 
   <!-- Spawn drone model in Gazebo -->

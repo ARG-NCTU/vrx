@@ -16,7 +16,9 @@ class RealtoSimTransform:
         # self.model_sub = rospy.Subscriber("/gazebo/model_states", ModelStates, self.model_callback)
         self.pub_set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
         self.pub_pose = rospy.Publisher("/fake_fence_real2sim", PoseStamped, queue_size=1)
-        self.sub_wamv_pose = rospy.Subscriber("/jackal/slam_pose", PoseStamped, self.wamv_pose_callback)
+        # self.sub_jackal_pose = rospy.Subscriber("/gazebo/wamv/pose", PoseStamped, self.jackal_pose_callback)
+        self.sub_jackal_pose = rospy.Subscriber("/jackal/slam_pose", PoseStamped, self.jackal_pose_callback)
+
         self.sub_wamv2_pose = rospy.Subscriber("/gazebo/wamv2/pose", PoseStamped, self.wamv2_pose_callback)
         self.sub_joy = rospy.Subscriber("joy", Joy, self.joy_callback)
         self.sync_freq = rospy.get_param("sync_freq", 20)
@@ -25,7 +27,7 @@ class RealtoSimTransform:
         self.tf_msg = TransformStamped()
         
         self.flag = False
-        self.matrix_wamv_origin_to_map = None
+        self.matrix_jackal_origin_to_map = None
         self.matrix_wamv2_origin_to_map = None
         self.jackal_pose = PoseStamped()
         self.wamv2_pose = PoseStamped()
@@ -34,7 +36,7 @@ class RealtoSimTransform:
         self.time = rospy.Time.now()
         self.joy = None
 
-    def wamv_pose_callback(self, pose):
+    def jackal_pose_callback(self, pose):
         self.jackal_pose = pose
 
     def wamv2_pose_callback(self, pose):
@@ -50,7 +52,7 @@ class RealtoSimTransform:
     
         if joy_trigger:
             print('start sync')   
-            self.matrix_wamv_origin_to_map = self.pose_to_matrix(self.jackal_pose)
+            self.matrix_jackal_origin_to_map = self.pose_to_matrix(self.jackal_pose)
             self.matrix_wamv2_origin_to_map = self.pose_to_matrix(self.wamv2_pose)
             self.flag = True
         else:
@@ -60,27 +62,20 @@ class RealtoSimTransform:
     def timer_callback(self, event):
         if self.flag == True: 
             # transform
-            if self.matrix_wamv_origin_to_map is None or self.matrix_wamv2_origin_to_map is None:
+            if self.matrix_jackal_origin_to_map is None or self.matrix_wamv2_origin_to_map is None:
                 return
-            matrix_wamv_to_map = self.pose_to_matrix(self.jackal_pose)
-            inv_mat_wamv_origin_to_map = tf_trans.inverse_matrix(self.matrix_wamv_origin_to_map)
-            matrix_wamv_to_origin = np.dot(inv_mat_wamv_origin_to_map, matrix_wamv_to_map)
-            
-            # scale 10 times
-            displacement = matrix_wamv_to_origin[0:3, 3] * 10
-            matrix_wamv2_to_map_scale = self.matrix_wamv2_origin_to_map.copy()
-            matrix_wamv2_to_map_scale[0:3, 3] += displacement
-            pose_wamv2_to_map_pose_scale = self.matrix_to_pose(matrix_wamv2_to_map_scale, "map")
-            
+            matrix_jackal_to_map = self.pose_to_matrix(self.jackal_pose)
+            inv_mat_jackal_origin_to_map = tf_trans.inverse_matrix(self.matrix_jackal_origin_to_map)
+            matrix_jackal_to_origin = np.dot(inv_mat_jackal_origin_to_map, matrix_jackal_to_map)
 
-            matrix_wamv2_to_map = np.dot(self.matrix_wamv2_origin_to_map, matrix_wamv_to_origin)
-            # print(matrix_wamv2_to_map)
+            # matrix_jackal_to_origin[0:2][3] *= 10
+            matrix_jackal_to_origin[0][3] *= 10
+            matrix_jackal_to_origin[1][3] *= 10
+            
+            matrix_wamv2_to_map = np.dot(self.matrix_wamv2_origin_to_map, matrix_jackal_to_origin)
             # pub
             pose_wamv2_to_map = self.matrix_to_pose(matrix_wamv2_to_map, "map")
-
-            pose_wamv2_to_map.pose.position = pose_wamv2_to_map_pose_scale.pose.position
             pose_wamv2_to_map.pose.position.z = -0.090229
-
             euler = tf_trans.euler_from_quaternion(
                 [
                     pose_wamv2_to_map.pose.orientation.x,
@@ -90,7 +85,6 @@ class RealtoSimTransform:
                 ]
             )
             q = tf_trans.quaternion_from_euler(0, 0, euler[2])
-            # q = tf_trans.quaternion_from_euler(euler[0], euler[1], euler[2])
             pose_wamv2_to_map.pose.orientation.x = q[0] #self.jackal_pose.pose.orientation.x 
             pose_wamv2_to_map.pose.orientation.y = q[1] #self.jackal_pose.pose.orientation.y 
             pose_wamv2_to_map.pose.orientation.z = q[2]
@@ -114,22 +108,15 @@ class RealtoSimTransform:
             #     print("update wamv2 pose")
             #     self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)  
             
-
             # matrix_wamv2_to_origin = np.dot(tf_trans.inverse_matrix(self.matrix_wamv2_origin_to_map), matrix_wamv2_to_map)
             # pose_wamv2_to_origin = self.matrix_to_pose(matrix_wamv2_to_origin, "wamv2")
             # print("wamv2 pose to origin: ", pose_wamv2_to_origin)
             # print("wamv2 pose to map: ", pose_wamv2_to_map)
             
         else:
-            self.init_wamv2 = self.wamv2_pose
-            self.init_wamv2.pose.orientation = self.jackal_pose.pose.orientation
-            self.init_wamv2.pose.orientation.x = 0
-            self.init_wamv2.pose.orientation.y = 0
-            self.set_model(model_name ='wamv2', pose = self.init_wamv2)
-        #     self.set_model(model_name='wamv3', pose = self.init_wamv3)
-        #     self.set_model(model_name='wamv4', pose = self.init_wamv4)
-
-
+            pass
+ 
+        
     def set_model(self, model_name, pose):
         model_state = ModelState()
         model_state.model_name = model_name
@@ -168,7 +155,6 @@ class RealtoSimTransform:
         return ret_pose_stamped
     
         
-
 if __name__ == "__main__":
     rospy.init_node("real_to_sim_transform")
     real_to_sim_transform = RealtoSimTransform()
