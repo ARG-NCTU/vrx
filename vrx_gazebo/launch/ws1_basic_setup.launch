@@ -1,15 +1,27 @@
 <?xml version="1.0"?>
 <launch>
+    <arg name="pose_from_gazebo" default='true'/>
+    
+    <group if="$(eval pose_from_gazebo)">
+        <!-- Launch pub_tf_posestamped for wamv -->
+        <include file="$(find localization)/launch/pub_tf_posestamped.launch">
+            <arg name="model_name" value="wamv"/>
+        </include>
+    </group>
+
+    <group unless="$(eval pose_from_gazebo)">
+        <!-- Launch GPS_imu -->
+        <include file="$(find localization)/launch/localization_gps_imu_wamv.launch">
+            <arg name="veh" value="wamv"/>
+            <arg name="num" value="1"/>
+        </include>
+    </group>
+                                                                            
     <!-- Launch usv_joydrive for wamv -->
     <include file="$(find vrx_gazebo)/launch/usv_joydrive.launch">
         <arg name="veh" value="wamv"/>
         <arg name="use_namespace" value="true"/>
         <arg name="use_joy" value="false"/>
-    </include>
-
-    <!-- Launch pub_tf_posestamped for wamv -->
-    <include file="$(find localization)/launch/pub_tf_posestamped.launch">
-        <arg name="model_name" value="wamv"/>
     </include>
 
     <!-- Launch lidar_crop for wamv -->
@@ -23,4 +35,5 @@
         <arg name="obstacle_veh" value="wamv2"/>
         <arg name="obstacle_extractor" value="true"/>
     </include>
+
 </launch>
