@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name="real_pose" default="/wamv/localization_gps_imu/pose" />
+    <!-- <arg name="real_pose" default="/gazebo/wamv/pose" /> -->
+    <!-- <arg name="real_pose" default="/jackal/slam_pose" /> -->
+    <arg name="sim_pose" default="/gazebo/wamv2/pose" />
+    <arg name= "real_goal" default="/move_base_simple/goal"/>
+    <arg name = "scale_factor" default="1.0"/>
+
+    <node pkg="vrx_gazebo" type="goalpoint.py" name="GoalPoint" output="screen">
+        <remap from="real_pose" to="$(arg real_pose)" />
+        <remap from="sim_pose" to="$(arg sim_pose)" />
+        <remap from="real_goal" to="$(arg real_goal)" />
+        <param name = "~scale_factor" value="$(arg scale_factor)" />
+    </node>
+    
+</launch>

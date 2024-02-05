@@ -23,7 +23,8 @@ class ROSBridgeConnector:
             # pose
             self.pub_wamv_pose = roslibpy.Topic(self.client, "/gazebo/wamv/pose", "geometry_msgs/PoseStamped")
             self.pub_drone_pose = roslibpy.Topic(self.client, "/drone_pose", "geometry_msgs/PoseStamped")
-            
+            self.pub_wamv_gps_pose = roslibpy.Topic(self.client, "/wamv/localization_gps_imu/pose", "geometry_msgs/PoseStamped")
+            self.pub_real_goal = roslibpy.Topic(self.client, "/move_base_simple/goal", "geometry_msgs/PoseStamped")
             # pub more_scan and RL scan for obstacle extraction and merge scan
             self.pub_scan =  roslibpy.Topic(self.client, "/wamv/RL/more_scan", "sensor_msgs/LaserScan")
             self.pub_scan_RL =  roslibpy.Topic(self.client, "/wamv/RL/scan", "sensor_msgs/LaserScan")
@@ -33,6 +34,7 @@ class ROSBridgeConnector:
             self.pub_2scan_for1 = rospy.Publisher("/wamv2/RL/more_scan_2", LaserScan, queue_size=1)
             self.sub_scan2_RL = rospy.Subscriber("/wamv2/RL/scan", LaserScan, self.cb_laser_1sub2_RL)
             self.pub_2scan_for1_RL = rospy.Publisher("/wamv2/RL/scan_2", LaserScan, queue_size=1)
+            
             
             # self.pub_cmd = roslibpy.Topic(self.client, "/wamv2/cmd_vel", "Twist")
             self.pub_reset = roslibpy.Topic(self.client, "/reset", "Bool")
@@ -55,7 +57,7 @@ class ROSBridgeConnector:
             self.pub_1scan_for2_RL = rospy.Publisher("/wamv/RL/scan_2", LaserScan, queue_size=1)
             
             # pub goal for wamv
-            self.pub_wamv_goal = roslibpy.Topic(self.client, "/wamv/move_base_simple/goal", "geometry_msgs/PoseStamped")
+            # self.pub_wamv_goal = roslibpy.Topic(self.client, "/wamv/move_base_simple/goal", "geometry_msgs/PoseStamped")
             self.pub_position_circle1 = roslibpy.Topic(self.client, "/visualization_circle1", "visualization_msgs/Marker")
             
             # pub joy for wamv
@@ -75,13 +77,15 @@ class ROSBridgeConnector:
         if self.ws == 1:
             # rospy.Subscriber("/wamv/joy", Joy, self.cb_joy)
             # rospy.Subscriber("/raw_obstacles", Obstacles, self.cb_extractor)
-            
+            rospy.Subscriber("/wamv/localization_gps_imu/pose", PoseStamped, self.cb_wamv_gps_pose)
             rospy.Subscriber("/gazebo/wamv/pose", PoseStamped, self.cb_wamv_pose)
             rospy.Subscriber("/wamv/RL/more_scan", LaserScan, self.cb_wamv_laser)
             rospy.Subscriber("/wamv/RL/scan", LaserScan, self.cb_wamv_laser_RL)
             # rospy.Subscriber("/wamv2/cmd_vel", Twist, self.cb_twist)
             rospy.Subscriber("/reset", Bool, self.cb_reset)
             rospy.Subscriber("/drone_pose", PoseStamped, self.cb_drone_pose)
+            
+            rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.cb_real_goal)
 
                         
         elif self.ws == 2:
@@ -89,7 +93,7 @@ class ROSBridgeConnector:
             rospy.Subscriber("/fake_fence_real2sim", PoseStamped, self.cb_fake_pose)
             rospy.Subscriber("/gazebo/wamv2/pose", PoseStamped, self.cb_wamv2_pose)
             
-            rospy.Subscriber("/wamv/move_base_simple/goal", PoseStamped, self.cb_wamv_goal)
+            # rospy.Subscriber("/wamv/move_base_simple/goal", PoseStamped, self.cb_wamv_goal)
             rospy.Subscriber("/visualization_circle1", Marker, self.cb_position_circle1)
             
             rospy.Subscriber("/wamv2/RL/more_scan", LaserScan, self.cb_wamv2_laser)
@@ -265,7 +269,13 @@ class ROSBridgeConnector:
             "mesh_use_embedded_materials": data.mesh_use_embedded_materials
         })
         self.pub_position_circle1.publish(roslib_msg)
-
+        
+    def cb_real_goal(self, data):
+        self.cb_posestamped(data, self.pub_real_goal)
+        
+    def cb_wamv_gps_pose(self, data):
+        self.cb_posestamped(data, self.pub_wamv_gps_pose)
+            
     def cb_wamv_pose(self, data):
         self.cb_posestamped(data, self.pub_wamv_pose)
         
@@ -278,8 +288,8 @@ class ROSBridgeConnector:
     def cb_wamv2_pose(self, data):
         self.cb_posestamped(data, self.pub_wamv2)
         
-    def cb_wamv_goal(self, data):
-        self.cb_posestamped(data, self.pub_wamv_goal)
+    # def cb_wamv_goal(self, data):
+    #     self.cb_posestamped(data, self.pub_wamv_goal)
             
 if __name__ == '__main__':
     connector = ROSBridgeConnector()
