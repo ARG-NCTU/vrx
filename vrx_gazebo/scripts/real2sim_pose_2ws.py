@@ -16,8 +16,9 @@ class RealtoSimTransform:
         # self.model_sub = rospy.Subscriber("/gazebo/model_states", ModelStates, self.model_callback)
         self.pub_set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
         self.pub_pose = rospy.Publisher("/fake_fence_real2sim", PoseStamped, queue_size=1)
-        self.sub_wamv_pose = rospy.Subscriber("/gazebo/wamv/pose", PoseStamped, self.wamv_pose_callback)
-        self.sub_wamv2_pose = rospy.Subscriber("/gazebo/wamv2/pose", PoseStamped, self.wamv2_pose_callback)
+        self.sub_wamv_pose = rospy.Subscriber("real_pose", PoseStamped, self.wamv_pose_callback)
+
+        self.sub_wamv2_pose = rospy.Subscriber("sim_pose", PoseStamped, self.wamv2_pose_callback)
         self.sub_joy = rospy.Subscriber("joy", Joy, self.joy_callback)
         self.sync_freq = rospy.get_param("sync_freq", 20)
         self.timer_set_model_state = rospy.Timer(rospy.Duration(0.05), self.timer_callback)   
