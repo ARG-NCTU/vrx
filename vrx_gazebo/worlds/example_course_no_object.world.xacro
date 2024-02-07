@@ -7,11 +7,11 @@
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>250</real_time_update_rate>
     </physics>
-    <xacro:include filename="$(find vrx_gazebo)/worlds/sydneyregatta.xacro" />
+    <xacro:include filename="$(find vrx_gazebo)/worlds/sydneyregatta_fix_gps.xacro" />
     <xacro:sydneyregatta />
     <!--Waves-->
     <xacro:include filename="$(find wave_gazebo)/world_models/ocean_waves/model.xacro"/>
-    <xacro:ocean_waves scale="2.5"/>
+    <xacro:ocean_waves scale="5"/>
 
     <!--Wind-->
     <xacro:include filename="$(find vrx_gazebo)/worlds/xacros/usv_wind_plugin.xacro"/>
