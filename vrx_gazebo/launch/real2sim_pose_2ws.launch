@@ -7,12 +7,15 @@
     <!-- <arg name="real_pose" default="/gazebo/wamv/pose" /> -->
     <arg name="real_pose" default="/wamv/localization_gps_imu/pose" />
     <arg name="sim_pose" default="/gazebo/wamv2/pose" />
+    <!--scale 10 times when real is jackal sim is wamv-->
+    <arg name="scale_transform" default= "1.0"/>
 
     <node pkg="vrx_gazebo" type="real2sim_pose_2ws.py" name="real2sim_pose_2ws" output="screen">
         <remap from="joy" to="/joy" />
         <remap from="real_pose" to="$(arg real_pose)" />
         <remap from="sim_pose" to="$(arg sim_pose)" />
         <param name="sync_freq" value="$(arg sync_freq)" />
+        <param name="scale_transform" value="$(arg scale_transform)"/>
     </node>
 
 </launch>
