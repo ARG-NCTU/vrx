@@ -133,7 +133,7 @@
 
 
       <node name="spawn_sdf_ball" pkg="gazebo_ros" type="spawn_model"
-        args="-x -527 -y 144 -z 5
+        args="-x -527 -y 140 -z 5
               -R 0 -P 0 -Y 0
               -sdf -database red_ball -model ball"/>
 

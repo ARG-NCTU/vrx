@@ -60,10 +60,10 @@
     </include>
 
     <!-- Antenna for communication with the WAM-V -->
-    <include>
+    <!-- <include>
       <pose>-531.063721 147.668579 1.59471 -0.068142 0 -0.1</pose>
       <uri>model://antenna</uri>
-    </include>
+    </include> -->
 
     <!-- ground station tents -->
     <include>
