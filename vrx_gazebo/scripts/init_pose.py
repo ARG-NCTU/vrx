@@ -6,30 +6,17 @@ from geometry_msgs.msg import PoseStamped
 class InitWamvPose:
     def __init__(self):
         self.pub_set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
-        self.sub_wamv = rospy.Subscriber('/gazebo/wamv/pose', PoseStamped, self.wamv_cb)
         self.timer_cb = rospy.Timer(rospy.Duration(0.1), self.timer_callback)
         self.wamv2_init = rospy.get_param("~wamv2_init", [10, 0])
         self.wamv3_init = rospy.get_param("~wamv3_init", [10, 50])
         self.wamv4_init = rospy.get_param("~wamv4_init", [10, -50])
         self.cnt = 0
-        self.wamv_pose = None
-        
+
         self.wamv2_init = [int(x) for x in self.wamv2_init.split(",")]
         self.wamv3_init = [int(x) for x in self.wamv3_init.split(",")]
         self.wamv4_init = [int(x) for x in self.wamv4_init.split(",")]
         
-    def init_pose(self, model, x, y, z=-0.090229, ori_x=0, ori_y=0, ori_z=0, ori_w=1):
-        if model == 'wamv3' or model == 'wamv4':
-            if self.wamv_pose.header.frame_id == "jackal/map":
-                ori_x = 0
-                ori_y = 0
-                ori_z = 0.717
-                ori_w = 0.717
-            elif self.wamv_pose.header.frame_id == "map":
-                ori_x = 0
-                ori_y = 0
-                ori_z = 0
-                ori_w = 1
+    def init_pose(self, model, x, y, z=-0.090229, ori_x=0, ori_y=0, ori_z=0.707, ori_w=0.707):
 
         pose = PoseStamped()
         pose.pose.position.x = x
@@ -41,9 +28,6 @@ class InitWamvPose:
         pose.pose.orientation.w = ori_w
         self.set_model(model, pose)
 
-    def wamv_cb(self,msg):
-        self.wamv_pose = msg         
-  
         
     def set_model(self, model_name, pose):
         model_state = ModelState()
@@ -54,15 +38,11 @@ class InitWamvPose:
         self.pub_set_model_state.publish(model_state)     
     
     def timer_callback(self,event):
-        if self.wamv_pose is None:
-            return
-        
+
         if self.cnt < 8:
             self.init_pose(model='wamv3',x=self.wamv3_init[0], y=self.wamv3_init[1])
             self.init_pose(model='wamv4',x=self.wamv4_init[0], y=self.wamv4_init[1])
-            self.init_pose(model='wamv2',x=self.wamv2_init[0], y=self.wamv2_init[1], z=-0.090229, \
-                           ori_x = self.wamv_pose.pose.orientation.x, ori_y = self.wamv_pose.pose.orientation.y, \
-                           ori_z = self.wamv_pose.pose.orientation.z, ori_w = self.wamv_pose.pose.orientation.w) 
+            self.init_pose(model='wamv2',x=self.wamv2_init[0], y=self.wamv2_init[1]) 
             self.cnt+=1
             print('wamv2 pose set to:',self.wamv2_init)
             print('wamv3 pose set to:',self.wamv3_init)

@@ -1,12 +1,10 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="real_pose" default="/jackal/slam_pose"/>
     <arg name="wamv2_init" default="1480, -30"/>
     <arg name="wamv3_init" default="1440, -30"/>
     <arg name="wamv4_init" default="1520, -30"/>
     
     <node name="init_pose" pkg="vrx_gazebo" type="init_pose.py" output="screen">
-        <remap from = "/gazebo/wamv/pose" to = "$(arg real_pose)"/>
         <param name="~wamv2_init" value="$(arg wamv2_init)" />
         <param name="~wamv3_init" value="$(arg wamv3_init)" />
         <param name="~wamv4_init" value="$(arg wamv4_init)" />
