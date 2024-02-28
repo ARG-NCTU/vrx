@@ -6,14 +6,8 @@
         <!-- Launch pub_tf_posestamped for wamv -->
         <include file="$(find localization)/launch/pub_tf_posestamped.launch">
             <arg name="model_name" value="wamv"/>
-        </include>
-    </group>
-
-    <group unless="$(eval pose_from_gazebo)">
-        <!-- Launch GPS_imu -->
-        <include file="$(find localization)/launch/localization_gps_imu_wamv.launch">
-            <arg name="veh" value="wamv"/>
-            <arg name="num" value="1"/>
+            <arg name="pub_tf" value="true"/>
+            <arg name="pub_pose" value="false"/>
         </include>
     </group>
                                                                             
