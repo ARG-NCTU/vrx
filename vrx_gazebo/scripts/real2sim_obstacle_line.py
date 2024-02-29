@@ -36,7 +36,8 @@ class RealtoSimObstacle:
         if self.joy == None:
             self.joy = joy
             return
-        joy_trigger = joy.buttons[4] and not self.joy.buttons[4]
+        # joy_trigger = joy.buttons[4] and not self.joy.buttons[4]
+        joy_trigger = joy.buttons[2] and not self.joy.buttons[2]
 
         if joy_trigger:
             self.flag = not self.flag 

@@ -47,8 +47,8 @@ class VR_remap_joy:
         self.vr_to_joy.buttons[6] = msg.buttons[0] # Back: manual
         self.vr_to_joy.buttons[7] = msg.buttons[1] # Start: RL
         self.vr_to_joy.buttons[3] = msg.buttons[2] # Y: DP
-        self.vr_to_joy.buttons[4] = msg.buttons[3] # reset
-        self.vr_to_joy.buttons[2] = msg.buttons[4] # X 
+        self.vr_to_joy.buttons[4] = msg.buttons[3] 
+        self.vr_to_joy.buttons[2] = msg.buttons[4] # X :sync
         ## PX4
         self.vr_to_joy.buttons[0] = msg.buttons[5] # A : Arm
         self.vr_to_joy.buttons[1] = msg.buttons[6] # B : offboard
