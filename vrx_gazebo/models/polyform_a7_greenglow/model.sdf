@@ -7,11 +7,11 @@
     <link name="base_link">
       <inertial>
         <!-- Reference: https://www.sailrite.com/PDF/Polyform-Buoys-Fenders-Accessories.pdf, page 8 -->
-        <mass>48.98</mass>
+        <mass>24.49</mass>
       </inertial>
       <visual name="visual">
         <geometry>
-          <sphere><radius>0.991</radius></sphere>
+          <sphere><radius>0.4955</radius></sphere>
         </geometry>
         <material>
           <script>
