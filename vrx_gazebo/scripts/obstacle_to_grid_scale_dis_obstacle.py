@@ -20,7 +20,7 @@ class ObstaclesToGrid:
         self.origin_y = rospy.get_param("~origin_y", -50.0)
         self.origin_z = rospy.get_param("~origin_z", 0.0)
         self.origin_yaw = rospy.get_param("~origin_yaw", 0)
-        self.obstacles_sub = rospy.Subscriber("/wamv/raw_obstacles", Obstacles, self.obstacles_callback)
+        self.obstacles_sub = rospy.Subscriber("/jackal/raw_obstacles", Obstacles, self.obstacles_callback)
         self.sub_wamv2 = rospy.Subscriber("/gazebo/wamv2/pose", PoseStamped, self.wamv2_pose_callback)
         self.sub_wamv3 = rospy.Subscriber("/gazebo/wamv3/pose", PoseStamped, self.wamv3_pose_callback)
         self.sub_wamv4 = rospy.Subscriber("/gazebo/wamv4/pose", PoseStamped, self.wamv4_pose_callback)
@@ -117,6 +117,17 @@ class ObstaclesToGrid:
 
         return rotated_x, rotated_y
 
+    def scale_obstacle(self, obstacle_x, obstacle_y):
+        # scale the distance between the obstacle and the wamv
+        factor = 5.0
+        wamv_x = self.wamv2_pose.pose.position.x
+        wamv_y = self.wamv2_pose.pose.position.y
+        vector_to_obstacle = np.array([wamv_x, wamv_y]) - np.array([obstacle_x, obstacle_y])
+        scaled_vector =  vector_to_obstacle * factor
+        new_obstacle_x = wamv_x - scaled_vector[0]
+        new_obstacle_y = wamv_y - scaled_vector[1]
+        return new_obstacle_x, new_obstacle_y
+
     def joy_callback(self, joy):
         if joy.buttons[5] and not self.joy.buttons[5]:
             self.grid_map.data = [0] * int(self.width * self.height)
@@ -137,7 +148,8 @@ class ObstaclesToGrid:
         self.obstacles = msg
                 
         for center in msg.circles:
-            map_x, map_y = self.transform_obstacle_to_map_frame(center.center.x, center.center.y)
+            scale_x, scale_y = self.scale_obstacle(center.center.x, center.center.y)
+            map_x, map_y = self.transform_obstacle_to_map_frame(scale_x, scale_y)
             
             # map_x, map_y = self.transform_obstacle_to_map_frame(center.center.x, center.center.y)
             map_x = map_x / self.resolution
@@ -154,13 +166,16 @@ class ObstaclesToGrid:
                             self.grid_map.data[new_ind] = 0.0
                             self.occupancy_grid.data[new_ind] = 0
         for center in msg.circles:
-            if 27.0<= center.center.y <= 33.0:
+            scale_x, scale_y = self.scale_obstacle(center.center.x, center.center.y)
+            if 27.0<= scale_y <= 33.0:
                 return
-            elif self.distance(self.wamv3_pose,center.center.x, center.center.y) <= 5.0:
+            elif self.distance(self.wamv3_pose, scale_x, scale_y) <= 5.0:
                 return
-            elif self.distance(self.wamv4_pose,center.center.x, center.center.y) <= 5.0:
+            elif self.distance(self.wamv4_pose, scale_x, scale_y) <= 5.0:
                 return
-            map_x, map_y = self.transform_obstacle_to_map_frame(center.center.x, center.center.y)
+            map_x, map_y = self.transform_obstacle_to_map_frame(scale_x, scale_y)
+
+            # map_x, map_y = self.transform_obstacle_to_map_frame(center.center.x, center.center.y)
             map_x = map_x / self.resolution
             map_y = map_y / self.resolution
 
@@ -190,6 +205,6 @@ class ObstaclesToGrid:
 
 
 if __name__ == "__main__":
-    rospy.init_node("obstacles_to_grid")
+    rospy.init_node("obstacles_map_scale_dis_btw_USVandObstacle")
     ObstaclesToGrid()
     rospy.spin()
