@@ -35,11 +35,11 @@ class Goal_Point():
         self.dt_sim_x = None #1510
         self.dt_sim_y = None #60
         
-        self.wamv3_x = 90
-        self.wamv3_y = -30
+        self.wamv3_x = 1480 #90
+        self.wamv3_y = 60 #-30
         
-        self.wamv4_x = 90
-        self.wamv4_y = 0
+        self.wamv4_x = 1450 #90
+        self.wamv4_y = 60 #0
 
         self.robot_radius = 4
         self.pi2 = math.radians(360)
