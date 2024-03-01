@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+import fix_python3_path
 from sensor_msgs.msg import Joy
 import rospy
 from std_msgs.msg import Bool
@@ -20,38 +21,90 @@ class VR_remap_joy:
         self.vr_to_joy.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.pub_once = True
         
+        self.publisher_to_use = None
+        self.index = None
+
+        # mode management 
+        # 3: DP 
+        # 6: Manual
+        # 7: Auto
+        self.mode = [0, 0, 0]
+        self.last_button_pressed = None
+
     def cb_joy(self, msg):
-        if self.pub_once:
-            self.pub_shutdown_joy_remap_joy.publish(True)
-            # DP in th beginning
-            self.vr_to_joy.buttons[3] = 1
-            self.vr_to_joy.buttons[7] = 1
-            
-            #wamv2 DP
-            self.vr_to_joy.axes[2] == 2
-            self.pub_joy_2.publish(self.vr_to_joy)
-            #wamv DP
-            self.vr_to_joy.axes[2] = 1
-            self.pub_joy_1.publish(self.vr_to_joy)
-            #wamv3 DP
-            self.vr_to_joy.axes[2] = 3
-            self.pub_joy_3.publish(self.vr_to_joy)
-            #wamv4 DP
-            self.vr_to_joy.axes[2] = 4
-            self.pub_joy_4.publish(self.vr_to_joy)
-            
-            self.pub_once = False
         self.vr_to_joy.header.stamp = rospy.Time.now()
 
+        if self.pub_once:
+            self.pub_shutdown_joy_remap_joy.publish(True)
+            self.inital_DP()
+
+        self.vr_translate_into_joy(msg)
+
+        # for transform wamv pose to wamv2 pose
+        self.pub_joy.publish(self.vr_to_joy)
+
+        # Detect mode change with single button press
+        if self.vr_to_joy.buttons[6] == 1 :  # Manual mode
+            current_button_pressed = 6
+        elif self.vr_to_joy.buttons[7] == 1 :  # Auto (RL) mode
+            current_button_pressed = 7
+        elif self.vr_to_joy.buttons[3] == 1 :  # DP mode
+            current_button_pressed = 3
+            self.vr_to_joy.buttons[7] = 1
+        else: 
+            current_button_pressed = None
+    
+        self.pub_actor(current_button_pressed)
+
+        # For real wamv manual control
+        if self.mode[0] == 6 and (self.publisher_to_use == 2):
+            self.vr_to_joy.buttons[4] = 1
+        
+        # Digital twin share the same command 
+        if self.publisher_to_use == 2:
+            self.pub_joy_2.publish(self.vr_to_joy)
+            self.pub_joy_1.publish(self.vr_to_joy)
+            
+        elif self.publisher_to_use == 3:
+            self.pub_joy_3.publish(self.vr_to_joy)
+        elif self.publisher_to_use == 4:
+            self.pub_joy_4.publish(self.vr_to_joy)
+        else: 
+            pass
+        
+        if current_button_pressed is not None:
+            self.last_button_pressed = current_button_pressed
+            
+    def inital_DP(self):
+        # DP in th beginning
+        self.vr_to_joy.buttons[3] = 1
+        self.vr_to_joy.buttons[7] = 1
+        
+        #wamv2 DP
+        self.vr_to_joy.axes[2] == 2
+        self.pub_joy_2.publish(self.vr_to_joy)
+        #wamv DP
+        self.vr_to_joy.axes[2] = 1
+        self.pub_joy_1.publish(self.vr_to_joy)
+        #wamv3 DP
+        self.vr_to_joy.axes[2] = 3
+        self.pub_joy_3.publish(self.vr_to_joy)
+        #wamv4 DP
+        self.vr_to_joy.axes[2] = 4
+        self.pub_joy_4.publish(self.vr_to_joy)
+        
+        self.pub_once = False
+
+    def vr_translate_into_joy(self, msg):
         #button 
         self.vr_to_joy.buttons[6] = msg.buttons[0] # Back: manual
         self.vr_to_joy.buttons[7] = msg.buttons[1] # Start: RL
         self.vr_to_joy.buttons[3] = msg.buttons[2] # Y: DP
         self.vr_to_joy.buttons[4] = msg.buttons[3] 
-        self.vr_to_joy.buttons[2] = msg.buttons[4] # X :sync
-        ## PX4
-        self.vr_to_joy.buttons[0] = msg.buttons[5] # A : Arm
-        self.vr_to_joy.buttons[1] = msg.buttons[6] # B : offboard
+        self.vr_to_joy.buttons[0] = msg.buttons[4] # A :sync
+
+        # self.vr_to_joy.buttons[0] = msg.buttons[5] 
+        # self.vr_to_joy.buttons[1] = msg.buttons[6] # B 
         print(msg)
 
         #axes
@@ -59,24 +112,39 @@ class VR_remap_joy:
         self.vr_to_joy.axes[3] = msg.axes[5] # right stick right/left
         self.vr_to_joy.axes[2] = int(msg.axes[1]) # robot
         self.vr_to_joy.axes[5] = int(msg.axes[0]) # user_id
-        
-        ##for PX4 and transform wamv pose to wamv2 pose
-        self.pub_joy.publish(self.vr_to_joy)
-
     
-        if self.vr_to_joy.buttons[3] == 1:
-            self.vr_to_joy.buttons[7] = 1
-
-        # Digital twin share the same command 
+    def pub_actor(self, current_button_pressed):
+        # up: wamv1, down: wamv2, left: wamv3, right: wamv4
         if self.vr_to_joy.axes[2] == 2:
-            self.pub_joy_2.publish(self.vr_to_joy)
-            self.vr_to_joy.axes[2] = 1
-            self.pub_joy_1.publish(self.vr_to_joy)
-            
-        if self.vr_to_joy.axes[2] == 3:
-            self.pub_joy_3.publish(self.vr_to_joy)
-        if self.vr_to_joy.axes[2] == 4:
-            self.pub_joy_4.publish(self.vr_to_joy)
+            self.publisher_to_use = 2
+
+        elif self.vr_to_joy.axes[2] == 3:
+            self.publisher_to_use = 3
+
+        elif self.vr_to_joy.axes[2] == 4:
+            self.publisher_to_use = 4
+
+        else:
+            pass 
+        self.change_mode(current_button_pressed)
+    
+    def change_mode(self, current_button_pressed):
+        if current_button_pressed is None:
+            return
+        if self.publisher_to_use in [1, 2]:
+            self.index = 0
+        elif self.publisher_to_use == 3 :
+            self.index = 1
+        elif self.publisher_to_use == 4 :
+            self.index = 2
+        else :
+            pass 
+        if self.index != None :
+            self.mode[self.index] = current_button_pressed
+        print(self.mode)
+        print(f'Pub {self.publisher_to_use} in mode {self.mode[self.index]}')
+
+
 
 if __name__ == '__main__':
     rospy.init_node('vr_remap_joy')

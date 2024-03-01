@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+import fix_python3_path
 from sensor_msgs.msg import Joy
 import rospy
 from std_msgs.msg import Bool
@@ -18,69 +19,60 @@ class Joy_remap_joy:
         self.joy_to_joy.header.frame_id = "/dev/input/js0"
         self.joy_to_joy.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.joy_to_joy.buttons = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
-        self.publisher_to_use = None
         self.sub_shutdown_joy_remap_joy = rospy.Subscriber("/shutdown_joy_remap_joy", Bool, self.shutdown_cb, queue_size=1)
         self.flag = False
         self.first_time = True
+        self.publisher_to_use = None
+        self.index = None
+
+        # mode management 
+        # 3: DP 
+        # 6: Manual
+        # 7: Auto
+        self.mode = [0, 0, 0]
+        self.last_button_pressed = None
+
     def shutdown_cb(self, msg):
         self.flag = msg.data
         
     def cb_joy(self, msg):
         self.joy_to_joy.header.stamp = rospy.Time.now()        
         if self.first_time:
-            # DP in th beginning
-            self.joy_to_joy.buttons[3] = 1
-            self.joy_to_joy.buttons[7] = 1
-            
-            self.joy_to_joy.axes[2] = 1
-            self.pub_joy_1.publish(self.joy_to_joy)
-            
-            self.joy_to_joy.axes[2] = 2   
-            self.pub_joy_2.publish(self.joy_to_joy)
-            
-            self.joy_to_joy.axes[2] = 3
-            self.pub_joy_3.publish(self.joy_to_joy)
-            
-            self.joy_to_joy.axes[2] = 4
-            self.pub_joy_4.publish(self.joy_to_joy)
-            self.first_time = False
+            self.inital_DP()
         
-
         self.joy_to_joy.axes = list(msg.axes)
         self.joy_to_joy.buttons = list(msg.buttons)
-        #DP  then switch to Auto
-        if self.joy_to_joy.buttons[3] == 1:
-            self.joy_to_joy.buttons[7] = 1
+
+        # # Check for mode switch button presses
+        # if self.joy_to_joy.buttons[6] == 1 and self.last_button_pressed != 6:  # Manual mode
+        #     current_button_pressed = 6
+        # elif self.joy_to_joy.buttons[7] == 1 and self.last_button_pressed != 7:  # Auto mode
+        #     current_button_pressed = 7
+        # elif self.joy_to_joy.buttons[3] == 1 and self.last_button_pressed != 3:  # DP mode
+        #     current_button_pressed = 3
+        #     self.joy_to_joy.buttons[7] = 1
+        # else:
+        #     current_button_pressed = None
         
-        # up: wamv1, down: wamv2, left: wamv3, right: wamv4
-        if self.joy_to_joy.axes[7] == 1:
-            self.joy_to_joy.axes[2] = 1
-            self.publisher_to_use = 1
-            print('wamv1')
+        # Check for mode switch button presses
+        if self.joy_to_joy.buttons[6] == 1 :  # Manual mode
+            current_button_pressed = 6
+        elif self.joy_to_joy.buttons[7] == 1 :  # Auto mode
+            current_button_pressed = 7
+        elif self.joy_to_joy.buttons[3] == 1 :  # DP mode
+            current_button_pressed = 3
+            self.joy_to_joy.buttons[7] = 1
+        else:
+            current_button_pressed = None
 
-        elif self.joy_to_joy.axes[7] == -1:
-            self.joy_to_joy.axes[2] = 2
-            self.publisher_to_use = 2
-            print('wamv2')
+        self.pub_actor(current_button_pressed)
 
-        elif self.joy_to_joy.axes[6] == 1:
-            self.joy_to_joy.axes[2] = 3
-            self.publisher_to_use = 3
-            print('wamv3')
-        elif self.joy_to_joy.axes[6] == -1:
-            self.joy_to_joy.axes[2] = 4
-            self.publisher_to_use = 4
-            print('wamv4')
+        # For real wamv manual control
+        if self.mode[0] == 6 and self.publisher_to_use == 2:
+            self.joy_to_joy.buttons[4] = 1
             
-        print('pub:',self.publisher_to_use)
         # # Keep publishing on the selected topic until a condition changes
-        if self.publisher_to_use == 1:
-            self.joy_to_joy.axes[2] = 1
-            self.pub_joy_1.publish(self.joy_to_joy)
-            self.joy_to_joy.axes[2] = 2
-            self.pub_joy_2.publish(self.joy_to_joy)
-
-        elif self.publisher_to_use == 2:
+        if self.publisher_to_use == 2:
             self.joy_to_joy.axes[2] = 2
             self.pub_joy_2.publish(self.joy_to_joy)
             self.joy_to_joy.axes[2] = 1
@@ -94,8 +86,67 @@ class Joy_remap_joy:
             self.joy_to_joy.axes[2] = 4
             self.pub_joy_4.publish(self.joy_to_joy)
             
-        else:
+        else:       
             pass
+        
+        if current_button_pressed is not None:
+            self.last_button_pressed = current_button_pressed
+    
+    def inital_DP(self):
+        # DP in th beginning
+        self.joy_to_joy.buttons[3] = 1
+        self.joy_to_joy.buttons[7] = 1
+        
+        self.joy_to_joy.axes[2] = 1
+        self.pub_joy_1.publish(self.joy_to_joy)
+        
+        self.joy_to_joy.axes[2] = 2   
+        self.pub_joy_2.publish(self.joy_to_joy)
+        
+        self.joy_to_joy.axes[2] = 3
+        self.pub_joy_3.publish(self.joy_to_joy)
+        
+        self.joy_to_joy.axes[2] = 4
+        self.pub_joy_4.publish(self.joy_to_joy)
+        self.mode = [3, 3, 3]
+        self.first_time = False
+        
+    def pub_actor(self, current_button_pressed):
+        # up: wamv1, down: wamv2, left: wamv3, right: wamv4
+        if self.joy_to_joy.axes[7] == -1 or self.joy_to_joy.axes[7] == 1:
+            self.joy_to_joy.axes[2] = 2
+            self.publisher_to_use = 2
+
+        elif self.joy_to_joy.axes[6] == 1:
+            self.joy_to_joy.axes[2] = 3
+            self.publisher_to_use = 3
+
+        elif self.joy_to_joy.axes[6] == -1:
+            self.joy_to_joy.axes[2] = 4
+            self.publisher_to_use = 4
+
+        else:
+            pass 
+
+        self.change_mode(current_button_pressed)
+
+    
+    def change_mode(self, current_button_pressed):
+        if current_button_pressed is None:
+            return
+        if self.publisher_to_use == 2:
+            self.index = 0
+        elif self.publisher_to_use == 3 :
+            self.index = 1
+        elif self.publisher_to_use == 4 :
+            self.index = 2
+        else :
+            pass 
+        if self.index != None :
+            self.mode[self.index] = current_button_pressed
+        print(self.mode)
+        print(f'Pub {self.publisher_to_use} in mode {self.mode[self.index]}')
+
     def run(self):
         while not rospy.is_shutdown():
             if self.flag:
