@@ -4,5 +4,7 @@
     <node name="joy_remap_joy" pkg="vrx_gazebo" type="joy_remap_joy.py" output="screen"/>
 
     <!-- Run joy_node -->
-    <node name="joy_control" pkg="joy" type="joy_node" output="screen"/>
+    <node name="joy_control" pkg="joy" type="joy_node" output="screen">
+        <param name="autorepeat_rate" value="10"/>
+    </node>
 </launch>
