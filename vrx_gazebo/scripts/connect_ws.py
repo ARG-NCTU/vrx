@@ -5,7 +5,7 @@ import rospy
 from geometry_msgs.msg import PoseStamped, Twist
 from sensor_msgs.msg import Joy, LaserScan
 from visualization_msgs.msg import Marker
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool, UInt8
 # from obstacle_detector.msg import Obstacles
 class ROSBridgeConnector:
     def __init__(self):
@@ -29,6 +29,8 @@ class ROSBridgeConnector:
             self.pub_scan =  roslibpy.Topic(self.client, "/wamv/RL/more_scan", "sensor_msgs/LaserScan")
             self.pub_scan_RL =  roslibpy.Topic(self.client, "/wamv/RL/scan", "sensor_msgs/LaserScan")
             
+            self.pub_wamv_mode = roslibpy.Topic(self.client,"/wamv/control_mode", "std_msgs/UInt8")
+
             # transform frame from wamv2 to wamv
             self.sub_scan2 = rospy.Subscriber("/wamv2/RL/more_scan", LaserScan, self.cb_laser_1sub2)
             self.pub_2scan_for1 = rospy.Publisher("/wamv2/RL/more_scan_2", LaserScan, queue_size=1)
@@ -67,6 +69,8 @@ class ROSBridgeConnector:
             # pub obstacle for VR
             self.pub_obstacle_to_wamv = roslibpy.Topic(self.client, "/obstacle_from_real", "geometry_msgs/PoseStamped")
             
+           
+
         else:
             pass
 
@@ -86,10 +90,10 @@ class ROSBridgeConnector:
             rospy.Subscriber("/drone_pose", PoseStamped, self.cb_drone_pose)
             
             rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.cb_real_goal)
+            rospy.Subscriber("/wamv/control_mode", UInt8, self.cb_wamv_mode, queue_size=1)
 
                         
-        elif self.ws == 2:
-            
+        elif self.ws == 2:    
             rospy.Subscriber("/fake_fence_real2sim", PoseStamped, self.cb_fake_pose)
             rospy.Subscriber("/gazebo/wamv2/pose", PoseStamped, self.cb_wamv2_pose)
             
@@ -104,7 +108,15 @@ class ROSBridgeConnector:
                 
         else:
             pass
-        
+
+    def cb_wamv_mode(self, data):
+        roslib_msg = roslibpy.Message(
+            {
+                "data": data.data
+            }
+        )
+        self.pub_wamv_mode.publish(roslib_msg)
+
     def cb_reset(self, data):
         roslib_msg = roslibpy.Message(
             {
