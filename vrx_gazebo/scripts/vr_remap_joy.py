@@ -174,16 +174,20 @@ class VR_remap_joy:
         print(f'Pub {self.publisher_to_use} in mode {self.mode.data[self.index]}')
 
     def change_mode_DP(self):
-        try:
-            if self.wamv_mode == 3 or self.wamv2_mode == 3:
-                self.mode.data[0] = 3
-            if self.wamv3_mode == 3:
-                self.mode.data[1] = 3
-            if self.wamv4_mode == 3:
-                self.mode.data[2] = 3
-        except:
-            pass
-    
+        # try:
+        #     if self.wamv_mode == 3 or self.wamv2_mode == 3:
+        #         self.mode.data[0] = 3
+        #     if self.wamv3_mode == 3:
+        #         self.mode.data[1] = 3
+        #     if self.wamv4_mode == 3:
+        #         self.mode.data[2] = 3
+        # except:
+        #     pass
+           
+        self.mode.data[0] = self.wamv_mode
+        self.mode.data[1] = self.wamv3_mode
+        self.mode.data[2] = self.wamv4_mode
+        
 if __name__ == '__main__':
     rospy.init_node('vr_remap_joy')
     vr_remap_joy = VR_remap_joy()
