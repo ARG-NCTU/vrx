@@ -46,13 +46,13 @@ class Joy_remap_joy:
         self.wamv_mode = msg
         
     def cb_wamv2_mode(self, msg):
-        self.wamv2_mode = msg
+        self.wamv2_mode = msg.data
         
     def cb_wamv3_mode(self, msg):
-        self.wamv3_mode = msg
+        self.wamv3_mode = msg.data
         
     def cb_wamv4_mode(self, msg):
-        self.wamv4_mode = msg
+        self.wamv4_mode = msg.data
            
     def cb_joy(self, msg):
         self.joy_to_joy.header.stamp = rospy.Time.now()        
@@ -81,7 +81,7 @@ class Joy_remap_joy:
             
         # Special case for DP mode in Nav_DP file, which will auto change to DP after RL
         self.change_mode_DP()
-         
+
         # # Keep publishing on the selected topic until a condition changes
         if self.publisher_to_use == 2:
             self.joy_to_joy.axes[2] = 2
@@ -100,8 +100,9 @@ class Joy_remap_joy:
         else:       
             pass
         self.pub_mode.publish(self.mode)
+
         print(f'Pub {self.mode.data}')
-        
+
         if current_button_pressed is not None:
             self.last_button_pressed = current_button_pressed
     
@@ -164,9 +165,9 @@ class Joy_remap_joy:
         try:
             if self.wamv_mode == 3 or self.wamv2_mode == 3:
                 self.mode.data[0] = 3
-            elif self.wamv3_mode == 3:
+            if self.wamv3_mode == 3:
                 self.mode.data[1] = 3
-            elif self.wamv4_mode == 3:
+            if self.wamv4_mode == 3:
                 self.mode.data[2] = 3
         except:
             pass
