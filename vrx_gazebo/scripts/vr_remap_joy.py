@@ -88,6 +88,7 @@ class VR_remap_joy:
         # Digital twin share the same command 
         if self.publisher_to_use == 2:
             self.pub_joy_2.publish(self.vr_to_joy)
+            self.vr_to_joy.axes[2] = 1
             self.pub_joy_1.publish(self.vr_to_joy)
             
         elif self.publisher_to_use == 3:

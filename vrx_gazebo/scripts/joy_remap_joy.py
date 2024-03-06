@@ -43,7 +43,7 @@ class Joy_remap_joy:
         self.flag = msg.data
         
     def cb_wamv_mode(self, msg):
-        self.wamv_mode = msg
+        self.wamv_mode = msg.data
         
     def cb_wamv2_mode(self, msg):
         self.wamv2_mode = msg.data
