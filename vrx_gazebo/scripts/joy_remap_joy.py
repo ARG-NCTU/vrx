@@ -2,7 +2,7 @@
 import fix_python3_path
 from sensor_msgs.msg import Joy
 import rospy
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool,UInt8MultiArray , UInt8
 class Joy_remap_joy:
     # This script remaps the joy to the joy topic
     # For mixed teleop
@@ -14,7 +14,13 @@ class Joy_remap_joy:
         self.pub_joy_2 = rospy.Publisher("/wamv2/joy", Joy, queue_size=1)
         self.pub_joy_3 = rospy.Publisher("/wamv3/joy", Joy, queue_size=1)
         self.pub_joy_4 = rospy.Publisher("/wamv4/joy", Joy, queue_size=1)
-
+        self.pub_mode = rospy.Publisher("/control_mode", UInt8MultiArray, queue_size=10)
+        
+        self.sub_wamv_mode = rospy.Subscriber("/wamv/control_mode", UInt8, self.cb_wamv_mode, queue_size=1)
+        self.sub_wamv2_mode = rospy.Subscriber("/wamv2/control_mode", UInt8, self.cb_wamv2_mode, queue_size=1)
+        self.sub_wamv3_mode = rospy.Subscriber("/wamv3/control_mode", UInt8, self.cb_wamv3_mode, queue_size=1)
+        self.sub_wamv4_mode = rospy.Subscriber("/wamv4/control_mode", UInt8, self.cb_wamv4_mode, queue_size=1)
+        
         self.joy_to_joy = Joy()
         self.joy_to_joy.header.frame_id = "/dev/input/js0"
         self.joy_to_joy.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -29,12 +35,25 @@ class Joy_remap_joy:
         # 3: DP 
         # 6: Manual
         # 7: Auto
-        self.mode = [0, 0, 0]
+        self.mode = UInt8MultiArray()        
+        self.mode.data = [0, 0, 0]
         self.last_button_pressed = None
 
     def shutdown_cb(self, msg):
         self.flag = msg.data
         
+    def cb_wamv_mode(self, msg):
+        self.wamv_mode = msg
+        
+    def cb_wamv2_mode(self, msg):
+        self.wamv2_mode = msg
+        
+    def cb_wamv3_mode(self, msg):
+        self.wamv3_mode = msg
+        
+    def cb_wamv4_mode(self, msg):
+        self.wamv4_mode = msg
+           
     def cb_joy(self, msg):
         self.joy_to_joy.header.stamp = rospy.Time.now()        
         if self.first_time:
@@ -43,17 +62,6 @@ class Joy_remap_joy:
         self.joy_to_joy.axes = list(msg.axes)
         self.joy_to_joy.buttons = list(msg.buttons)
 
-        # # Check for mode switch button presses
-        # if self.joy_to_joy.buttons[6] == 1 and self.last_button_pressed != 6:  # Manual mode
-        #     current_button_pressed = 6
-        # elif self.joy_to_joy.buttons[7] == 1 and self.last_button_pressed != 7:  # Auto mode
-        #     current_button_pressed = 7
-        # elif self.joy_to_joy.buttons[3] == 1 and self.last_button_pressed != 3:  # DP mode
-        #     current_button_pressed = 3
-        #     self.joy_to_joy.buttons[7] = 1
-        # else:
-        #     current_button_pressed = None
-        
         # Check for mode switch button presses
         if self.joy_to_joy.buttons[6] == 1 :  # Manual mode
             current_button_pressed = 6
@@ -68,9 +76,12 @@ class Joy_remap_joy:
         self.pub_actor(current_button_pressed)
 
         # For real wamv manual control
-        if self.mode[0] == 6 and self.publisher_to_use == 2:
+        if self.mode.data[0] == 6 and self.publisher_to_use == 2:
             self.joy_to_joy.buttons[4] = 1
             
+        # Special case for DP mode in Nav_DP file, which will auto change to DP after RL
+        self.change_mode_DP()
+         
         # # Keep publishing on the selected topic until a condition changes
         if self.publisher_to_use == 2:
             self.joy_to_joy.axes[2] = 2
@@ -88,6 +99,8 @@ class Joy_remap_joy:
             
         else:       
             pass
+        self.pub_mode.publish(self.mode)
+        print(f'Pub {self.mode.data}')
         
         if current_button_pressed is not None:
             self.last_button_pressed = current_button_pressed
@@ -108,7 +121,7 @@ class Joy_remap_joy:
         
         self.joy_to_joy.axes[2] = 4
         self.pub_joy_4.publish(self.joy_to_joy)
-        self.mode = [3, 3, 3]
+        self.mode.data = [3, 3, 3]
         self.first_time = False
         
     def pub_actor(self, current_button_pressed):
@@ -129,8 +142,7 @@ class Joy_remap_joy:
             pass 
 
         self.change_mode(current_button_pressed)
-
-    
+           
     def change_mode(self, current_button_pressed):
         if current_button_pressed is None:
             return
@@ -142,11 +154,23 @@ class Joy_remap_joy:
             self.index = 2
         else :
             pass 
-        if self.index != None :
-            self.mode[self.index] = current_button_pressed
-        print(self.mode)
-        print(f'Pub {self.publisher_to_use} in mode {self.mode[self.index]}')
+        
+        if self.index is not None :
+            self.mode.data[self.index] = current_button_pressed
+            
 
+             
+    def change_mode_DP(self):
+        try:
+            if self.wamv_mode == 3 or self.wamv2_mode == 3:
+                self.mode.data[0] = 3
+            elif self.wamv3_mode == 3:
+                self.mode.data[1] = 3
+            elif self.wamv4_mode == 3:
+                self.mode.data[2] = 3
+        except:
+            pass
+        
     def run(self):
         while not rospy.is_shutdown():
             if self.flag:
