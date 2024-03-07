@@ -171,11 +171,12 @@ class Joy_remap_joy:
         #         self.mode.data[2] = 3
         # except:
         #     pass
-        
-        self.mode.data[0] = self.wamv_mode
-        self.mode.data[1] = self.wamv3_mode
-        self.mode.data[2] = self.wamv4_mode
-
+        try:
+            self.mode.data[0] = self.wamv_mode
+            self.mode.data[1] = self.wamv3_mode
+            self.mode.data[2] = self.wamv4_mode
+        except:
+            pass
     def run(self):
         while not rospy.is_shutdown():
             if self.flag:
