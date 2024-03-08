@@ -20,6 +20,17 @@ class Joy_remap_joy:
         self.sub_wamv2_mode = rospy.Subscriber("/wamv2/control_mode", UInt8, self.cb_wamv2_mode, queue_size=1)
         self.sub_wamv3_mode = rospy.Subscriber("/wamv3/control_mode", UInt8, self.cb_wamv3_mode, queue_size=1)
         self.sub_wamv4_mode = rospy.Subscriber("/wamv4/control_mode", UInt8, self.cb_wamv4_mode, queue_size=1)
+        
+        self.sub_wamv_auto = rospy.Subscriber("/auto_state", Bool, self.cb_wamv_auto, queue_size=1)
+        self.sub_wamv2_auto = rospy.Subscriber("/wamv2/auto_state", Bool, self.cb_wamv2_auto, queue_size=1)
+        self.sub_wamv3_auto = rospy.Subscriber("/wamv3/auto_state", Bool, self.cb_wamv3_auto, queue_size=1)
+        self.sub_wamv4_auto = rospy.Subscriber("/wamv4/auto_state", Bool, self.cb_wamv4_auto, queue_size=1)
+        
+        self.sub_wamv_estop = rospy.Subscriber("/stop_state", Bool, self.cb_wamv_estop, queue_size=1)
+        self.sub_wamv2_estop = rospy.Subscriber("/wamv2/stop_state", Bool, self.cb_wamv2_estop, queue_size=1)
+        self.sub_wamv3_estop = rospy.Subscriber("/wamv3/stop_state", Bool, self.cb_wamv3_estop, queue_size=1)
+        self.sub_wamv4_estop = rospy.Subscriber("/wamv4/stop_state", Bool, self.cb_wamv4_estop, queue_size=1)
+        
         self.joy = None
         self.joy_to_joy = Joy()
         self.joy_to_joy.header.frame_id = "/dev/input/js0"
@@ -34,6 +45,7 @@ class Joy_remap_joy:
         self.timer = rospy.Timer(rospy.Duration(0.05), self.timer_callback)   
 
         # mode management 
+        # 1 :Estop
         # 3: DP 
         # 6: Manual
         # 7: Auto
@@ -58,7 +70,31 @@ class Joy_remap_joy:
       
     def cb_joy(self, msg):
         self.joy = msg
+        
+    def cb_wamv_auto(self, msg):
+        self.wamv_auto = msg.data
+        
+    def cb_wamv2_auto(self, msg):
+        self.wamv2_auto = msg.data
     
+    def cb_wamv3_auto(self, msg):
+        self.wamv3_auto = msg.data
+    
+    def cb_wamv4_auto(self, msg):
+        self.wamv4_auto = msg.data
+    
+    def cb_wamv_estop(self, msg):
+        self.wamv_estop = msg.data
+        
+    def cb_wamv2_estop(self, msg):
+        self.wamv2_estop = msg.data
+        
+    def cb_wamv3_estop(self, msg):
+        self.wamv3_estop = msg.data
+        
+    def cb_wamv4_estop(self, msg):
+        self.wamv4_estop = msg.data
+        
     def inital_DP(self):
         # DP in th beginning
         self.joy_to_joy.buttons[3] = 1
@@ -95,39 +131,61 @@ class Joy_remap_joy:
         else:
             pass 
 
-        self.change_mode(current_button_pressed)
-           
-    def change_mode(self, current_button_pressed):
-        if current_button_pressed is None:
-            return
-        if self.publisher_to_use == 2:
-            self.index = 0
-        elif self.publisher_to_use == 3 :
-            self.index = 1
-        elif self.publisher_to_use == 4 :
-            self.index = 2
-        else :
-            pass 
+        return current_button_pressed
         
-        if self.index is not None :
-            self.mode.data[self.index] = current_button_pressed
-            
-
-             
-    def change_mode_DP(self):
-        # try:
-        #     if self.wamv_mode == 3 or self.wamv2_mode == 3:
-        #         self.mode.data[0] = 3
-        #     if self.wamv3_mode == 3:
-        #         self.mode.data[1] = 3
-        #     if self.wamv4_mode == 3:
-        #         self.mode.data[2] = 3
-        # except:
-        #     pass
+    def change_mode(self, current_button_pressed):
+        
+        # Determine the mode based on auto and stop states
         try:
-            self.mode.data[0] = self.wamv_mode
-            self.mode.data[1] = self.wamv3_mode
-            self.mode.data[2] = self.wamv4_mode
+            # Check for each WAM-V's auto and estop states and adjust mode accordingly
+            if self.publisher_to_use == 2:  # wamv and wamv2
+                self.index = 0
+                if not self.wamv2_auto and self.wamv2_estop:
+                    current_button_pressed = 1  # estop mode
+                elif not self.wamv2_auto:
+                    current_button_pressed = 4  # manual mode
+            elif self.publisher_to_use == 3:  # wamv3
+                self.index = 1
+                if not self.wamv3_auto and self.wamv3_estop:
+                    current_button_pressed = 1  # estop mode
+                elif not self.wamv3_auto:
+                    current_button_pressed = 4  # manual mode
+            elif self.publisher_to_use == 4:  # wamv4
+                self.index = 2
+                if not self.wamv4_auto and self.wamv4_estop:
+                    current_button_pressed = 1  # estop mode
+                elif not self.wamv4_auto:
+                    current_button_pressed = 4  # manual mode
+        except AttributeError:
+            pass
+        
+        # Update the mode for the current WAM-V
+        if self.index is not None and current_button_pressed is not None:
+            self.mode.data[self.index] = current_button_pressed
+ 
+    def change_mode_DP(self):
+        
+        try:
+            if self.wamv_mode == 3 :
+                self.mode.data[0] = 3
+        except:
+            pass
+        
+        try:
+            if self.wamv2_mode == 3 :
+                self.mode.data[0] = 3
+        except:
+            pass
+        
+        try:
+            if self.wamv3_mode == 3 :
+                self.mode.data[1] = 3
+        except:
+            pass
+        
+        try:
+            if self.wamv4_mode == 3 :
+                self.mode.data[2] = 3
         except:
             pass
     
@@ -141,8 +199,8 @@ class Joy_remap_joy:
             self.joy_to_joy.buttons = list(self.joy.buttons)
 
             # Check for mode switch button presses
-            if self.joy_to_joy.buttons[6] == 1 :  # Manual mode
-                current_button_pressed = 6
+            if self.joy_to_joy.buttons[6] == 1 :  # Manual mode or estop mode 
+                current_button_pressed = 1
             elif self.joy_to_joy.buttons[7] == 1 :  # Auto mode
                 current_button_pressed = 7
             elif self.joy_to_joy.buttons[3] == 1 :  # DP mode
@@ -151,14 +209,12 @@ class Joy_remap_joy:
             else:
                 current_button_pressed = None
 
-            self.pub_actor(current_button_pressed)
+            current_button_pressed = self.pub_actor(current_button_pressed)
+            self.change_mode(current_button_pressed)
 
-            # For real wamv manual control
-            if self.mode.data[0] == 6 and self.publisher_to_use == 2:
-                self.joy_to_joy.buttons[4] = 1
-                
             # Special case for DP mode in Nav_DP file, which will auto change to DP after RL
             self.change_mode_DP()
+
 
             # # Keep publishing on the selected topic until a condition changes
             if self.publisher_to_use == 2:
@@ -183,6 +239,7 @@ class Joy_remap_joy:
 
             if current_button_pressed is not None:
                 self.last_button_pressed = current_button_pressed
+                
     def run(self):
         while not rospy.is_shutdown():
             if self.flag:
