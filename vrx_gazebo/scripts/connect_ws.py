@@ -30,6 +30,9 @@ class ROSBridgeConnector:
             self.pub_scan_RL =  roslibpy.Topic(self.client, "/wamv/RL/scan", "sensor_msgs/LaserScan")
             
             self.pub_wamv_mode = roslibpy.Topic(self.client,"/wamv/control_mode", "std_msgs/UInt8")
+            
+            self.pub_wamv_auto = roslibpy.Topic(self.client,"/auto_state","std_msgs/Bool")
+            self.pub_wamv_stop = roslibpy.Topic(self.client,"/stop_state","std_msgs/Bool")
 
             # transform frame from wamv2 to wamv
             self.sub_scan2 = rospy.Subscriber("/wamv2/RL/more_scan", LaserScan, self.cb_laser_1sub2)
@@ -92,6 +95,9 @@ class ROSBridgeConnector:
             rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.cb_real_goal)
             rospy.Subscriber("/wamv/control_mode", UInt8, self.cb_wamv_mode, queue_size=1)
 
+            rospy.Subscriber("/stop_state", Bool, self.cb_wamv_estop, queue_size=1)
+            rospy.Subscriber("/auto_state", Bool, self.cb_wamv_auto, queue_size=1)
+            
                         
         elif self.ws == 2:    
             rospy.Subscriber("/fake_fence_real2sim", PoseStamped, self.cb_fake_pose)
@@ -108,6 +114,22 @@ class ROSBridgeConnector:
                 
         else:
             pass
+    
+    def cb_wamv_estop(self,data):
+        roslib_msg = roslibpy.Message(
+            {
+                "data": data.data
+            }
+        )
+        self.pub_wamv_stop.publish(roslib_msg) 
+        
+    def cb_wamv_auto(self,data):
+        roslib_msg = roslibpy.Message(
+            {
+                "data": data.data
+            }
+        )
+        self.pub_wamv_auto.publish(roslib_msg) 
 
     def cb_wamv_mode(self, data):
         roslib_msg = roslibpy.Message(
