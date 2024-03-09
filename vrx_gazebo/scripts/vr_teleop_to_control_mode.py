@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import fix_python3_path
 import rospy
 from sensor_msgs.msg import Joy
 from std_msgs.msg import UInt8MultiArray
