@@ -233,7 +233,7 @@ class Joy_remap_joy:
                 
             else:       
                 pass
-            self.pub_mode.publish(self.mode)
+            # self.pub_mode.publish(self.mode)
 
             print(f'Pub {self.mode.data}')
 
