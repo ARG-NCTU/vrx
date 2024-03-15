@@ -101,27 +101,9 @@ class RealtoSimTransform:
             self.pub_pose.publish(pose_wamv2_to_map)
             print('pose:', pose_wamv2_to_map)
             self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)    
-            
-            # # update wamv2 pose every 1/sync_freq seconds
-            # if rospy.Time.now() - self.time > rospy.Duration(1/self.sync_freq):
-            #     self.time = rospy.Time.now()  
-            #     print("update wamv2 pose")
-            #     self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)  
-            
-
-            # matrix_wamv2_to_origin = np.dot(tf_trans.inverse_matrix(self.matrix_wamv2_origin_to_map), matrix_wamv2_to_map)
-            # pose_wamv2_to_origin = self.matrix_to_pose(matrix_wamv2_to_origin, "wamv2")
-            # print("wamv2 pose to origin: ", pose_wamv2_to_origin)
-            # print("wamv2 pose to map: ", pose_wamv2_to_map)
-            
+         
         else:
-            # self.init_wamv2 = self.wamv2_pose
-            # self.init_wamv2.pose.orientation = self.wamv_pose.pose.orientation
-            # self.init_wamv2.pose.orientation.x = 0
-            # self.init_wamv2.pose.orientation.y = 0
-            # self.set_model(model_name ='wamv2', pose = self.init_wamv2)
-        #     self.set_model(model_name='wamv3', pose = self.init_wamv3)
-        #     self.set_model(model_name='wamv4', pose = self.init_wamv4)
+
             pass
         
     def set_model(self, model_name, pose):
