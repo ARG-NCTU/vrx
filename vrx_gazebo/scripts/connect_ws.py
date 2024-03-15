@@ -41,7 +41,7 @@ class ROSBridgeConnector:
             self.pub_2scan_for1_RL = rospy.Publisher("/wamv2/RL/scan_2", LaserScan, queue_size=1)
             
             
-            # self.pub_cmd = roslibpy.Topic(self.client, "/wamv2/cmd_vel", "Twist")
+            self.pub_cmd = roslibpy.Topic(self.client, "/wamv/cmd_vel", "Twist")
             self.pub_reset = roslibpy.Topic(self.client, "/reset", "Bool")
             
         elif self.ws == 2:   
@@ -73,6 +73,7 @@ class ROSBridgeConnector:
             self.pub_obstacle_to_wamv = roslibpy.Topic(self.client, "/obstacle_from_real", "geometry_msgs/PoseStamped")
             
            
+           
 
         else:
             pass
@@ -88,7 +89,7 @@ class ROSBridgeConnector:
             rospy.Subscriber("/gazebo/wamv/pose", PoseStamped, self.cb_wamv_pose)
             rospy.Subscriber("/wamv/RL/more_scan", LaserScan, self.cb_wamv_laser)
             rospy.Subscriber("/wamv/RL/scan", LaserScan, self.cb_wamv_laser_RL)
-            # rospy.Subscriber("/wamv2/cmd_vel", Twist, self.cb_twist)
+            rospy.Subscriber("/wamv/cmd_vel", Twist, self.cb_twist)
             rospy.Subscriber("/reset", Bool, self.cb_reset)
             rospy.Subscriber("/drone_pose", PoseStamped, self.cb_drone_pose)
             
@@ -246,14 +247,14 @@ class ROSBridgeConnector:
         self.pub_obstacle_extractor.publish(roslib_msg)
 
         
-    # def cb_twist(self, data):
-    #     roslib_msg = roslibpy.Message(
-    #         {
-    #             "linear": {"x": data.linear.x, "y": data.linear.y, "z": data.linear.z},
-    #             "angular": {"x": data.angular.x, "y": data.angular.y, "z": data.angular.z}
-    #         }
-    #     )
-    #     self.pub_cmd.publish(roslib_msg)
+    def cb_twist(self, data):
+        roslib_msg = roslibpy.Message(
+            {
+                "linear": {"x": data.linear.x, "y": data.linear.y, "z": data.linear.z},
+                "angular": {"x": data.angular.x, "y": data.angular.y, "z": data.angular.z}
+            }
+        )
+        self.pub_cmd.publish(roslib_msg)
 
     def cb_joy(self, data, publisher):
         roslib_msg = roslibpy.Message(
