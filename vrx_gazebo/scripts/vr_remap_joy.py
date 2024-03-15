@@ -58,7 +58,7 @@ class VR_remap_joy:
             # self.pub_shutdown_joy_remap_joy.publish(True)
             self.inital_DP()
         try:
-            if int(self.vr_joy.axes[1]) <=4:
+            if 2 <= msg.axes[1] <= 4:
                 self.mode.data[int(self.vr_joy.axes[1])-2] = self.vr_mode_contorl_mode[int(self.vr_joy.axes[2])]       
             # self.mode.data[int(self.vr_joy .axes[1])-2] = self.vr_mode_contorl_mode[self.vr_joy.buttons[0:4].index(1)]
         except ValueError:
