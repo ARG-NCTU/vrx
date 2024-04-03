@@ -212,7 +212,7 @@
       <joint name="base_to_plate" type="fixed">
         <parent link="$(arg namespace)/base_link" />
         <child link="$(arg namespace)/plate" />
-        <origin xyz="0 0 1.85" />
+        <origin xyz="-0.24 0 1.78" />
       </joint>
     </xacro:if>
 
