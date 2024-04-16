@@ -32,7 +32,19 @@
     <include>
       <uri>model://black_totem</uri>
       <name>totem</name>
-      <pose>20 20 0.00 0.00 0.00 0.00</pose>
+      <pose>30 -30 0.00 0.00 0.00 0.00</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>polyform_black</name>
+      <pose>30 30 0.00 0.00 0.00 0.00</pose>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7_redball</uri>
+      <name>polyform_red</name>
+      <pose>-30 30 0.00 0.00 0.00 0.00</pose>
     </include>
 
   </world>
