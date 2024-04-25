@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Run vr_remap_joy.py -->
+    <node name="joy_remap_joy" pkg="vrx_gazebo" type="vr_remap_joy.py" output="screen"/>
+
+    <!-- Publish Control model for light -->
+    <node name="vr_teleop_to_control_mode" pkg="vrx_gazebo" type="vr_teleop_to_control_mode.py" output="log"/>
+
+</launch>
