@@ -89,31 +89,29 @@
     </include>
 
     <!-- spawn desk and target object -->
+    <!-- desk and red bar -->
     <node name="spawn_model_desk" pkg="gazebo_ros" type="spawn_model"
     args="-x -594.4  -y 259.8 -z 0.5
             -R 0 -P 0 -Y -1.025
             -sdf -database foldable_table  -model table"/>
-
-
+    <node name="spawn_model_desk2" pkg="gazebo_ros" type="spawn_model"
+    args="-x -593.74  -y 260.199 -z 0.5
+            -R 0 -P 0 -Y -1.025
+            -sdf -database foldable_table  -model table2"/>
     <node name="spawn_model_pole" pkg="gazebo_ros" type="spawn_model"
     args="-x -594.11 -y 259.9 -z 1.21
             -R 0 -P 0 -Y -1.025
             -sdf -database red_pole  -model red_pole"/>
-
-    <!-- <node name="spawn_model_basket" pkg="gazebo_ros" type="spawn_model"
-    args="-x -594.11 -y 259.7 -z 1.21
-            -R 0 -P 0 -Y -1.025
-            -sdf -database basket -model basket"/> -->
-
-    <node pkg="vrx_gazebo" type="model_state_to_pose_stamped.py" name="model_state_to_pose_stamped" output="log">
-        <param name="model_name" value="red_pole"/>
-        <param name="publish_rate" value="50"/>
-    </node>
     
-
-    <!-- <node name="spawn_model_flag" pkg="gazebo_ros" type="spawn_model"
-    args="-x -588 -y 265 -z 1
+    <!-- pillar and red bar -->
+    <node name="spawn_model_pillar" pkg="gazebo_ros" type="spawn_model"
+    args="-x -596.27 -y 262.89 -z 1.0
             -R 0 -P 0 -Y 0
-            -sdf -database flag  -model bar"/> -->
+            -sdf -database pillar -model pillar"/>
+
+    <node name="spawn_model_pole2" pkg="gazebo_ros" type="spawn_model"
+    args="-x -596.27 -y 262.88 -z 2
+            -R 0 -P 0 -Y 0
+            -sdf -database red_pole  -model red_pole2"/>
 </launch>
     
