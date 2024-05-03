@@ -390,6 +390,7 @@ xacro_add_files(
   worlds/real_fence.world.xacro
   worlds/empty_sea.world.xacro
   worlds/sydneyregatta_bigger_ocean.world.xacro
+  worlds/sanxiantai.world.xacro
   ${XACRO_INORDER} INSTALL DESTINATION worlds
 )
 # Generate obstacle course

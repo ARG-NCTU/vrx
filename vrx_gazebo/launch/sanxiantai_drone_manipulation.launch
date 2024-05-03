@@ -1,0 +1,77 @@
+<launch>
+    <arg name="world" default="$(find vrx_gazebo)/worlds/sanxiantai.world" />
+
+    <!-- If true, run gazebo GUI -->
+    <arg name="gui" default="true" />
+
+    <!-- If true, run gazebo in verbose mode -->
+    <arg name="verbose" default="false"/>
+
+    <!-- Set various other gazebo arguments-->
+    <arg name="extra_gazebo_args" default=""/>
+
+    <!-- drone namespace -->
+    <arg name="drone_ns" default="drone"/>
+
+    <!-- wamv namespace -->
+    <arg name="wamv_ns" default="wamv"/>
+
+    <!-- Do we lock the vessel to the world? -->
+    <arg name="wamv_locked" default="true" />
+
+    <arg name="paused" default="false"/>
+    <!-- Acoustic pinger position(s) -->
+    <arg name="pinger_params" default="$(find vrx_gazebo)/config/pinger.yaml"/>
+
+
+    <!-- Define a static transform from a camera internal frame to the fcu for every camera used -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="tf_depth_camera" args="0 0 0 -1.57 0 -1.57 fcu camera_link 10"/> -->
+
+    <!-- Launch Gazebo -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world)"/>
+        <arg name="verbose" value="$(arg verbose)"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
+    </include>
+
+    <node name="spawn_model_dock4x4" pkg="gazebo_ros" type="spawn_model"
+    args="-x -15  -y -10 -z 1.5
+            -R 0 -P 0 -Y 0
+            -sdf -database dock_block_4x4  -model dock"/>   
+
+    <include file="$(find vrx_gazebo)/launch/if750a_wx200.launch">
+        <arg name="drone_ns" value="$(arg drone_ns)"/>
+        <arg name="drone_x" value="-15"/>
+        <arg name="drone_y" value="-10"/>
+        <arg name="drone_z" value="2"/>
+        <arg name="drone_R" value="0"/>
+        <arg name="drone_P" value="0"/>
+        <arg name="drone_Y" value="0"/>
+    </include>
+    <node name="spawn_model_pillar" pkg="gazebo_ros" type="spawn_model"
+    args="-x -4.6 -y -1.6 -z 13
+            -R 0 -P 0 -Y 0
+            -sdf -database pillar -model pillar"/>
+
+    <node name="spawn_model_pole2" pkg="gazebo_ros" type="spawn_model"
+    args="-x -4.6 -y -1.6 -z 14
+            -R 0 -P 0 -Y 0
+            -sdf -database red_pole  -model red_pole2"/>
+    <!-- <node name="spawn_model_dock4x4_2" pkg="gazebo_ros" type="spawn_model"
+    args="-x 0  -y 0 -z 4.5
+            -R 0 -P 0 -Y 0
+            -sdf -database dock_block_4x4  -model dock2"/>  
+    <include file="$(find vrx_gazebo)/launch/if750a_wx200.launch">
+        <arg name="drone_ns" value="$(arg drone_ns)"/>
+        <arg name="drone_x" value="0"/>
+        <arg name="drone_y" value="0"/>
+        <arg name="drone_z" value="5"/>
+        <arg name="drone_R" value="0"/>
+        <arg name="drone_P" value="0"/>
+        <arg name="drone_Y" value="0"/>
+    </include> -->
+</launch>
+    
