@@ -1,28 +1,28 @@
 <?xml version="1.0"?>
 <sdf version="1.6">
   <!-- Reference: https://www.polyformus.com/buoys/a-series -->
-  <model name="polyform_a7">
+  <model name="polyform_a7_redball">
     <static>false</static>
     <pose>0 0 0 0 0 0</pose>
     <link name="base_link">
       <inertial>
         <!-- Reference: https://www.sailrite.com/PDF/Polyform-Buoys-Fenders-Accessories.pdf, page 8 -->
-        <mass>24.49</mass>
+        <mass>48.98</mass>
       </inertial>
       <visual name="visual">
         <geometry>
-          <sphere><radius>0.4955</radius></sphere>
+          <sphere><radius>0.991</radius></sphere>
         </geometry>
         <material>
           <script>
             <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/GreenGlow</name>
+            <name>Gazebo/RedGlow</name>
           </script>
         </material>
       </visual>
       <collision name="collision">
         <geometry>
-          <sphere><radius>0.4955</radius></sphere>
+          <sphere><radius>0.991</radius></sphere>
         </geometry>
       </collision>
     </link>
@@ -36,7 +36,7 @@
       <buoyancy name="buoyancy">
         <link_name>base_link</link_name>
         <geometry>
-          <sphere><radius>0.4955</radius></sphere>
+          <sphere><radius>0.991</radius></sphere>
         </geometry>
       </buoyancy>
     </plugin>

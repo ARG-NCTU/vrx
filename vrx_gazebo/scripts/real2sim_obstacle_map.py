@@ -65,11 +65,17 @@ class RealtoSimObstacle:
         if self.joy == None:
             self.joy = joy
             return
-        joy_trigger = joy.buttons[4] and not self.joy.buttons[4]
+        # joy_trigger = joy.buttons[4] and not self.joy.buttons[4]
+        joy_trigger = joy.buttons[0] and not self.joy.buttons[0]
 
         if joy_trigger:
-            self.flag = not self.flag 
+            self.flag = True
             print(self.flag )
+
+        elif joy.buttons[8]:
+            self.flag = False
+            print('Reset')
+
         self.joy = joy
             
     def obstacle_map_cb(self, msg):

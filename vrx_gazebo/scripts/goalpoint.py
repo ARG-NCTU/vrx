@@ -35,11 +35,11 @@ class Goal_Point():
         self.dt_sim_x = None #1510
         self.dt_sim_y = None #60
         
-        self.wamv3_x = 90
-        self.wamv3_y = -30
+        self.wamv3_x = 1480 #90
+        self.wamv3_y = 60 #-30
         
-        self.wamv4_x = 90
-        self.wamv4_y = 0
+        self.wamv4_x = 1450 #90
+        self.wamv4_y = 60 #0
 
         self.robot_radius = 4
         self.pi2 = math.radians(360)
@@ -120,12 +120,12 @@ class Goal_Point():
             print('wamv2 goal published:', goal_sim_to_map.pose.position.x, goal_sim_to_map.pose.position.y) 
 
         elif self.counter > 15 and self.counter <30:
-            wamv3_goal_to_map = self.goal_to_PoseStamped(self.wamv3_x, self.wamv3_y)
+            wamv3_goal_to_map = self.goal_to_PoseStamped(self.wamv3_x, self.wamv3_y, 0.707, 0.707)
             self.pub_3.publish(wamv3_goal_to_map)
             print('wamv3 goal published:', wamv3_goal_to_map.pose.position.x, wamv3_goal_to_map.pose.position.y)
             
         elif self.counter > 30 and self.counter <45:   
-            wamv4_goal_to_map = self.goal_to_PoseStamped(self.wamv4_x, self.wamv4_y)
+            wamv4_goal_to_map = self.goal_to_PoseStamped(self.wamv4_x, self.wamv4_y, 0.707, 0.707)
             self.pub_4.publish(wamv4_goal_to_map)
             print('wamv4 goal published:', wamv4_goal_to_map.pose.position.x, wamv4_goal_to_map.pose.position.y)
             

@@ -78,11 +78,11 @@
               -R $(arg real_R) -P $(arg real_P) -Y $(arg real_Y)
               -urdf -param $(arg namespace)/robot_description -model wamv"/>
 
-    <include file="$(find vrx_gazebo)/launch/if750a_camera_pushing.launch">
+    <!-- <include file="$(find vrx_gazebo)/launch/if750a_camera_pushing.launch">
         <arg name="gcs_url" value="udp://@192.168.0.33" />
         <arg name="drone_ns" value="$(arg drone_ns)"/>
         <arg name="x" value="-20.0"/>
         <arg name="y" value="0.0"/>
         <arg name="z" value="1.0"/>
-    </include>
+    </include> -->
 </launch>

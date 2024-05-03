@@ -33,21 +33,21 @@
     </include>
 
     <!-- Launch usv_joydrive for wamv2 -->
-    <include file="$(find vrx_gazebo)/launch/usv_joydrive.launch">
+    <include file="$(find vrx_gazebo)/launch/usv_joydrive_estop.launch">
         <arg name="veh" value="wamv2"/>
         <arg name="use_namespace" value="true"/>
         <arg name="use_joy" value="false"/>
     </include>
 
     <!-- Launch usv_joydrive for wamv3 -->
-    <include file="$(find vrx_gazebo)/launch/usv_joydrive.launch">
+    <include file="$(find vrx_gazebo)/launch/usv_joydrive_estop.launch">
         <arg name="veh" value="wamv3"/>
         <arg name="use_namespace" value="true"/>
         <arg name="use_joy" value="false"/>
     </include>
 
     <!-- Launch usv_joydrive for wamv4 -->
-    <include file="$(find vrx_gazebo)/launch/usv_joydrive.launch">
+    <include file="$(find vrx_gazebo)/launch/usv_joydrive_estop.launch">
         <arg name="veh" value="wamv4"/>
         <arg name="use_namespace" value="true"/>
         <arg name="use_joy" value="false"/>

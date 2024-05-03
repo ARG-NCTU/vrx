@@ -186,7 +186,8 @@
       <xacro:wamv_imu name="imu_wamv" y="-0.2" />
 
       <!-- Add 3D LIDAR -->
-      <xacro:lidar name="lidar_wamv" x="0" y="0" z="2.26" P="${pi/36}" type="16_beam" />
+      <!-- <xacro:lidar name="lidar_wamv" x="0" y="0" z="2.26" P="${pi/36}" type="16_beam" /> -->
+      <xacro:lidar name="lidar_wamv" x="0.854662" y="0" z="1.92772" P="${pi/36}" type="16_beam" />
 
       <!-- Add pinger -->
       <!-- <xacro:wamv_pinger name="pinger" position="1.0 0 -1.0" /> -->

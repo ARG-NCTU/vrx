@@ -1,5 +1,5 @@
 <launch>
-    <arg name="veh" default="jackal" />
+    <arg name="veh" default="wamv" />
       <group ns="$(arg veh)">
         <node name="obstacle_extractor" pkg="obstacle_detector" type="obstacle_extractor_node">
           <!-- <remap from="scan" to="/$(arg veh)/scan/filtered"/> -->
@@ -35,6 +35,6 @@
         </node>
     </group>
     
-    <node name="obstacle_to_grid" pkg="vrx_gazebo" type="obstacle_to_grid.py" output="screen"/>
+    <node name="obstacle_to_grid" pkg="vrx_gazebo" type="obstacle_to_grid_scale_dis_obstacle.py.py" output="screen"/>
 
   </launch>

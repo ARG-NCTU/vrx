@@ -37,7 +37,7 @@
 
     <!-- send robot urdf to param server -->
     <param name="sjtu_drone/robot_description"
-        command="cat '$(find sjtu_drone)/urdf/sjtu_drone.urdf'" />
+        command="cat '$(find sjtu_drone)/urdf/sjtu_drone_cam.urdf'" />
 
     <!-- push robot_description to factory and spawn robot in gazebo at the origin, change x,y,z
     arguments to spawn in a different position -->

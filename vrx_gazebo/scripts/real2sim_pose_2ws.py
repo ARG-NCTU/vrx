@@ -17,6 +17,7 @@ class RealtoSimTransform:
         self.pub_set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
         self.pub_pose = rospy.Publisher("/fake_fence_real2sim", PoseStamped, queue_size=1)
         self.sub_wamv_pose = rospy.Subscriber("real_pose", PoseStamped, self.wamv_pose_callback)
+        self.scale_transform = rospy.get_param("scale_transform", 1)
 
         self.sub_wamv2_pose = rospy.Subscriber("sim_pose", PoseStamped, self.wamv2_pose_callback)
         self.sub_joy = rospy.Subscriber("joy", Joy, self.joy_callback)
@@ -31,7 +32,7 @@ class RealtoSimTransform:
         self.wamv_pose = PoseStamped()
         self.wamv2_pose = PoseStamped()
 
-        self.init_wamv2 = PoseStamped()        
+        # self.init_wamv2 = PoseStamped()        
         self.time = rospy.Time.now()
         self.joy = None
 
@@ -47,7 +48,8 @@ class RealtoSimTransform:
             self.joy = joy
             return
 
-        joy_trigger = joy.buttons[4] and not self.joy.buttons[4] 
+        # joy_trigger = joy.buttons[4] and not self.joy.buttons[4] 
+        joy_trigger = joy.buttons[0] and not self.joy.buttons[0] 
     
         if joy_trigger:
             print('start sync')   
@@ -66,6 +68,9 @@ class RealtoSimTransform:
             matrix_wamv_to_map = self.pose_to_matrix(self.wamv_pose)
             inv_mat_wamv_origin_to_map = tf_trans.inverse_matrix(self.matrix_wamv_origin_to_map)
             matrix_wamv_to_origin = np.dot(inv_mat_wamv_origin_to_map, matrix_wamv_to_map)
+
+            matrix_wamv_to_origin[0][3] *= self.scale_transform
+            matrix_wamv_to_origin[1][3] *= self.scale_transform
 
             matrix_wamv2_to_map = np.dot(self.matrix_wamv2_origin_to_map, matrix_wamv_to_origin)
             # pub
@@ -96,27 +101,10 @@ class RealtoSimTransform:
             self.pub_pose.publish(pose_wamv2_to_map)
             print('pose:', pose_wamv2_to_map)
             self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)    
-            
-            # # update wamv2 pose every 1/sync_freq seconds
-            # if rospy.Time.now() - self.time > rospy.Duration(1/self.sync_freq):
-            #     self.time = rospy.Time.now()  
-            #     print("update wamv2 pose")
-            #     self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)  
-            
-
-            # matrix_wamv2_to_origin = np.dot(tf_trans.inverse_matrix(self.matrix_wamv2_origin_to_map), matrix_wamv2_to_map)
-            # pose_wamv2_to_origin = self.matrix_to_pose(matrix_wamv2_to_origin, "wamv2")
-            # print("wamv2 pose to origin: ", pose_wamv2_to_origin)
-            # print("wamv2 pose to map: ", pose_wamv2_to_map)
-            
+         
         else:
-            self.init_wamv2 = self.wamv2_pose
-            self.init_wamv2.pose.orientation = self.wamv_pose.pose.orientation
-            self.init_wamv2.pose.orientation.x = 0
-            self.init_wamv2.pose.orientation.y = 0
-            self.set_model(model_name ='wamv2', pose = self.init_wamv2)
-        #     self.set_model(model_name='wamv3', pose = self.init_wamv3)
-        #     self.set_model(model_name='wamv4', pose = self.init_wamv4)
+
+            pass
         
     def set_model(self, model_name, pose):
         model_state = ModelState()
