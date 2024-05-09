@@ -29,7 +29,7 @@ class Goal_Point():
         self.sub_sim_pose = rospy.Subscriber("sim_pose", PoseStamped, self.cb_sim_pose, queue_size=1)
         
         self.scale_factor = rospy.get_param("~scale_factor", 1.0)
-        
+        self.twin = rospy.get_param("~twin", True)
         self.timer = rospy.Timer(rospy.Duration(1), self.timer_cb)
                 
         self.dt_sim_x = None #1510
@@ -46,7 +46,7 @@ class Goal_Point():
 
         self.counter = 0
         self.real_goal, self.real_pose, self.sim_pose = None, None, None
-      
+        
     def cb_real_goal(self, msg):
         if self.real_goal is None:
             pass
@@ -61,6 +61,12 @@ class Goal_Point():
     def cb_sim_pose(self, msg):
         self.sim_pose = msg
     
+    def single_or_twin(self, goal_sim_to_map):
+        if not self.twin:
+            goal_sim_to_map = self.goal_to_PoseStamped(1510, 60, 0.707, 0.707)
+            
+        return goal_sim_to_map
+            
     def goal_to_PoseStamped(self, x, y , orien_w = 0, orien_z = 0):
         goal = PoseStamped()
         goal.header = Header()
@@ -93,6 +99,8 @@ class Goal_Point():
         matrix_sim_to_map = tf_trans.inverse_matrix(inv_matrix_sim_goal_to_map)
         goal_sim_to_map = self.matrix_to_pose(matrix_sim_to_map, "map")
         # print(wamv_goal_to_map)
+        
+        goal_sim_to_map = self.single_or_twin(goal_sim_to_map)
         
         self.dt_sim_x = goal_sim_to_map.pose.position.x
         self.dt_sim_y = goal_sim_to_map.pose.position.y
