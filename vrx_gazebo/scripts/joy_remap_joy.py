@@ -15,6 +15,7 @@ class Joy_remap_joy:
         self.pub_joy_3 = rospy.Publisher("/wamv3/joy", Joy, queue_size=1)
         self.pub_joy_4 = rospy.Publisher("/wamv4/joy", Joy, queue_size=1)
         self.pub_mode = rospy.Publisher("/control_mode", UInt8MultiArray, queue_size=10)
+        self.pub_mode_to_ar = rospy.Publisher("/mode_to_ar", UInt8MultiArray, queue_size=10)
         
         self.sub_wamv_mode = rospy.Subscriber("/wamv/control_mode", UInt8, self.cb_wamv_mode, queue_size=1)
         self.sub_wamv2_mode = rospy.Subscriber("/wamv2/control_mode", UInt8, self.cb_wamv2_mode, queue_size=1)
@@ -111,7 +112,7 @@ class Joy_remap_joy:
         
         self.joy_to_joy.axes[2] = 4
         self.pub_joy_4.publish(self.joy_to_joy)
-        self.mode.data = [3, 3, 3]
+        self.mode.data = [2, 2, 2]
         self.first_time = False
         
     def pub_actor(self, current_button_pressed):
@@ -141,21 +142,21 @@ class Joy_remap_joy:
             if self.publisher_to_use == 2:  # wamv and wamv2
                 self.index = 0
                 if not self.wamv2_auto and self.wamv2_estop:
-                    current_button_pressed = 1  # estop mode
+                    current_button_pressed = 3  # estop mode
                 elif not self.wamv2_auto:
-                    current_button_pressed = 4  # manual mode
+                    current_button_pressed = 0  # manual mode
             elif self.publisher_to_use == 3:  # wamv3
                 self.index = 1
                 if not self.wamv3_auto and self.wamv3_estop:
-                    current_button_pressed = 1  # estop mode
+                    current_button_pressed = 3   # estop mode
                 elif not self.wamv3_auto:
-                    current_button_pressed = 4  # manual mode
+                    current_button_pressed = 0  # manual mode
             elif self.publisher_to_use == 4:  # wamv4
                 self.index = 2
                 if not self.wamv4_auto and self.wamv4_estop:
-                    current_button_pressed = 1  # estop mode
+                    current_button_pressed = 3  # estop mode
                 elif not self.wamv4_auto:
-                    current_button_pressed = 4  # manual mode
+                    current_button_pressed = 0  # manual mode
         except AttributeError:
             pass
         
@@ -167,25 +168,25 @@ class Joy_remap_joy:
         
         try:
             if self.wamv_mode == 3 :
-                self.mode.data[0] = 3
+                self.mode.data[0] = 2
         except:
             pass
         
         try:
             if self.wamv2_mode == 3 :
-                self.mode.data[0] = 3
+                self.mode.data[0] = 2
         except:
             pass
         
         try:
             if self.wamv3_mode == 3 :
-                self.mode.data[1] = 3
+                self.mode.data[1] = 2
         except:
             pass
         
         try:
             if self.wamv4_mode == 3 :
-                self.mode.data[2] = 3
+                self.mode.data[2] = 2
         except:
             pass
     
@@ -200,11 +201,11 @@ class Joy_remap_joy:
 
             # Check for mode switch button presses
             if self.joy_to_joy.buttons[6] == 1 :  # Manual mode or estop mode 
-                current_button_pressed = 1
-            elif self.joy_to_joy.buttons[7] == 1 :  # Auto mode
-                current_button_pressed = 7
-            elif self.joy_to_joy.buttons[3] == 1 :  # DP mode
                 current_button_pressed = 3
+            elif self.joy_to_joy.buttons[7] == 1 :  # Auto mode
+                current_button_pressed = 1
+            elif self.joy_to_joy.buttons[3] == 1 :  # DP mode
+                current_button_pressed = 2
                 self.joy_to_joy.buttons[7] = 1
             else:
                 current_button_pressed = None
@@ -234,6 +235,7 @@ class Joy_remap_joy:
             else:       
                 pass
             self.pub_mode.publish(self.mode)
+            self.pub_mode_to_ar.publish(self.mode)
 
             print(f'Pub {self.mode.data}')
 

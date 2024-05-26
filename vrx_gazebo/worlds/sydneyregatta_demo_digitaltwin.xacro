@@ -307,6 +307,48 @@
       <static>true</static>
     </include>
         
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_left_31</name>
+      <pose>1461.5 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_left_32</name>
+      <pose>1463 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_left_33</name>
+      <pose>1464.5 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_left_34</name>
+      <pose>1466 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_left_35</name>
+      <pose>1467.5 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_left_36</name>
+      <pose>1469 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+
    <!--right obstacle-->
 
     <include>
@@ -519,5 +561,44 @@
       <static>true</static>
     </include>
 
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_right_31</name>
+      <pose>1498.5 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_right_32</name>
+      <pose>1497 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_right_33</name>
+      <pose>1495.5 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_right_34</name>
+      <pose>1494 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_right_35</name>
+      <pose>1492.5 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+    <include>
+      <uri>model://polyform_a7</uri>
+      <name>block_right_36</name>
+      <pose>1491 30 0.5 0 -0 0</pose>
+      <static>true</static>
+    </include>
+
   </xacro:macro>
 </world>
+
