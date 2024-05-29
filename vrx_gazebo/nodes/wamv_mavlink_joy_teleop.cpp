@@ -8,7 +8,9 @@
 #include <sensor_msgs/Joy.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float32.h>
+#include <std_msgs/Float64.h>
 #include <std_srvs/Empty.h>
+#include <std_srvs/Trigger.h>
 
 #include <iostream>
 #include <sstream>
@@ -19,7 +21,7 @@ using namespace std;
 
 class Teleop
 {
-  private:
+private:
     // ROS handles
     ros::NodeHandle nh_;
     ros::NodeHandle nh_private_;
@@ -30,20 +32,25 @@ class Teleop
     ros::Publisher pub_thrust_right_;
     ros::Publisher pub_thrust_left_lateral_;
     ros::Publisher pub_thrust_right_lateral_;
-    ros::Publisher pub_track_trigger_;
     ros::Publisher pub_enable_auto_mode_success_;
+    ros::Publisher pub_vertical_rod_cmd_;
+    ros::Publisher pub_ready_to_track_;
+    ros::Publisher pub_ready_to_landlatch_;
 
     ros::ServiceClient srv_arming_;
     ros::ServiceClient srv_land_;
     ros::ServiceClient srv_offboard_;
     ros::ServiceClient srv_param_set_;
     ros::ServiceClient srv_param_get_;
+    ros::ServiceClient srv_kill_;
 
     ros::Timer timer_pub_;
 
     // ROS messages
     geometry_msgs::Twist twist_;
-    std_msgs::Bool trigger_;
+    std_msgs::Bool enable_auto_mode_;
+    std_msgs::Bool ready_to_track_;
+    std_msgs::Bool ready_to_landlatch_;
 
     // ROS params
     std::unordered_map<std::string, std::unordered_map<std::string, double>> throttle_;
@@ -52,6 +59,7 @@ class Teleop
     // Private variables
     bool enable_;
     bool enable_mavlink_;
+    bool vertical_rod_;
     std::string speed_mode_;
     std::string vehicle_type_;
     std::string input_standard_;
@@ -63,25 +71,20 @@ class Teleop
     std::unordered_map<std::string, std::string> function_map_;
 
     void getParam();
-    void joyCallback(const sensor_msgs::Joy::ConstPtr& msg);
-    void timerPubCallback(const ros::TimerEvent& event);
+    void joyCallback(const sensor_msgs::Joy::ConstPtr &msg);
+    void timerPubCallback(const ros::TimerEvent &event);
     void initMaps();
-    bool updateInputStandard(const sensor_msgs::Joy::ConstPtr& msg);
-    bool isPressed(std::string function, const sensor_msgs::Joy::ConstPtr& msg);
-    bool isTrigger(std::string function, const sensor_msgs::Joy::ConstPtr& msg);
+    bool updateInputStandard(const sensor_msgs::Joy::ConstPtr &msg);
+    bool isPressed(std::string function, const sensor_msgs::Joy::ConstPtr &msg);
+    bool isTrigger(std::string function, const sensor_msgs::Joy::ConstPtr &msg);
 
-  public:
-    Teleop(ros::NodeHandle& nh, ros::NodeHandle& nh_private);
+public:
+    Teleop(ros::NodeHandle &nh, ros::NodeHandle &nh_private);
 };
 
-Teleop::Teleop(ros::NodeHandle& nh, ros::NodeHandle& nh_private)
-  : nh_(nh)
-  , nh_private_(nh_private)
-  , enable_(true)
-  , enable_mavlink_(false)
-  , speed_mode_(std::string("high"))
-  , vehicle_type_(std::string("wamv"))
-  , input_standard_(std::string("XINPUT"))
+Teleop::Teleop(ros::NodeHandle &nh, ros::NodeHandle &nh_private)
+    : nh_(nh), nh_private_(nh_private), enable_(false), enable_mavlink_(false), vertical_rod_(false),
+      speed_mode_(std::string("high")), vehicle_type_(std::string("drone")), input_standard_(std::string("XINPUT"))
 {
     getParam();
 
@@ -91,14 +94,17 @@ Teleop::Teleop(ros::NodeHandle& nh, ros::NodeHandle& nh_private)
     pub_thrust_right_ = nh_private_.advertise<std_msgs::Float32>("thrust_right", 10);
     pub_thrust_left_lateral_ = nh_private_.advertise<std_msgs::Float32>("thrust_left_lateral", 10);
     pub_thrust_right_lateral_ = nh_private_.advertise<std_msgs::Float32>("thrust_right_lateral", 10);
-    pub_track_trigger_ = nh_.advertise<std_msgs::Bool>("track_trigger", 10);
     pub_enable_auto_mode_success_ = nh_.advertise<std_msgs::Bool>("/enable_auto_mode_success", 10);
+    pub_vertical_rod_cmd_ = nh_.advertise<std_msgs::Float64>("/drone/vertical_rod_joint_position_controller/command", 10);
+    pub_ready_to_track_ = nh_.advertise<std_msgs::Bool>("/ready_to_track_success", 10);
+    pub_ready_to_landlatch_ = nh_.advertise<std_msgs::Bool>("/ready_to_landlatch_success", 10);
 
     srv_arming_ = nh_.serviceClient<mavros_msgs::CommandBool>("/mavros/cmd/arming");
     srv_land_ = nh_.serviceClient<mavros_msgs::CommandTOL>("/mavros/cmd/land");
     srv_offboard_ = nh_.serviceClient<mavros_msgs::SetMode>("/mavros/set_mode");
     srv_param_set_ = nh_.serviceClient<mavros_msgs::ParamSet>("/mavros/param/set");
     srv_param_get_ = nh_.serviceClient<mavros_msgs::ParamGet>("/mavros/param/get");
+    srv_kill_ = nh_.serviceClient<std_srvs::Trigger>("/drone/kill");
 
     timer_pub_ = nh_.createTimer(ros::Duration(1.0 / control_rate_), &Teleop::timerPubCallback, this, false, false);
 
@@ -132,84 +138,98 @@ void Teleop::getParam()
     ROS_INFO_STREAM(ros::this_node::getName() << "throttle_low_angular: " << throttle_["low"]["angular"]);
 
     ROS_INFO_STREAM(ros::this_node::getName() << "control_rate: " << control_rate_);
+
+    enable_auto_mode_.data = false;
+    ready_to_track_.data = true;
+    ready_to_landlatch_.data = false;
+
     return;
 }
 
-void Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
+void Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr &msg)
 {
     updateInputStandard(msg);
 
     if (isTrigger("LOGO", msg))
     {
         ROS_INFO_STREAM("LOGO");
-        trigger_.data = !trigger_.data;
-        ROS_INFO_STREAM("Track trigger: " << std::boolalpha << static_cast<bool>(trigger_.data));
+        enable_auto_mode_.data = !enable_auto_mode_.data;
+        ROS_INFO_STREAM("Track trigger: " << std::boolalpha << static_cast<bool>(enable_auto_mode_.data));
     }
 
-    if (isTrigger("ARM", msg))
-    {
-        ROS_INFO_STREAM("A");
-        mavros_msgs::CommandBool srv;
-        if (!isPressed("L3", msg))
-        {
-            srv.request.value = true;
-        }
-        else
-        {
-            srv.request.value = false;
-        }
-        if (srv_arming_.exists())
-        {
-            auto res = srv_arming_.call(srv);
-            if (res)
-            {
-                if (!isPressed("L3", msg))
-                {
-                    ROS_INFO_STREAM("Arming");
-                }
-                else
-                {
-                    ROS_INFO_STREAM("Disarming");
-                }
-            }
-            else
-            {
-                if (!isPressed("L3", msg))
-                {
-                    ROS_ERROR_STREAM("Arming failed");
-                }
-                else
-                {
-                    ROS_ERROR_STREAM("Disarming failed");
-                }
-            }
-        }
-        else
-        {
-            ROS_ERROR_STREAM("Arming service does not exist");
-        }
-    }
-
-    if (isTrigger("OFFBOARD", msg))
+    if (isTrigger("ARM_OFFBOARD", msg))
     {
         ROS_INFO_STREAM("B");
-        if (srv_offboard_.exists())
+
+        if (!srv_param_set_.exists())
         {
-            mavros_msgs::SetMode srv;
-            srv.request.custom_mode = "OFFBOARD";
-            auto res = srv_offboard_.call(srv);
-            if (res)
-            {
-                ROS_INFO_STREAM("Offboard");
-            }
-            else
-            {
-                ROS_ERROR_STREAM("Offboard failed");
-            }
+            ROS_ERROR_STREAM("Param service does not exist");
+            return;
+        }
+        if (!srv_param_get_.exists())
+        {
+            ROS_ERROR_STREAM("Param service does not exist");
+            return;
+        }
+        if (!srv_arming_.exists())
+        {
+            ROS_ERROR_STREAM("Arming service does not exist");
+            return;
+        }
+        if (!srv_offboard_.exists())
+        {
+            ROS_ERROR_STREAM("Offboard service does not exist");
+            return;
+        }
+
+        // Initialize params
+        mavros_msgs::ParamSet srv_param_set;
+        srv_param_set.request.param_id = "COM_RCL_EXCEPT";
+        srv_param_set.request.value.integer = 4;
+        srv_param_set_.call(srv_param_set);
+
+        mavros_msgs::ParamGet srv_param_get;
+        srv_param_get.request.param_id = "COM_RCL_EXCEPT";
+        srv_param_get_.call(srv_param_get);
+        ROS_INFO_STREAM("Set COM_RCL_EXCEPT: "
+                        << srv_param_set.request.value.integer
+                        << ". Get COM_RCL_EXCEPT: "
+                        << srv_param_get.response.value.integer);
+
+        srv_param_set.request.param_id = "COM_OBL_ACT";
+        srv_param_set.request.value.integer = -1;
+        srv_param_set_.call(srv_param_set);
+
+        srv_param_get.request.param_id = "COM_OBL_ACT";
+        srv_param_get_.call(srv_param_get);
+        ROS_INFO_STREAM("Set COM_OBL_ACT: "
+                        << srv_param_set.request.value.integer
+                        << ". Get COM_OBL_ACT: "
+                        << srv_param_get.response.value.integer);
+
+        // Arming
+        mavros_msgs::CommandBool srv_command_bool;
+        srv_command_bool.request.value = true;
+
+        if (srv_arming_.call(srv_command_bool))
+        {
+            ROS_INFO_STREAM("Arming");
         }
         else
         {
-            ROS_ERROR_STREAM("Offboard service does not exist");
+            ROS_ERROR_STREAM("Arming failed");
+        }
+
+        // Offboard
+        mavros_msgs::SetMode srv_setmode;
+        srv_setmode.request.custom_mode = "OFFBOARD";
+        if (srv_offboard_.call(srv_setmode))
+        {
+            ROS_INFO_STREAM("Offboard");
+        }
+        else
+        {
+            ROS_ERROR_STREAM("Offboard failed");
         }
     }
 
@@ -240,60 +260,40 @@ void Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
         }
     }
 
-    if (isTrigger("INITIALMAVLINK", msg))
+    if (isTrigger("VERTICAL_ROD", msg))
     {
-        ROS_INFO_STREAM("X");
-        if (srv_param_set_.exists() && srv_param_get_.exists())
-        {
-            mavros_msgs::ParamSet srv_param_set;
-            srv_param_set.request.param_id = "COM_RCL_EXCEPT";
-            srv_param_set.request.value.integer = 4;
-            srv_param_set_.call(srv_param_set);
-
-            mavros_msgs::ParamGet srv_param_get;
-            srv_param_get.request.param_id = "COM_RCL_EXCEPT";
-            srv_param_get_.call(srv_param_get);
-            ROS_INFO_STREAM("Set COM_RCL_EXCEPT: " << srv_param_set.request.value.integer
-                                                   << ". Get COM_RCL_EXCEPT: " << srv_param_get.response.value.integer);
-
-            srv_param_set.request.param_id = "COM_OBL_ACT";
-            srv_param_set.request.value.integer = -1;
-            srv_param_set_.call(srv_param_set);
-
-            srv_param_get.request.param_id = "COM_OBL_ACT";
-            srv_param_get_.call(srv_param_get);
-            ROS_INFO_STREAM("Set COM_OBL_ACT: " << srv_param_set.request.value.integer
-                                                << ". Get COM_OBL_ACT: " << srv_param_get.response.value.integer);
-        }
-        else
-        {
-            ROS_ERROR_STREAM("Param service does not exist");
-        }
+        ROS_INFO_STREAM("VERTICAL_ROD");
+        vertical_rod_ = !vertical_rod_;
+        ROS_INFO_STREAM("Vertical rod: " << std::boolalpha << static_cast<bool>(vertical_rod_));
+        std_msgs::Float64 vertical_rod_cmd;
+        vertical_rod_cmd.data = vertical_rod_ ? -0.2 : 0.0;
+        pub_vertical_rod_cmd_.publish(vertical_rod_cmd);
     }
 
     if (isTrigger("AUTO", msg))
     {
-        enable_ = false;
-        ROS_INFO_STREAM("Auto, enable: " << std::boolalpha << static_cast<bool>(enable_));
-    }
-    if (isTrigger("MANUAL", msg))
-    {
-        enable_ = true;
-        ROS_INFO_STREAM("Manual, enable: " << std::boolalpha << static_cast<bool>(enable_));
+        enable_auto_mode_.data = true;
+        ROS_INFO_STREAM("Auto, enable: " << std::boolalpha << static_cast<bool>(enable_auto_mode_.data));
     }
 
-    if (isPressed("LB", msg))
+    if (isTrigger("MANUAL", msg))
     {
-        if (isTrigger("LB", msg))
-        {
-            ROS_INFO_STREAM("LB");
-        }
-        enable_mavlink_ = true;
+        enable_auto_mode_.data = false;
+        ROS_INFO_STREAM("Manual, enable: " << std::boolalpha << static_cast<bool>(enable_auto_mode_.data));
     }
-    else
-    {
-        enable_mavlink_ = false;
-    }
+
+    // if (isPressed("LB", msg))
+    // {
+    //     if (isTrigger("LB", msg))
+    //     {
+    //         ROS_INFO_STREAM("LB");
+    //     }
+    //     enable_mavlink_ = true;
+    // }
+    // else
+    // {
+    //     enable_mavlink_ = false;
+    // }
 
     if (isTrigger("RB", msg))
     {
@@ -323,28 +323,69 @@ void Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
             pub_twist_.publish(twist_);
         }
     }
+
+    if (isTrigger("LB", msg))
+    {
+        ROS_INFO_STREAM("LB");
+        enable_ = !enable_;
+    }
+
+    if (isTrigger("AUTO_TRACK", msg))
+    {
+        ROS_INFO_STREAM("L3");
+        ready_to_track_.data = !ready_to_track_.data;
+        ROS_INFO_STREAM("Ready to track: " << std::boolalpha << static_cast<bool>(ready_to_track_.data));
+    }
+
+    if (isTrigger("AUTO_LAND", msg))
+    {
+        ROS_INFO_STREAM("R3");
+        ready_to_landlatch_.data = !ready_to_landlatch_.data;
+        ROS_INFO_STREAM("Ready to landlatch: " << std::boolalpha << static_cast<bool>(ready_to_landlatch_.data));
+    }
+
+    if (isTrigger("KILL", msg))
+    {
+        ROS_INFO_STREAM("B");
+        if (srv_kill_.exists())
+        {
+            std_srvs::Trigger srv;
+            auto res = srv_kill_.call(srv);
+            if (res)
+            {
+                ROS_INFO_STREAM("Kill");
+            }
+            else
+            {
+                ROS_ERROR_STREAM("Kill failed");
+            }
+        }
+        else
+        {
+            ROS_ERROR_STREAM("Kill service does not exist");
+        }
+    }
     std::copy(msg->axes.begin(), msg->axes.end(), axes_.begin());
     std::copy(msg->buttons.begin(), msg->buttons.end(), buttons_.begin());
     return;
 }
 
-void Teleop::timerPubCallback(const ros::TimerEvent& event)
+void Teleop::timerPubCallback(const ros::TimerEvent &event)
 {
-    if (enable_)
+    if (!enable_auto_mode_.data || enable_)
     {
         if (vehicle_type_ == std::string("wamv"))
         {
             std_msgs::Float32 thrust_left, thrust_right, thrust_left_lateral, thrust_right_lateral;
-            thrust_left.data = axes_[axes_map_["LY"]];
-            thrust_right.data = axes_[axes_map_["LY"]];
+            thrust_left.data = axes_[axes_map_["LY"]] * 0.3;
+            thrust_right.data = axes_[axes_map_["LY"]] * 0.3;
             thrust_left_lateral.data = axes_[axes_map_["RX"]];
             thrust_right_lateral.data = -axes_[axes_map_["RX"]];
             pub_thrust_left_.publish(thrust_left);
             pub_thrust_right_.publish(thrust_right);
             pub_thrust_left_lateral_.publish(thrust_left_lateral);
             pub_thrust_right_lateral_.publish(thrust_right_lateral);
-            ROS_INFO_STREAM_THROTTLE(1.0, "wamv: "
-                                              << "LY: " << axes_[axes_map_["LY"]] << ", RX: " << axes_[axes_map_["RX"]]);
+            ROS_INFO_STREAM_THROTTLE(1.0, "wamv: " << "LY: " << axes_[axes_map_["LY"]] << ", RX: " << axes_[axes_map_["RX"]]);
         }
         else if (vehicle_type_ == std::string("drone"))
         {
@@ -354,15 +395,15 @@ void Teleop::timerPubCallback(const ros::TimerEvent& event)
             twist_.angular.z = throttle_[speed_mode_]["angular"] * axes_[axes_map_["LX"]];
             pub_twist_.publish(twist_);
             ROS_INFO_STREAM_THROTTLE(1.0, "drone: "
-                                              << "RY: " << axes_[axes_map_["RY"]] << ", RX: " << axes_[axes_map_["RX"]]
-                                              << ", LY: " << axes_[axes_map_["LY"]] << ", LX: " << axes_[axes_map_["LX"]]);
+                                              << "  LX: " << axes_[axes_map_["LX"]]
+                                              << ", LY: " << axes_[axes_map_["LY"]]
+                                              << ", RX: " << axes_[axes_map_["RX"]]
+                                              << ", RY: " << axes_[axes_map_["RY"]]);
         }
     }
-    else
-    {
-    }
-    pub_track_trigger_.publish(trigger_);
-    pub_enable_auto_mode_success_.publish(trigger_);
+    pub_enable_auto_mode_success_.publish(enable_auto_mode_);
+    pub_ready_to_track_.publish(ready_to_track_);
+    pub_ready_to_landlatch_.publish(ready_to_landlatch_);
 }
 
 void Teleop::initMaps()
@@ -374,10 +415,15 @@ void Teleop::initMaps()
 
     function_map_["AUTO"] = std::string("START");
     function_map_["MANUAL"] = std::string("BACK");
-    function_map_["ARM"] = std::string("A");
+
     function_map_["LAND"] = std::string("Y");
-    function_map_["OFFBOARD"] = std::string("B");
-    function_map_["INITIALMAVLINK"] = std::string("X");
+    function_map_["ARM_OFFBOARD"] = std::string("X");
+    function_map_["VERTICAL_ROD"] = std::string("A");
+
+    function_map_["AUTO_TRACK"] = std::string("L3");
+    function_map_["AUTO_LAND"] = std::string("R3");
+
+    function_map_["KILL"] = std::string("B");
 
     if (input_standard_ == std::string("XINPUT"))
     {
@@ -435,7 +481,7 @@ void Teleop::initMaps()
     }
 }
 
-bool Teleop::updateInputStandard(const sensor_msgs::Joy::ConstPtr& msg)
+bool Teleop::updateInputStandard(const sensor_msgs::Joy::ConstPtr &msg)
 {
     if (msg->axes.size() == 6 && msg->buttons.size() == 12)
     {
@@ -469,7 +515,8 @@ bool Teleop::updateInputStandard(const sensor_msgs::Joy::ConstPtr& msg)
     return false;
 }
 
-bool Teleop::isPressed(const std::string function, const sensor_msgs::Joy::ConstPtr& msg)
+bool Teleop::isPressed(const std::string function,
+                       const sensor_msgs::Joy::ConstPtr &msg)
 {
     // if founciton is found in function_map_
     if (function_map_.find(function) != function_map_.end())
@@ -482,7 +529,7 @@ bool Teleop::isPressed(const std::string function, const sensor_msgs::Joy::Const
     }
 }
 
-bool Teleop::isTrigger(const std::string function, const sensor_msgs::Joy::ConstPtr& msg)
+bool Teleop::isTrigger(const std::string function, const sensor_msgs::Joy::ConstPtr &msg)
 {
     if (function_map_.find(function) != function_map_.end())
     {
@@ -494,7 +541,7 @@ bool Teleop::isTrigger(const std::string function, const sensor_msgs::Joy::Const
     }
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     ros::init(argc, argv, "drone_teleop");
     ros::NodeHandle nh;

@@ -19,8 +19,8 @@
       <remap from="~thrust_right_lateral" to="/$(arg veh)/thrusters/right_lateral_thrust_cmd"/>
       <remap from="~twist" to="/mavros/setpoint_velocity/cmd_vel_unstamped"/>
       <rosparam>
-        throttle_high_throttle: 2.0
         throttle_high_linear: 5.0
+        throttle_high_throttle: 5.0
         throttle_high_angular: 1.0
       </rosparam>
     </node>

@@ -1,0 +1,4 @@
+vertical_rod_joint_position_controller:
+  type: effort_controllers/JointPositionController
+  joint: vertical_rod_joint
+  pid: {p: 1000.0, i: 20.0, d: 1.0}

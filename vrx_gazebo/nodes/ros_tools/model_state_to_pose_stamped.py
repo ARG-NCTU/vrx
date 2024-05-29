@@ -14,11 +14,12 @@ class ModelStateToPoseStamped:
         self.relative_entity_name = rospy.get_param("~relative_entity_name", "world")  # default to "world"
         self.publish_rate = rospy.get_param("~publish_rate", 20)
 
+        self.pose_msg = PoseStamped()
+        
         self.pose_publisher = rospy.Publisher(f"/gazebo/{self.model_name}/pose", PoseStamped, queue_size=10)
         self.model_sub = rospy.Subscriber("/gazebo/model_states", ModelStates, self.model_callback)
         self.pub_timer = rospy.Timer(rospy.Duration(1.0 / self.publish_rate), self.publish_pose)
 
-        self.pose_msg = PoseStamped()
 
     def model_callback(self, msg):
         try:

@@ -38,8 +38,8 @@
     </include>
 
     <!-- wamv initail position -->
-    <arg name="x" default="-750" />
-    <arg name="y" default="350" />
+    <arg name="x" default="-740" />
+    <arg name="y" default="330" />
     <arg name="z" default="0" />
     <arg name="R" default="0" />
     <arg name="P" default="0" />
@@ -58,10 +58,19 @@
     <arg name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
 
     <arg name="wamv_plate" default="false"/>
-    <arg name="red_ball" default="true"/>
-    <arg name="red_torus" default="true"/>
+    <arg name="wamv_holed_plate" default="false"/>
+    <arg name="red_ball" default="false"/>
+    <arg name="red_torus" default="false"/>
 
-    <param name="$(arg wamv_ns)/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=$(arg wamv_ns) plate:=$(arg wamv_plate) red_ball:=$(arg red_ball) red_torus:=$(arg red_torus)"/>
+    <param name="$(arg wamv_ns)/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' 
+                    locked:=$(arg wamv_locked) 
+                    thruster_config:=$(arg thrust_config) 
+                    vrx_sensors_enabled:=$(arg vrx_sensors_enabled) 
+                    namespace:=$(arg wamv_ns) 
+                    helipad_plate:=$(arg wamv_plate) 
+                    holed_helipad_plate:=$(arg wamv_holed_plate) 
+                    red_ball:=$(arg red_ball) 
+                    red_torus:=$(arg red_torus)"/>
 
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv_tf_pub">
         <remap from="robot_description" to="wamv/robot_description" />
@@ -80,6 +89,10 @@
             <param name="broadcast_rate" value="50"/>
         </node>
         <node pkg="vrx_gazebo" type="model_state_to_pose_stamped.py" name="model_state_to_pose_stamped" output="log">
+            <param name="model_name" value="$(arg wamv_ns)"/>
+            <param name="publish_rate" value="50"/>
+        </node>
+        <node pkg="vrx_gazebo" type="model_state_to_twist.py" name="model_state_to_twist" output="log">
             <param name="model_name" value="$(arg wamv_ns)"/>
             <param name="publish_rate" value="50"/>
         </node>

@@ -34,7 +34,8 @@
   <xacro:arg name="yaml_thruster_generation" default="false" />
   <xacro:arg name="thruster_xacro_file" default="" />
 
-  <xacro:arg name="plate" default="false" />
+  <xacro:arg name="helipad_plate" default="false" />
+  <xacro:arg name="holed_helipad_plate" default="false" />
   <xacro:arg name="mavlink_enabled" default="false" />
   <xacro:arg name="red_ball" default="false" />
   <xacro:arg name="red_torus" default="false" />
@@ -59,26 +60,22 @@
 
     <!-- Default WAM-V with two aft thrusters -->
     <xacro:if value="${thruster_conf == 'H'}">
-      <xacro:wamv_gazebo
-        thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_aft_thrusters.xacro" />
+      <xacro:wamv_gazebo thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_aft_thrusters.xacro" />
     </xacro:if>
 
     <!-- WAMV with "T" thruster configuration -->
     <xacro:if value="${thruster_conf == 'T'}">
-      <xacro:wamv_gazebo
-        thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_t_thrusters_nycu.xacro" />
+      <xacro:wamv_gazebo thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_t_thrusters_nycu.xacro" />
     </xacro:if>
 
     <!-- WAMV with "X" thruster configuration -->
     <xacro:if value="${thruster_conf == 'X'}">
-      <xacro:wamv_gazebo
-        thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_x_thrusters.xacro" />
+      <xacro:wamv_gazebo thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_x_thrusters.xacro" />
     </xacro:if>
 
     <!-- WAMV with "X_square" thruster configuration -->
     <xacro:if value="${thruster_conf == 'X_square'}">
-      <xacro:wamv_gazebo
-        thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_x_square_thrusters.xacro" />
+      <xacro:wamv_gazebo thruster_layout="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_x_square_thrusters.xacro" />
     </xacro:if>
 
     <!-- WAMV with "X" thruster configuration -->
@@ -171,13 +168,11 @@
       <xacro:cpu_cases position="-0.15 0 1.53" orientation="0 0 0" />
 
       <!-- Add a stereo camera pair -->
-      <xacro:wamv_camera name="left_camera" y="0.4" x="0.65" P="${radians(10)}" Y="${radians(30)}"
-        post_Y="${radians(30)}" />
+      <xacro:wamv_camera name="left_camera" y="0.4" x="0.65" P="${radians(10)}" Y="${radians(30)}" post_Y="${radians(30)}" />
       <xacro:wamv_camera name="middle_camera" y="0" x="0.8" P="${radians(10)}" />
 
       <!-- Add a camera facing right -->
-      <xacro:wamv_camera name="right_camera" y="-0.4" x="0.65" P="${radians(10)}"
-        Y="${radians(-30)}" post_Y="${radians(-30)}" />
+      <xacro:wamv_camera name="right_camera" y="-0.4" x="0.65" P="${radians(10)}" Y="${radians(-30)}" post_Y="${radians(-30)}" />
 
       <!-- Add simulated GPS -->
       <xacro:wamv_gps name="gps_wamv" x="-0.85" />
@@ -195,23 +190,60 @@
       <!-- <xacro:wamv_ball_shooter name="ball_shooter" x="0.54" y="0.30" z="1.296" pitch="-1.04"/> -->
     </xacro:if>
 
-    <xacro:if value="$(arg plate)">
-      <link name="$(arg namespace)/plate">
+    <xacro:if value="$(arg helipad_plate)">
+      <link name="$(arg namespace)/helipad_plate">
         <visual>
           <geometry>
+            <!-- <mesh filename="package://wamv_description/models/helipad.dae" /> -->
             <box size="1.5 1.0 0.01" />
           </geometry>
         </visual>
-        <collision>
+        <collision name="helipad_plate_collision">
           <geometry>
+            <!-- <mesh filename="package://wamv_description/models/helipad.dae" /> -->
             <box size="1.5 1.0 0.01" />
+          </geometry>
+        </collision>
+        <collision name="cylinder_collision">
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <cylinder radius="0.1" length="0.01"/>
           </geometry>
         </collision>
       </link>
 
-      <joint name="base_to_plate" type="fixed">
+      <joint name="base_to_helipad_plate" type="fixed">
         <parent link="$(arg namespace)/base_link" />
-        <child link="$(arg namespace)/plate" />
+        <child link="$(arg namespace)/helipad_plate" />
+        <origin xyz="-0.24 0 1.77" />
+      </joint>
+    </xacro:if>
+
+    <xacro:if value="$(arg holed_helipad_plate)">
+      <link name="$(arg namespace)/holed_helipad_plate">
+        <visual>
+          <geometry>
+            <mesh filename="package://wamv_description/models/helipad_hole.dae" />
+            <!-- <box size="1.5 1.0 0.01" /> -->
+          </geometry>
+        </visual>
+        <collision name="helipad_plate_collision">
+          <geometry>
+            <mesh filename="package://wamv_description/models/helipad_hole.dae" />
+            <!-- <box size="1.5 1.0 0.01" /> -->
+          </geometry>
+        </collision>
+        <collision name="cylinder_collision">
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <cylinder radius="0.1" length="0.01"/>
+          </geometry>
+        </collision>
+      </link>
+
+      <joint name="base_to_holed_helipad_plate" type="fixed">
+        <parent link="$(arg namespace)/base_link" />
+        <child link="$(arg namespace)/holed_helipad_plate" />
         <origin xyz="-0.24 0 1.78" />
       </joint>
     </xacro:if>
