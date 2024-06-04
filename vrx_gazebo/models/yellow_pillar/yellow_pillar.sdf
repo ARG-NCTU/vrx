@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<sdf version="1.6">
+  <model name="yellow_pillar">
+    <static>true</static>
+    <link name="link">
+      <inertial>
+        <mass>100</mass>
+        <inertia>
+          <ixx>77.25</ixx>
+          <iyy>77.25</iyy>
+          <izz>15.0</izz>
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <radius>0.15</radius>
+            <height>3</height>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <cylinder>
+            <radius>0.15</radius>
+            <height>3</height>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Yellow</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
