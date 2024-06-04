@@ -20,7 +20,7 @@
 
     <include file="$(find mavros)/launch/node.launch">
         <arg name="pluginlists_yaml" value="$(find mavros)/launch/px4_pluginlists.yaml" />
-        <arg name="config_yaml" value="$(find vrx_gazebo)/config/drone_config/px4_config.yaml" />
+        <arg name="config_yaml" value="$(find vrx_gazebo)/config/drone_config/px4_config_if750a_wx200.yaml" />
         <!-- px4_config_if750a_wx200.yaml -->
         <arg name="fcu_url" value="$(arg fcu_url)" />
         <arg name="gcs_url" value="$(arg gcs_url)" />
