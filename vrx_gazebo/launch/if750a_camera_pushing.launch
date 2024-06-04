@@ -48,9 +48,10 @@
               -R $(arg R) -P $(arg P) -Y $(arg Y)
               -sdf -database $(arg model) -model $(arg drone_ns)"/>
 
-    <param name="$(arg drone_ns)/robot_description" command="cat '/home/argrobotx/robotx-2022/Firmware/Tools/sitl_gazebo/models/$(arg model)/$(arg model).urdf'" />
-
     <group ns="$(arg drone_ns)">
+        <param name="robot_description" command="cat '/home/argrobotx/robotx-2022/Firmware/Tools/sitl_gazebo/models/$(arg model)/$(arg model).urdf'" />
+        <rosparam command="load" file="$(find vrx_gazebo)/config/drone_config/control.yaml" />
+        <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="vertical_rod_joint_position_controller"/>
         <node pkg="vrx_gazebo" type="model_state_to_tf.py" name="model_state_to_tf">
             <param name="model_name" value="$(arg drone_ns)"/>
             <param name="model_tf_suffix" value="base_link"/>
@@ -93,8 +94,9 @@
                 # 2->inf : Parallelism level
                 concurrency_level: 0
             </rosparam>
-    
+
         </node>
+        <node pkg="drone_teleop" type="mavros_kill_wrapper" name="mavros_kill_wrapper" output="screen"/>
     </group>
 
 </launch>

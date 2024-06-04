@@ -16,7 +16,9 @@ control_mode_pub = None
 def joy_cb(msg):
     try:
         if 2 <= msg.axes[1] <= 4:
-            control_mode.data[int(msg.axes[1])-2] = vr_mode_contorl_mode[int(msg.axes[2])]
+            # control_mode.data[int(msg.axes[1])-2] = vr_mode_contorl_mode[int(msg.axes[2])]
+            control_mode.data[int(msg.axes[1])-2] = int(msg.axes[2])
+
         # control_mode.data[int(msg.axes[1])-2] = vr_mode_contorl_mode[msg.buttons[0:4].index(1)]
     except ValueError:
         pass

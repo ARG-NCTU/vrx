@@ -31,12 +31,13 @@ class VR_remap_joy:
         
         self.publisher_to_use = None
         self.index = None
-        self.vr_mode_contorl_mode = [4,7,3,1]
+        # self.vr_mode_contorl_mode = [4,7,3,1] # manual, auto, DP, estop
 
         # mode management 
         # 3: DP 
         # 6: Manual
         # 7: Auto
+
         self.mode = UInt8MultiArray()        
         self.mode.data = [0, 0, 0]
             
@@ -59,10 +60,11 @@ class VR_remap_joy:
             self.inital_DP()
         try:
             if 2 <= msg.axes[1] <= 4:
-                self.mode.data[int(self.vr_joy.axes[1])-2] = self.vr_mode_contorl_mode[int(self.vr_joy.axes[2])]       
+                # self.mode.data[int(self.vr_joy.axes[1])-2] = self.vr_mode_contorl_mode[int(self.vr_joy.axes[2])]       
+                self.mode.data[int(self.vr_joy.axes[1])-2] = int(self.vr_joy.axes[2])    
             # self.mode.data[int(self.vr_joy .axes[1])-2] = self.vr_mode_contorl_mode[self.vr_joy.buttons[0:4].index(1)]
         except ValueError:
-            print(self.vr_joy.axes[2])
+            # print(self.vr_joy.axes[2])
 
         self.publisher_to_use = int(self.vr_joy.axes[1])
 
@@ -77,41 +79,92 @@ class VR_remap_joy:
         self.vr_translate_into_joy()
         # # for transform wamv pose to wamv2 pose
         self.pub_joy.publish(self.vr_to_joy)
-  
+        print(self.mode.data)
+
         # Digital twin share the same command 
         if self.publisher_to_use == 2:
-            if self.mode.data[0] == 4:
+
+            if self.mode.data[0] == 0: # manual
                 self.vr_to_joy.buttons[4] = 1
                 self.vr_to_joy.buttons[6] = 1
-            elif self.mode.data[0] == 3 or self.mode.data[0] == 7:
+                self.vr_to_joy.buttons[7] = 0
+                self.vr_to_joy.buttons[3] = 0
+
+            elif self.mode.data[0] == 1 : # auto
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
                 self.vr_to_joy.buttons[7] = 1
-            elif self.mode.data[0] == 1:
+                self.vr_to_joy.buttons[3] = 1
+
+            elif self.mode.data[0] == 2: # DP
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
+                self.vr_to_joy.buttons[7] = 1 
+                self.vr_to_joy.buttons[3] = 0
+
+
+            elif self.mode.data[0] == 3: # estop
                 self.vr_to_joy.buttons[4] = 0
                 self.vr_to_joy.buttons[6] = 1 
+                self.vr_to_joy.buttons[7] = 0
+                self.vr_to_joy.buttons[3] = 0
+
             self.vr_to_joy.axes[2] = 2
             self.pub_joy_2.publish(self.vr_to_joy)
             self.vr_to_joy.axes[2] = 1
             self.pub_joy_1.publish(self.vr_to_joy)
             
         elif self.publisher_to_use == 3:
-            if self.mode.data[1] == 4:
+            if self.mode.data[1] == 0: # manual
                 self.vr_to_joy.buttons[4] = 1
                 self.vr_to_joy.buttons[6] = 1
-            elif self.mode.data[1] == 3 or self.mode.data[1] == 7:
+                self.vr_to_joy.buttons[7] = 0
+                self.vr_to_joy.buttons[3] = 0
+
+            elif self.mode.data[1] == 1 : # auto
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
                 self.vr_to_joy.buttons[7] = 1
-            elif self.mode.data[1] == 1:
+                self.vr_to_joy.buttons[3] = 1
+
+            elif self.mode.data[1] == 2: # RL
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
+                self.vr_to_joy.buttons[7] = 1 
+                self.vr_to_joy.buttons[3] = 0
+
+            elif self.mode.data[1] == 3: # estop
                 self.vr_to_joy.buttons[4] = 0
                 self.vr_to_joy.buttons[6] = 1 
+                self.vr_to_joy.buttons[7] = 0
+                self.vr_to_joy.buttons[3] = 0
+
             self.pub_joy_3.publish(self.vr_to_joy)
+
         elif self.publisher_to_use == 4:
-            if self.mode.data[2] == 4:
+            if self.mode.data[2] == 0: # manual
                 self.vr_to_joy.buttons[4] = 1
                 self.vr_to_joy.buttons[6] = 1
-            elif self.mode.data[2] == 3 or self.mode.data[2] == 7:
+                self.vr_to_joy.buttons[7] = 0
+                self.vr_to_joy.buttons[3] = 0
+
+            elif self.mode.data[2] == 1 : # auto
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
                 self.vr_to_joy.buttons[7] = 1
-            elif self.mode.data[2] == 1:
+                self.vr_to_joy.buttons[3] = 1
+            elif self.mode.data[2] == 2: # RL
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
+                self.vr_to_joy.buttons[7] = 1 
+                self.vr_to_joy.buttons[3] = 0
+
+            elif self.mode.data[2] == 3: # estop
                 self.vr_to_joy.buttons[4] = 0
                 self.vr_to_joy.buttons[6] = 1 
+                self.vr_to_joy.buttons[7] = 0
+                self.vr_to_joy.buttons[3] = 0
+                
             self.pub_joy_4.publish(self.vr_to_joy)
         else: 
             pass   
@@ -134,16 +187,16 @@ class VR_remap_joy:
         self.vr_to_joy.axes[2] = 4
         self.pub_joy_4.publish(self.vr_to_joy)
         
-        self.mode.data = [3, 3, 3]
+        self.mode.data = [2, 2, 2]
         self.pub_once = False
 
     def vr_translate_into_joy(self):
         #button 
-        self.vr_to_joy.buttons[4] = self.vr_joy.buttons[0] # LB :Manual
-        self.vr_to_joy.buttons[7] = self.vr_joy.buttons[1] # Start: RL
-        self.vr_to_joy.buttons[3] = self.vr_joy.buttons[2] # Y: DP
-        self.vr_to_joy.buttons[6] = self.vr_joy.buttons[3] # Back: Estop
-        self.vr_to_joy.buttons[0] = self.vr_joy.buttons[7] # A :sync
+        # self.vr_to_joy.buttons[4] = self.vr_joy.buttons[0] # LB :Manual
+        # self.vr_to_joy.buttons[7] = self.vr_joy.buttons[1] # Start: RL
+        # self.vr_to_joy.buttons[3] = self.vr_joy.buttons[2] # Y: DP
+        # self.vr_to_joy.buttons[6] = self.vr_joy.buttons[3] # Back: Estop
+        # self.vr_to_joy.buttons[0] = self.vr_joy.buttons[7] # A :sync
 
         # self.vr_to_joy.buttons[0] = msg.buttons[5] 
         # self.vr_to_joy.buttons[1] = msg.buttons[6] # B 
@@ -159,25 +212,25 @@ class VR_remap_joy:
     def change_mode_DP(self):
         try:
             if self.wamv_mode == 3 :
-                self.mode.data[0] = 3
+                self.mode.data[0] = 2
         except:
             pass
         
         try:
             if self.wamv2_mode == 3 :
-                self.mode.data[0] = 3
+                self.mode.data[0] = 2
         except:
             pass
         
         try:
             if self.wamv3_mode == 3 :
-                self.mode.data[1] = 3
+                self.mode.data[1] = 2
         except:
             pass
         
         try:
             if self.wamv4_mode == 3 :
-                self.mode.data[2] = 3
+                self.mode.data[2] = 2
         except:
             pass
     
