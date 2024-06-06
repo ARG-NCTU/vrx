@@ -64,6 +64,7 @@ class VR_remap_joy:
                 self.mode.data[int(self.vr_joy.axes[1])-2] = int(self.vr_joy.axes[2])    
             # self.mode.data[int(self.vr_joy .axes[1])-2] = self.vr_mode_contorl_mode[self.vr_joy.buttons[0:4].index(1)]
         except ValueError:
+            pass
             # print(self.vr_joy.axes[2])
 
         self.publisher_to_use = int(self.vr_joy.axes[1])
