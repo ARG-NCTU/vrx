@@ -599,6 +599,14 @@
       <static>true</static>
     </include>
 
+
+    <include>
+      <uri>model://polyform_a7_greenglow</uri>
+      <name>real_obstacle_0</name>
+      <pose>258 30 -50 0 -0 0</pose>
+      <static>true</static>
+    </include>
+
   </xacro:macro>
 </world>
 

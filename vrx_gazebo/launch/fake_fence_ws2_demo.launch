@@ -106,7 +106,7 @@
               launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@'"/>
  
   <!--Basic Control, except TF for WAMV2-->
-  <include file="$(find vrx_gazebo)/launch/three_boat_control_ws2_demo.launch"/>
+  <include file="$(find vrx_gazebo)/launch/three_boat_control_ws2.launch"/>
 
 
   <arg name="drone_ns" default="drone"/>
