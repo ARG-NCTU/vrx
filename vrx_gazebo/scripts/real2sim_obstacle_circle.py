@@ -36,7 +36,7 @@ class RealtoSimObstacle:
             return
         # joy_trigger = joy.buttons[4] and not self.joy.buttons[4]
         joy_trigger = joy.buttons[0] and not self.joy.buttons[0]
-        print('joy_trigger:', joy_trigger)
+        # print('joy_trigger:', joy_trigger)
         
         if joy_trigger:
             self.flag = not self.flag 
@@ -69,18 +69,24 @@ class RealtoSimObstacle:
         model_state.model_name = model_name
         model_state.reference_frame = "world"
         model_state.pose = pose.pose     
+        # print('Set',model_name,'at pose' ,pose)
         self.pub_set_model_state.publish(model_state)
 
     def rm_original_obstacles(self, point):
         x = point[0]
         y = point[1]
-        top_boundary = 70
-        bottom_boundary = 50
-        left_boundary = 68
-        right_boundary = -68
-              
+        # top_boundary = 70
+        # bottom_boundary = 50
+        # left_boundary = 68
+        # right_boundary = -68
+
+        top_boundary = 1540
+        bottom_boundary = 1450
+        left_boundary = 40
+        right_boundary = 20    
+
         #filter out original obstacles
-        # print('x:', x, 'y:', y)
+        print('x:', x, 'y:', y)
         if  bottom_boundary <= x <= top_boundary and \
             right_boundary <= y <= left_boundary :
             print('original obstacle')
@@ -134,13 +140,6 @@ class RealtoSimObstacle:
         model_name = self.obstacle_name + str(order)
 
         self.set_model(model_name = model_name, pose = pose)
-
-        self.cnt_vr += 1
-        if self.cnt_vr == 100:
-            self.pub_obstacle_to_vr.publish(pose)
-            self.cnt_vr = 0
-            print('pub:',[pose.pose.position.x, pose.pose.position.y])
-
 
     def timer_cb_reset(self, event):
         if self.flag == False:

@@ -33,4 +33,6 @@
       <param name="frame_id"      value="map"/>
     </node>
   </group>
+  <!-- <node pkg="vrx_gazebo" type="obstacle_to_grid.py" name="obstacle_to_grid" output="screen"/> -->
+  <!-- <node pkg="vrx_gazebo" type="real2sim_obstacle_map.py" name="real2sim_obstacle_map" output="screen"/> -->
 </launch>

@@ -38,6 +38,7 @@ class RealtoSimObstacle:
             return
         # joy_trigger = joy.buttons[4] and not self.joy.buttons[4]
         joy_trigger = joy.buttons[0] and not self.joy.buttons[0]
+        # print('joy_trigger:', joy_trigger)
 
         if joy_trigger:
             self.flag = not self.flag 
@@ -228,7 +229,7 @@ class RealtoSimObstacle:
                 print('existing_obstacle:',self.existing_obstacle)
 
                 if self.existing_obstacle != [[], []]:
-                    if (self.dist(self.existing_obstacle[0], self.existing_obstacle[1]) <= 95):
+                    if (self.dist(self.existing_obstacle[0], self.existing_obstacle[1]) <= 100):
                         points = self.generate_points(self.existing_obstacle[0], self.existing_obstacle[1], 1.5)     
                         self.point_to_pose_to_set_model(points, order)
                         order += len(points)
