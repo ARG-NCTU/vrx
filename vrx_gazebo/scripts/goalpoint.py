@@ -122,17 +122,17 @@ class Goal_Point():
         return distance
     
     def pub_goal(self):       
-        if self.counter > 3 and self.counter <15:
+        if self.counter > 1 and self.counter <8:
             goal_sim_to_map = self.cal_real_goal_scale()
             self.pub_2.publish(goal_sim_to_map)        
             print('wamv2 goal published:', goal_sim_to_map.pose.position.x, goal_sim_to_map.pose.position.y) 
 
-        elif self.counter > 15 and self.counter <30:
+        elif self.counter > 9 and self.counter <17:
             wamv3_goal_to_map = self.goal_to_PoseStamped(self.wamv3_x, self.wamv3_y, 0.707, 0.707)
             self.pub_3.publish(wamv3_goal_to_map)
             print('wamv3 goal published:', wamv3_goal_to_map.pose.position.x, wamv3_goal_to_map.pose.position.y)
             
-        elif self.counter > 30 and self.counter <45:   
+        elif self.counter > 18 and self.counter <25:   
             wamv4_goal_to_map = self.goal_to_PoseStamped(self.wamv4_x, self.wamv4_y, 0.707, 0.707)
             self.pub_4.publish(wamv4_goal_to_map)
             print('wamv4 goal published:', wamv4_goal_to_map.pose.position.x, wamv4_goal_to_map.pose.position.y)
@@ -271,7 +271,7 @@ class Goal_Point():
     
     def run(self): 
         while not rospy.is_shutdown():
-            if self.counter >= 50:
+            if self.counter >= 26:
                 rospy.loginfo('Process finished')
                 rospy.signal_shutdown('Process finished')
                 break
