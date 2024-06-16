@@ -1,21 +1,19 @@
 #!/usr/bin/env python
 import numpy as np
 import rospy
-from std_msgs.msg import Bool
 import tf.transformations as tf_trans
-from gazebo_msgs.msg import ModelState, ModelStates
+from gazebo_msgs.msg import ModelState
 from geometry_msgs.msg import PoseStamped, TransformStamped
-from pyexpat import model
 from sensor_msgs.msg import Joy
-from obstacle_detector.msg import Obstacles
-import math 
 import tf2_ros
+import copy
 
 class RealtoSimTransform:
     def __init__(self):
         # self.model_sub = rospy.Subscriber("/gazebo/model_states", ModelStates, self.model_callback)
         self.pub_set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
         self.pub_pose = rospy.Publisher("/fake_fence_real2sim", PoseStamped, queue_size=1)
+        self.pub_pose_bigwave = rospy.Publisher("/fake_fence_real2sim_bigwave", PoseStamped, queue_size=1)
         self.sub_wamv_pose = rospy.Subscriber("real_pose", PoseStamped, self.wamv_pose_callback)
         self.scale_transform = rospy.get_param("scale_transform", 1)
 
@@ -84,13 +82,21 @@ class RealtoSimTransform:
                     pose_wamv2_to_map.pose.orientation.w,
                 ]
             )
+            
             q = tf_trans.quaternion_from_euler(0, 0, euler[2])
             pose_wamv2_to_map.pose.orientation.x = q[0] #self.wamv_pose.pose.orientation.x 
             pose_wamv2_to_map.pose.orientation.y = q[1] #self.wamv_pose.pose.orientation.y 
             pose_wamv2_to_map.pose.orientation.z = q[2]
             pose_wamv2_to_map.pose.orientation.w = q[3]
             
+            q_bigwave = tf_trans.quaternion_from_euler(euler[0], euler[1], euler[2])
+            pose_wamv2_to_map_bigwave = copy.deepcopy(pose_wamv2_to_map)
+            pose_wamv2_to_map_bigwave.pose.orientation.x = q_bigwave[0]
+            pose_wamv2_to_map_bigwave.pose.orientation.y = q_bigwave[1]
+            pose_wamv2_to_map_bigwave.pose.orientation.z = q_bigwave[2]
+            pose_wamv2_to_map_bigwave.pose.orientation.w = q_bigwave[3]
             
+            print(pose_wamv2_to_map.pose.orientation)
             self.tf_msg.header.stamp = rospy.Time.now()
             self.tf_msg.header.frame_id = "map"
             self.tf_msg.child_frame_id = "wamv2/base_link"
@@ -99,9 +105,11 @@ class RealtoSimTransform:
             self.tf_broadcaster.sendTransform(self.tf_msg)
             
             self.pub_pose.publish(pose_wamv2_to_map)
+            self.pub_pose_bigwave.publish(pose_wamv2_to_map_bigwave)
+
             print('pose:', pose_wamv2_to_map)
             self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)    
-         
+            
         else:
 
             pass
