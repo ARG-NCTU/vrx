@@ -89,12 +89,14 @@ class RealtoSimTransform:
             pose_wamv2_to_map.pose.orientation.z = q[2]
             pose_wamv2_to_map.pose.orientation.w = q[3]
             
-            q_bigwave = tf_trans.quaternion_from_euler(euler[0], euler[1], euler[2])
+            # q_bigwave = tf_trans.quaternion_from_euler(euler[0], euler[1], euler[2])
             pose_wamv2_to_map_bigwave = copy.deepcopy(pose_wamv2_to_map)
-            pose_wamv2_to_map_bigwave.pose.orientation.x = q_bigwave[0]
-            pose_wamv2_to_map_bigwave.pose.orientation.y = q_bigwave[1]
-            pose_wamv2_to_map_bigwave.pose.orientation.z = q_bigwave[2]
-            pose_wamv2_to_map_bigwave.pose.orientation.w = q_bigwave[3]
+            pose_wamv2_to_map_bigwave.pose.orientation.x = self.wamv_pose.pose.orientation.x 
+            pose_wamv2_to_map_bigwave.pose.orientation.y = self.wamv_pose.pose.orientation
+            # pose_wamv2_to_map_bigwave.pose.orientation.x = q_bigwave[0]
+            # pose_wamv2_to_map_bigwave.pose.orientation.y = q_bigwave[1]
+            # pose_wamv2_to_map_bigwave.pose.orientation.z = q_bigwave[2]
+            # pose_wamv2_to_map_bigwave.pose.orientation.w = q_bigwave[3]
             
             print(pose_wamv2_to_map.pose.orientation)
             self.tf_msg.header.stamp = rospy.Time.now()
