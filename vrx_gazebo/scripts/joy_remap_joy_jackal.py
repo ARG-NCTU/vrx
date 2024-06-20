@@ -17,17 +17,14 @@ class Joy_remap_joy:
         self.pub_joy_4 = rospy.Publisher("/wamv4/joy", Joy, queue_size=1)
         self.pub_mode = rospy.Publisher("/control_mode", UInt8MultiArray, queue_size=10)
         
-        self.sub_wamv_mode = rospy.Subscriber("/wamv/control_mode", UInt8, self.cb_wamv_mode, queue_size=1)
         self.sub_wamv2_mode = rospy.Subscriber("/wamv2/control_mode", UInt8, self.cb_wamv2_mode, queue_size=1)
         self.sub_wamv3_mode = rospy.Subscriber("/wamv3/control_mode", UInt8, self.cb_wamv3_mode, queue_size=1)
         self.sub_wamv4_mode = rospy.Subscriber("/wamv4/control_mode", UInt8, self.cb_wamv4_mode, queue_size=1)
         
-        self.sub_wamv_auto = rospy.Subscriber("/auto_state", Bool, self.cb_wamv_auto, queue_size=1)
         self.sub_wamv2_auto = rospy.Subscriber("/wamv2/auto_state", Bool, self.cb_wamv2_auto, queue_size=1)
         self.sub_wamv3_auto = rospy.Subscriber("/wamv3/auto_state", Bool, self.cb_wamv3_auto, queue_size=1)
         self.sub_wamv4_auto = rospy.Subscriber("/wamv4/auto_state", Bool, self.cb_wamv4_auto, queue_size=1)
         
-        self.sub_wamv_estop = rospy.Subscriber("/stop_state", Bool, self.cb_wamv_estop, queue_size=1)
         self.sub_wamv2_estop = rospy.Subscriber("/wamv2/stop_state", Bool, self.cb_wamv2_estop, queue_size=1)
         self.sub_wamv3_estop = rospy.Subscriber("/wamv3/stop_state", Bool, self.cb_wamv3_estop, queue_size=1)
         self.sub_wamv4_estop = rospy.Subscriber("/wamv4/stop_state", Bool, self.cb_wamv4_estop, queue_size=1)
@@ -55,9 +52,6 @@ class Joy_remap_joy:
     def cb_joy(self, msg):
         self.joy = msg
         
-    def cb_wamv_mode(self, msg):
-        self.wamv_mode = msg.data
-        
     def cb_wamv2_mode(self, msg):
         self.wamv2_mode = msg.data
         
@@ -67,9 +61,6 @@ class Joy_remap_joy:
     def cb_wamv4_mode(self, msg):
         self.wamv4_mode = msg.data
         
-    def cb_wamv_auto(self, msg):
-        self.wamv_auto = msg.data
-        
     def cb_wamv2_auto(self, msg):
         self.wamv2_auto = msg.data
     
@@ -78,7 +69,7 @@ class Joy_remap_joy:
     
     def cb_wamv4_auto(self, msg):
         self.wamv4_auto = msg.data
-    
+ 
     def cb_wamv_estop(self, msg):
         self.wamv_estop = msg.data
         
@@ -91,7 +82,7 @@ class Joy_remap_joy:
     def cb_wamv4_estop(self, msg):
         self.wamv4_estop = msg
     
-    def pub_actor(self, current_button_pressed):
+    def pub_actor(self):
         # up: wamv1, down: wamv2, left: wamv3, right: wamv4
         if self.joy_to_joy.axes[7] == -1 or self.joy_to_joy.axes[7] == 1:
             self.joy_to_joy.axes[2] = 2
@@ -107,8 +98,7 @@ class Joy_remap_joy:
 
         else:
             pass 
-
-        return current_button_pressed
+    
     def change_mode(self, current_button_pressed):
             
         # Determine the mode based on auto and stop states
@@ -120,14 +110,17 @@ class Joy_remap_joy:
                     current_button_pressed = 3  # estop mode
                 elif not self.wamv2_auto:
                     current_button_pressed = 0  # manual mode
+                    
             elif self.publisher_to_use == 3:  # wamv3
                 self.index = 1
                 if not self.wamv3_auto and self.wamv3_estop:
                     current_button_pressed = 3   # estop mode
                 elif not self.wamv3_auto:
                     current_button_pressed = 0  # manual mode
+                    
             elif self.publisher_to_use == 4:  # wamv4
                 self.index = 2
+                print(f'{self.wamv4_estop}')
                 if not self.wamv4_auto and self.wamv4_estop:
                     current_button_pressed = 3  # estop mode
                 elif not self.wamv4_auto:
@@ -138,15 +131,9 @@ class Joy_remap_joy:
         # Update the mode for the current WAM-V
         if self.index is not None and current_button_pressed is not None:
             self.mode.data[self.index] = current_button_pressed
- 
+        # print(self.mode.data)
+        
     def change_mode_DP(self):
-        
-        try:
-            if self.wamv_mode == 3 :
-                self.mode.data[0] = 2
-        except:
-            pass
-        
         try:
             if self.wamv2_mode == 3 :
                 self.mode.data[0] = 2
@@ -174,7 +161,6 @@ class Joy_remap_joy:
             self.joy_to_joy.axes = list(self.joy.axes)
             self.joy_to_joy.buttons = list(self.joy.buttons)
             
-            
             # Check for mode switch button presses
             if self.joy_to_joy.buttons[6] == 1 :  # Manual mode or estop mode 
                 current_button_pressed = 3
@@ -187,7 +173,7 @@ class Joy_remap_joy:
                 current_button_pressed = None
                
             
-            current_button_pressed = self.pub_actor(current_button_pressed)
+            self.pub_actor()
             self.change_mode(current_button_pressed)
 
             # Special case for DP mode in Nav_DP file, which will auto change to DP after RL
@@ -196,9 +182,15 @@ class Joy_remap_joy:
 
             # # Keep publishing on the selected topic until a condition changes
             if self.publisher_to_use == 2:
+                if self.joy_to_joy.buttons[4] == 0: # manual mode press LB trigger jackal
+                    self.joy_to_joy.axes[3] = 0
+                    self.joy_to_joy.axes[1] = 0 
                 self.joy_to_joy.axes[2] = 2
                 self.pub_joy_2.publish(self.joy_to_joy)
                 self.joy_to_joy.axes[2] = 1
+                self.joy_to_joy.buttons[4] = 1
+                self.joy_to_joy.axes[0] = self.joy_to_joy.axes[3]
+                self.joy_to_joy.axes[3] = 0.0
                 self.pub_joy_1.publish(self.joy_to_joy)
                 
             elif self.publisher_to_use == 3:
@@ -217,58 +209,7 @@ class Joy_remap_joy:
             if current_button_pressed is not None:
                 self.last_button_pressed = current_button_pressed
             
-            # #DP  then switch to Auto
-            # if self.joy_to_joy.buttons[3] == 1:
-            #     self.joy_to_joy.buttons[7] = 1
-
-            # # up: wamv1, down: wamv2, left: wamv3, right: wamv4
-            # if self.joy_to_joy.axes[7] == 1:
-            #     self.joy_to_joy.axes[2] = 1
-            #     self.publisher_to_use = 1
-            #     print('jackal')
-
-            # elif self.joy_to_joy.axes[7] == -1:
-            #     self.joy_to_joy.axes[2] = 2
-            #     self.publisher_to_use = 2
-            #     print('wamv2')
-
-            # elif self.joy_to_joy.axes[6] == 1:
-            #     self.joy_to_joy.axes[2] = 3
-            #     self.publisher_to_use = 3
-            #     print('wamv3')
-            # elif self.joy_to_joy.axes[6] == -1:
-            #     self.joy_to_joy.axes[2] = 4
-            #     self.publisher_to_use = 4
-            #     print('wamv4')
-                
-            # print('pub:',self.publisher_to_use)
-            # # # Keep publishing on the selected topic until a condition changes
-            # if self.publisher_to_use == 1:
-            #     self.joy_to_joy.axes[2] = 2
-            #     self.pub_joy_2.publish(self.joy_to_joy)
-            #     self.joy_to_joy.axes[2] = 1
-            #     self.joy_to_joy.buttons[4] = 1
-            #     self.joy_to_joy.axes[0] = self.joy_to_joy.axes[3]
-            #     self.joy_to_joy.axes[3] = 0.0
-            #     self.pub_joy_1.publish(self.joy_to_joy)
-
-            # elif self.publisher_to_use == 2:
-            #     self.joy_to_joy.axes[2] = 2
-            #     self.pub_joy_2.publish(self.joy_to_joy)
-            #     self.joy_to_joy.axes[2] = 1
-            #     self.joy_to_joy.buttons[4] = 1
-            #     self.joy_to_joy.axes[0] = self.joy_to_joy.axes[3]
-            #     self.joy_to_joy.axes[3] = 0.0
-            #     self.pub_joy_1.publish(self.joy_to_joy)
-                
-            # elif self.publisher_to_use == 3:
-            #     self.joy_to_joy.axes[2] = 3
-            #     self.pub_joy_3.publish(self.joy_to_joy)
-                
-            # elif self.publisher_to_use == 4:
-            #     self.joy_to_joy.axes[2] = 4
-            #     self.pub_joy_4.publish(self.joy_to_joy)
-                
+    
             else:
                 pass
             
