@@ -46,10 +46,10 @@ class Joy_remap_joy:
         self.timer = rospy.Timer(rospy.Duration(0.05), self.timer_callback)   
 
         # mode management 
-        # 1 :Estop
-        # 3: DP 
-        # 6: Manual
-        # 7: Auto
+        # 0 :Manual
+        # 1: Auto
+        # 2: DP
+        # 3: Estop
         self.mode = UInt8MultiArray()        
         self.mode.data = [0, 0, 0]
         self.last_button_pressed = None

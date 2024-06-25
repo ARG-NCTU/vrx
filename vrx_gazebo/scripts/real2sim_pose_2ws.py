@@ -1,27 +1,26 @@
 #!/usr/bin/env python
 import numpy as np
 import rospy
-from std_msgs.msg import Bool
 import tf.transformations as tf_trans
-from gazebo_msgs.msg import ModelState, ModelStates
+from gazebo_msgs.msg import ModelState
 from geometry_msgs.msg import PoseStamped, TransformStamped
-from pyexpat import model
 from sensor_msgs.msg import Joy
-from obstacle_detector.msg import Obstacles
-import math 
 import tf2_ros
+import copy
 
 class RealtoSimTransform:
     def __init__(self):
-        # self.model_sub = rospy.Subscriber("/gazebo/model_states", ModelStates, self.model_callback)
         self.pub_set_model_state = rospy.Publisher("/gazebo/set_model_state", ModelState, queue_size=1)
-        self.pub_pose = rospy.Publisher("/fake_fence_real2sim", PoseStamped, queue_size=1)
+        self.pub_pose = rospy.Publisher("real2sim_pose", PoseStamped, queue_size=1)
+        # self.pub_pose_bigwave = rospy.Publisher("/fake_fence_real2sim_bigwave", PoseStamped, queue_size=1)
         self.sub_wamv_pose = rospy.Subscriber("real_pose", PoseStamped, self.wamv_pose_callback)
-        self.scale_transform = rospy.get_param("scale_transform", 1)
-
+        self.scale_transform = float(rospy.get_param("~scale_transform", 1.0))
+        print('scale_transform:', self.scale_transform)
+        self.veh = rospy.get_param("~veh", "wamv2")  # Get vehicle type from parameter server
+        print('veh:', self.veh)
         self.sub_wamv2_pose = rospy.Subscriber("sim_pose", PoseStamped, self.wamv2_pose_callback)
         self.sub_joy = rospy.Subscriber("joy", Joy, self.joy_callback)
-        self.sync_freq = rospy.get_param("sync_freq", 20)
+        self.sync_freq = rospy.get_param("~sync_freq", 20)
         self.timer_set_model_state = rospy.Timer(rospy.Duration(0.05), self.timer_callback)   
         self.tf_broadcaster = tf2_ros.TransformBroadcaster()
         self.tf_msg = TransformStamped()
@@ -36,12 +35,53 @@ class RealtoSimTransform:
         self.time = rospy.Time.now()
         self.joy = None
 
+
     def wamv_pose_callback(self, pose):
         self.wamv_pose = pose
 
     def wamv2_pose_callback(self, pose):
         self.wamv2_pose = pose
         
+        if self.veh == "wamv":
+            self.wamv2_pose = self.wamv2_init_pose_MR()
+        elif self.veh == "wamv3":
+            self.wamv2_pose = self.wamv3_init_pose_MR()
+        elif self.veh == "wamv4":
+            self.wamv2_pose = self.wamv4_init_pose_MR()
+    
+    def wamv2_init_pose_MR(self):
+        init_wamv2 = PoseStamped()
+        init_wamv2.pose.position.x = 1480
+        init_wamv2.pose.position.y = 18
+        init_wamv2.pose.position.z = 0
+        init_wamv2.pose.orientation.x = 0
+        init_wamv2.pose.orientation.y = 0
+        init_wamv2.pose.orientation.z = 0.707
+        init_wamv2.pose.orientation.w = 0.707
+        return init_wamv2
+        
+    def wamv3_init_pose_MR(self):
+        init_wamv3 = PoseStamped()
+        init_wamv3.pose.position.x = 1476
+        init_wamv3.pose.position.y = 18
+        init_wamv3.pose.position.z = 0
+        init_wamv3.pose.orientation.x = 0
+        init_wamv3.pose.orientation.y = 0
+        init_wamv3.pose.orientation.z = 0.707
+        init_wamv3.pose.orientation.w = 0.707
+        return init_wamv3
+    
+    def wamv4_init_pose_MR(self):
+        init_wamv4 = PoseStamped()
+        init_wamv4.pose.position.x = 1484
+        init_wamv4.pose.position.y = 18
+        init_wamv4.pose.position.z = 0
+        init_wamv4.pose.orientation.x = 0
+        init_wamv4.pose.orientation.y = 0
+        init_wamv4.pose.orientation.z = 0.707
+        init_wamv4.pose.orientation.w = 0.707
+        return init_wamv4
+    
     def joy_callback(self, joy):
 
         if self.joy is None:
@@ -84,24 +124,34 @@ class RealtoSimTransform:
                     pose_wamv2_to_map.pose.orientation.w,
                 ]
             )
+            
             q = tf_trans.quaternion_from_euler(0, 0, euler[2])
             pose_wamv2_to_map.pose.orientation.x = q[0] #self.wamv_pose.pose.orientation.x 
             pose_wamv2_to_map.pose.orientation.y = q[1] #self.wamv_pose.pose.orientation.y 
             pose_wamv2_to_map.pose.orientation.z = q[2]
             pose_wamv2_to_map.pose.orientation.w = q[3]
             
+            # q_bigwave = tf_trans.quaternion_from_euler(euler[0], euler[1], euler[2])
+            pose_wamv2_to_map_bigwave = copy.deepcopy(pose_wamv2_to_map)
+            pose_wamv2_to_map_bigwave.pose.orientation.x = self.wamv_pose.pose.orientation.x 
+            pose_wamv2_to_map_bigwave.pose.orientation.y = self.wamv_pose.pose.orientation.y
             
-            self.tf_msg.header.stamp = rospy.Time.now()
-            self.tf_msg.header.frame_id = "map"
-            self.tf_msg.child_frame_id = "wamv2/base_link"
-            self.tf_msg.transform.translation = pose_wamv2_to_map.pose.position
-            self.tf_msg.transform.rotation = pose_wamv2_to_map.pose.orientation
-            self.tf_broadcaster.sendTransform(self.tf_msg)
+            if self.veh == "wamv2":
+                self.tf_msg.header.stamp = rospy.Time.now()
+                self.tf_msg.header.frame_id = "map"
+                self.tf_msg.child_frame_id = "wamv2/base_link"
+                self.tf_msg.transform.translation = pose_wamv2_to_map.pose.position
+                self.tf_msg.transform.rotation = pose_wamv2_to_map.pose.orientation
+                self.tf_broadcaster.sendTransform(self.tf_msg)
             
             self.pub_pose.publish(pose_wamv2_to_map)
+            # self.pub_pose_bigwave.publish(pose_wamv2_to_map_bigwave)
+
             print('pose:', pose_wamv2_to_map)
-            self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)    
-         
+            
+            if self.veh == "wamv2":
+                self.set_model(model_name = "wamv2", pose = pose_wamv2_to_map)    
+            
         else:
 
             pass
