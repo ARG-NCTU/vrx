@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import fix_python3_path
-from sensor_msgs.msg import Joy
 import rospy
-from std_msgs.msg import Bool,UInt8MultiArray, UInt8
+from sensor_msgs.msg import Joy
+from std_msgs.msg import Bool, UInt8, UInt8MultiArray
+
 
 class Joy_remap_joy:
     # This script remaps the joy to the joy topic
@@ -80,7 +81,7 @@ class Joy_remap_joy:
         self.wamv3_estop = msg.data
         
     def cb_wamv4_estop(self, msg):
-        self.wamv4_estop = msg
+        self.wamv4_estop = msg.data
     
     def pub_actor(self):
         # up: wamv1, down: wamv2, left: wamv3, right: wamv4
