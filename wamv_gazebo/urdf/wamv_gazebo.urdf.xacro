@@ -39,6 +39,7 @@
   <xacro:arg name="mavlink_enabled" default="false" />
   <xacro:arg name="red_ball" default="false" />
   <xacro:arg name="red_torus" default="false" />
+  <xacro:arg name="green_landing_cylinder" default="true" />
 
   <!-- === The WAM-V platform === -->
   <xacro:include filename="$(find wamv_gazebo)/urdf/wamv_gazebo.xacro" />
@@ -304,6 +305,32 @@
 
       <gazebo reference="$(arg namespace)/red_torus_link">
         <material>Gazebo/Red</material>
+      </gazebo>
+    </xacro:if>
+
+    <xacro:if value="$(arg green_landing_cylinder)">
+      <link name="$(arg namespace)/green_landing_cylinder_link">
+        <visual>
+          <geometry>
+            <cylinder radius="0.1" length="0.01"/>
+          </geometry>
+          <material name="Green"/>
+        </visual>
+        <collision>
+          <geometry>
+            <cylinder radius="0.1" length="0.01"/>
+          </geometry>
+        </collision>
+      </link>
+
+      <joint name="green_landing_cylinder_joint" type="fixed">
+        <parent link="$(arg namespace)/base_link" />
+        <child link="$(arg namespace)/green_landing_cylinder_link" />
+        <origin xyz="-0.24 0 1.78" />
+      </joint>
+
+      <gazebo reference="$(arg namespace)/green_landing_cylinder_link">
+        <material>Gazebo/Green</material>
       </gazebo>
     </xacro:if>
   </xacro:unless>
