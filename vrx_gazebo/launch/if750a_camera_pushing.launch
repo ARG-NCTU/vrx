@@ -37,11 +37,11 @@
     <arg name="model" default="if750a_camera_pushing"/>
 
     <arg name="x" default="-738" />
-    <arg name="y" default="316" />
+    <arg name="y" default="320" />
     <arg name="z" default="0.59" />
     <arg name="R" default="0" />
     <arg name="P" default="0" />
-    <arg name="Y" default="0" />
+    <arg name="Y" default="1.57" />
 
     <!-- Spawn drone model in Gazebo -->
     <node name="$(arg drone_ns)_spawn_model" pkg="gazebo_ros" type="spawn_model" args="-x $(arg x) -y $(arg y) -z $(arg z)
