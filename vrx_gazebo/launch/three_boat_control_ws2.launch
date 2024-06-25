@@ -4,7 +4,7 @@
     <!-- Launch pub_tf_posestamped for wamv2 -->
     <include file="$(find localization)/launch/pub_tf_posestamped.launch">
         <arg name="model_name" value="wamv2"/>
-        <arg name="pub_tf" value="true"/>
+        <arg name="pub_tf" value="false"/>
     </include>
 
     <!-- Launch pub_tf_posestamped for wamv3 -->
