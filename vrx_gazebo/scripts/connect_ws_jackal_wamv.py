@@ -4,14 +4,14 @@ import roslibpy
 import rospy
 from geometry_msgs.msg import PoseStamped, Twist
 from sensor_msgs.msg import Joy, LaserScan
-from visualization_msgs.msg import Marker
 from std_msgs.msg import Bool
+from visualization_msgs.msg import Marker
 
 
 class ROSBridgeConnector:
     def __init__(self):
         rospy.init_node("connect_ws_jackal", anonymous=True)
-        self.ip = rospy.get_param("~ip", '192.168.0.70')
+        self.ip = rospy.get_param("~ip", '192.168.0.108')
         self.ws = rospy.get_param("~ws",'2')        
         rosbrideg_address = 'ws://' + self.ip + ':9090'
         self.client = roslibpy.Ros(host=rosbrideg_address)
@@ -21,6 +21,7 @@ class ROSBridgeConnector:
         if self.ws == 1:
             print("ws1")
             self.pub_jackal_pose = roslibpy.Topic(self.client, "/jackal/slam_pose", "geometry_msgs/PoseStamped")
+            self.pub_jackal_goal = roslibpy.Topic(self.client, "/move_base_simple/goal", "geometry_msgs/PoseStamped")
             self.pub_scan =  roslibpy.Topic(self.client, "/jackal/RL/scan", "sensor_msgs/LaserScan")
             self.pub_reset = roslibpy.Topic(self.client, "/reset", "Bool")
             self.sub_scan2_RL = rospy.Subscriber("/wamv2/RL/scan", LaserScan, self.cb_laser_1sub2_RL)
@@ -30,7 +31,6 @@ class ROSBridgeConnector:
             # pose            
             self.pub_wamv2 = roslibpy.Topic(self.client, "/gazebo/wamv2/pose", "geometry_msgs/PoseStamped")
             self.pub_scan2_RL =  roslibpy.Topic(self.client, "/wamv2/RL/scan", "sensor_msgs/LaserScan")
-            self.pub_jackal_goal = roslibpy.Topic(self.client, "/move_base_simple/goal", "geometry_msgs/PoseStamped")
             self.pub_position_circle1 = roslibpy.Topic(self.client, "/visualization_circle1", "visualization_msgs/Marker")
             self.pub_jackal_joy = roslibpy.Topic(self.client, "/jackal/bluetooth_teleop/joy", "sensor_msgs/Joy")
             # transform frame from wamv to wamv2
@@ -50,11 +50,11 @@ class ROSBridgeConnector:
             rospy.Subscriber("/jackal/slam_pose", PoseStamped, self.cb_jackal_pose)
             rospy.Subscriber("/jackal/RL/scan", LaserScan, self.cb_jackal_laser_RL)
             rospy.Subscriber("/reset", Bool, self.cb_reset)
+            rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.cb_jackal_goal)
 
 
         elif self.ws == 2:
             rospy.Subscriber("/gazebo/wamv2/pose", PoseStamped, self.cb_wamv2_pose)       
-            rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.cb_jackal_goal)
             rospy.Subscriber("/visualization_circle1", Marker, self.cb_position_circle1)  
             rospy.Subscriber("/wamv2/RL/scan", LaserScan, self.cb_wamv2_laser_RL)
             rospy.Subscriber("/jackal/bluetooth_teleop/joy", Joy, self.cb_joy_jackal)
