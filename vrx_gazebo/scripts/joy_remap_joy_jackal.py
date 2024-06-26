@@ -121,7 +121,6 @@ class Joy_remap_joy:
                     
             elif self.publisher_to_use == 4:  # wamv4
                 self.index = 2
-                print(f'{self.wamv4_estop}')
                 if not self.wamv4_auto and self.wamv4_estop:
                     current_button_pressed = 3  # estop mode
                 elif not self.wamv4_auto:

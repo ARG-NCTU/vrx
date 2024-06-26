@@ -1,7 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+import fix_python3_path
 from sensor_msgs.msg import Joy
 import rospy
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool, UInt8, UInt8MultiArray
+
 
 class VR_remap_joy:
     # This script remaps the VR teleop to the joy topic
@@ -14,81 +16,211 @@ class VR_remap_joy:
         self.pub_joy_2 = rospy.Publisher("/wamv2/joy", Joy, queue_size=1)
         self.pub_joy_3 = rospy.Publisher("/wamv3/joy", Joy, queue_size=1)
         self.pub_joy_4 = rospy.Publisher("/wamv4/joy", Joy, queue_size=1)
+        # self.pub_mode = rospy.Publisher("/control_mode", UInt8MultiArray, queue_size=10)
 
+        self.sub_wamv2_mode = rospy.Subscriber("/wamv2/control_mode", UInt8, self.cb_wamv2_mode, queue_size=1)
+        self.sub_wamv3_mode = rospy.Subscriber("/wamv3/control_mode", UInt8, self.cb_wamv3_mode, queue_size=1)
+        self.sub_wamv4_mode = rospy.Subscriber("/wamv4/control_mode", UInt8, self.cb_wamv4_mode, queue_size=1)
+        self.timer = rospy.Timer(rospy.Duration(0.15), self.timer_callback)   
+        
+        self.vr_joy = None
         self.vr_to_joy = Joy()
         self.vr_to_joy.header.frame_id = "/dev/input/js0"
         self.vr_to_joy.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.vr_to_joy.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.pub_once = True
     
+        self.publisher_to_use = None
+        self.index = None
+        
+        # mode management 
+        # 0 :Manual
+        # 1: Auto
+        # 2: DP
+        # 3: Estop
+        self.mode = UInt8MultiArray()        
+        self.mode.data = [0, 0, 0]
+        
+        
+    def cb_wamv2_mode(self, msg):
+        self.wamv2_mode = msg.data
+        
+    def cb_wamv3_mode(self, msg):
+        self.wamv3_mode = msg.data
+        
+    def cb_wamv4_mode(self, msg):
+        self.wamv4_mode = msg.data
+           
+        
     def cb_joy(self, msg):
+        self.vr_joy = msg
         if self.pub_once:
-            self.pub_shutdown_joy_remap_joy.publish(True)
-            # manual jackal
-            self.vr_to_joy.axes[2] = 1
-            self.vr_to_joy.buttons[4] = 1
-            self.pub_joy_1.publish(self.vr_to_joy)
-
-            # DP in th beginning
-            self.vr_to_joy.buttons[4] = 0
-            self.vr_to_joy.buttons[3] = 1
-            self.vr_to_joy.buttons[7] = 1
-            #wamv2 DP
-            self.vr_to_joy.axes[2] = 2
-            self.pub_joy_2.publish(self.vr_to_joy)
-            #wamv3 DP
-            self.vr_to_joy.axes[2] = 3
-            self.pub_joy_3.publish(self.vr_to_joy)
-            #wamv4 DP
-            self.vr_to_joy.axes[2] = 4
-            self.pub_joy_4.publish(self.vr_to_joy)
-            
-            self.pub_once = False
-
+            self.inital_DP()
+        try:
+            if 2 <= msg.axes[1] <= 4:
+                self.mode.data[int(self.vr_joy.axes[1])-2] = int(self.vr_joy.axes[2])    
+        except ValueError:
+            pass
+        self.publisher_to_use = int(self.vr_joy.axes[1])
+        # print(f'Pub {self.mode.data}')
+        print(f'Pub {self.mode.data}')
+        
+    def timer_callback(self,event):
+        # return
         self.vr_to_joy.header.stamp = rospy.Time.now()
-       
-        
-        #button 
-        self.vr_to_joy.buttons[6] = msg.buttons[0] # Back: manual
-        self.vr_to_joy.buttons[7] = msg.buttons[1] # Start: RL
-        self.vr_to_joy.buttons[3] = msg.buttons[2] # Y: DP
-        self.vr_to_joy.buttons[4] = msg.buttons[3] # reset
-        self.vr_to_joy.buttons[0] = msg.buttons[4] # A : Sync
-    
-        self.vr_to_joy.buttons[1] = msg.buttons[6] # B : offboard
-        # print(msg)
-        
-        #axes
-        self.vr_to_joy.axes[1] = msg.axes[4] # left stick forward/backward
-        self.vr_to_joy.axes[3] = msg.axes[5] # right stick right/left
-        self.vr_to_joy.axes[2] = int(msg.axes[1]) # robot
-        self.vr_to_joy.axes[5] = int(msg.axes[0]) # user_id
+        self.vr_translate_into_joy()
+        self.pub_joy.publish(self.vr_to_joy)
 
+        # Digital twin share the same command 
+        if self.publisher_to_use == 2:
 
-        # wamv DP then switch to auto
-        if self.vr_to_joy.buttons[3] == 1:
-            self.vr_to_joy.buttons[7] = 1
-        
-        if self.vr_to_joy.axes[2] == 2: #robot_id
-            self.pub_joy_2.publish(self.vr_to_joy)
-            # jackal
-            self.vr_to_joy.axes[2] = 1 #robot_id
-            self.vr_to_joy.buttons[4] = 1 #trigger button (jackal)
-            if self.vr_to_joy.buttons[3] == 1 : # wamv DP then jackal switch to manual
-                self.vr_to_joy.buttons[3] = 0
+            if self.mode.data[0] == 0: # manual
+                self.vr_to_joy.buttons[4] = 1
                 self.vr_to_joy.buttons[6] = 1
                 self.vr_to_joy.buttons[7] = 0
-            #axes translate into jackal mode
-            self.vr_to_joy.axes[1] = msg.axes[4] # left stick forward/backward
-            self.vr_to_joy.axes[0] = msg.axes[5] # right stick right/left
+                self.vr_to_joy.buttons[3] = 0
+
+            elif self.mode.data[0] == 1 : # auto
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
+                self.vr_to_joy.buttons[7] = 1
+                self.vr_to_joy.buttons[3] = 0
+
+            elif self.mode.data[0] == 2: # DP
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
+                self.vr_to_joy.buttons[7] = 1 
+                self.vr_to_joy.buttons[3] = 1
+
+
+            elif self.mode.data[0] == 3: # estop
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 1 
+                self.vr_to_joy.buttons[7] = 0
+                self.vr_to_joy.buttons[3] = 0
+                
+            if self.vr_to_joy.buttons[4] == 0: # manual mode press LB trigger jackal
+                self.vr_to_joy.axes[3] = 0
+                self.vr_to_joy.axes[1] = 0 
+                
+            self.vr_to_joy.axes[2] = 2
+            self.pub_joy_2.publish(self.vr_to_joy)
+            # For Jackal 
+            self.vr_to_joy.axes[2] = 1  
+            self.vr_to_joy.axes[2] = 1
+            self.vr_to_joy.buttons[4] = 1
+            self.vr_to_joy.axes[0] = self.vr_to_joy.axes[3]
+            self.vr_to_joy.axes[3] = 0.0        
             self.pub_joy_1.publish(self.vr_to_joy)
             
-        if self.vr_to_joy.axes[2] == 3: #robot_id
-            self.pub_joy_3.publish(self.vr_to_joy)
-        if self.vr_to_joy.axes[2] == 4: #robot_id
-            self.pub_joy_4.publish(self.vr_to_joy)
+        elif self.publisher_to_use == 3:
+            if self.mode.data[1] == 0: # manual
+                self.vr_to_joy.buttons[4] = 1
+                self.vr_to_joy.buttons[6] = 1
+                self.vr_to_joy.buttons[7] = 0
+                self.vr_to_joy.buttons[3] = 0
 
-        self.pub_joy.publish(self.vr_to_joy)
+            elif self.mode.data[1] == 1 : # auto
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
+                self.vr_to_joy.buttons[7] = 1
+                self.vr_to_joy.buttons[3] = 0
+
+            elif self.mode.data[1] == 2: # DP
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
+                self.vr_to_joy.buttons[7] = 1 
+                self.vr_to_joy.buttons[3] = 1
+
+            elif self.mode.data[1] == 3: # estop
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 1 
+                self.vr_to_joy.buttons[7] = 0
+                self.vr_to_joy.buttons[3] = 0
+
+            self.pub_joy_3.publish(self.vr_to_joy)
+
+        elif self.publisher_to_use == 4:
+            if self.mode.data[2] == 0: # manual
+                self.vr_to_joy.buttons[4] = 1
+                self.vr_to_joy.buttons[6] = 1
+                self.vr_to_joy.buttons[7] = 0
+                self.vr_to_joy.buttons[3] = 0
+
+            elif self.mode.data[2] == 1 : # auto
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
+                self.vr_to_joy.buttons[7] = 1
+                self.vr_to_joy.buttons[3] = 0
+                
+            elif self.mode.data[2] == 2: # DP
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 0
+                self.vr_to_joy.buttons[7] = 1 
+                self.vr_to_joy.buttons[3] = 1
+
+            elif self.mode.data[2] == 3: # estop
+                self.vr_to_joy.buttons[4] = 0
+                self.vr_to_joy.buttons[6] = 1 
+                self.vr_to_joy.buttons[7] = 0
+                self.vr_to_joy.buttons[3] = 0
+                
+            self.pub_joy_4.publish(self.vr_to_joy)
+        
+        else: 
+            pass 
+        # self.pub_mode.publish(self.mode)
+        # print(f'Pub {self.mode.data}')
+
+    def inital_DP(self):
+        # DP in th beginning
+        self.vr_to_joy.buttons[3] = 1
+        self.vr_to_joy.buttons[7] = 1
+        
+        #wamv2 DP
+        self.vr_to_joy.axes[2] == 2
+        self.pub_joy_2.publish(self.vr_to_joy)
+        #wamv DP
+        self.vr_to_joy.axes[2] = 1
+        self.pub_joy_1.publish(self.vr_to_joy)
+        #wamv3 DP
+        self.vr_to_joy.axes[2] = 3
+        self.pub_joy_3.publish(self.vr_to_joy)
+        #wamv4 DP
+        self.vr_to_joy.axes[2] = 4
+        self.pub_joy_4.publish(self.vr_to_joy)
+        
+        self.mode.data = [2, 2, 2]
+        self.pub_once = False
+
+    def vr_translate_into_joy(self):
+        #axes
+        self.vr_to_joy.axes[1] = self.vr_joy.axes[4] # left stick forward/backward
+        self.vr_to_joy.axes[3] = self.vr_joy.axes[5] # right stick right/left
+        self.vr_to_joy.axes[2] = int(self.vr_joy.axes[1]) # robot
+        self.vr_to_joy.axes[5] = int(self.vr_joy.axes[0]) # user_id
+    
+        
+    def change_mode_DP(self):
+        try:
+            if self.wamv2_mode == 3 :
+                self.mode.data[0] = 2
+        except:
+            pass
+        
+        try:
+            if self.wamv3_mode == 3 :
+                self.mode.data[1] = 2
+        except:
+            pass
+        
+        try:
+            if self.wamv4_mode == 3 :
+                self.mode.data[2] = 2
+        except:
+            pass
+    
+
 
 if __name__ == '__main__':
     rospy.init_node('vr_remap_joy_jackal')

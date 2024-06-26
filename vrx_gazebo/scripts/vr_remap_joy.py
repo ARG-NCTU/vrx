@@ -31,12 +31,12 @@ class VR_remap_joy:
         
         self.publisher_to_use = None
         self.index = None
-        # self.vr_mode_contorl_mode = [4,7,3,1] # manual, auto, DP, estop
 
         # mode management 
-        # 3: DP 
-        # 6: Manual
-        # 7: Auto
+        # 0: Manual
+        # 1: Auto 
+        # 2: DP
+        # 3: ESTOP 
 
         self.mode = UInt8MultiArray()        
         self.mode.data = [0, 0, 0]
@@ -95,13 +95,13 @@ class VR_remap_joy:
                 self.vr_to_joy.buttons[4] = 0
                 self.vr_to_joy.buttons[6] = 0
                 self.vr_to_joy.buttons[7] = 1
-                self.vr_to_joy.buttons[3] = 1
+                self.vr_to_joy.buttons[3] = 0
 
             elif self.mode.data[0] == 2: # DP
                 self.vr_to_joy.buttons[4] = 0
                 self.vr_to_joy.buttons[6] = 0
                 self.vr_to_joy.buttons[7] = 1 
-                self.vr_to_joy.buttons[3] = 0
+                self.vr_to_joy.buttons[3] = 1
 
 
             elif self.mode.data[0] == 3: # estop
@@ -126,13 +126,13 @@ class VR_remap_joy:
                 self.vr_to_joy.buttons[4] = 0
                 self.vr_to_joy.buttons[6] = 0
                 self.vr_to_joy.buttons[7] = 1
-                self.vr_to_joy.buttons[3] = 1
+                self.vr_to_joy.buttons[3] = 0
 
-            elif self.mode.data[1] == 2: # RL
+            elif self.mode.data[1] == 2: # DP
                 self.vr_to_joy.buttons[4] = 0
                 self.vr_to_joy.buttons[6] = 0
                 self.vr_to_joy.buttons[7] = 1 
-                self.vr_to_joy.buttons[3] = 0
+                self.vr_to_joy.buttons[3] = 1
 
             elif self.mode.data[1] == 3: # estop
                 self.vr_to_joy.buttons[4] = 0
@@ -153,12 +153,12 @@ class VR_remap_joy:
                 self.vr_to_joy.buttons[4] = 0
                 self.vr_to_joy.buttons[6] = 0
                 self.vr_to_joy.buttons[7] = 1
-                self.vr_to_joy.buttons[3] = 1
-            elif self.mode.data[2] == 2: # RL
+                self.vr_to_joy.buttons[3] = 0
+            elif self.mode.data[2] == 2: # DP
                 self.vr_to_joy.buttons[4] = 0
                 self.vr_to_joy.buttons[6] = 0
                 self.vr_to_joy.buttons[7] = 1 
-                self.vr_to_joy.buttons[3] = 0
+                self.vr_to_joy.buttons[3] = 1
 
             elif self.mode.data[2] == 3: # estop
                 self.vr_to_joy.buttons[4] = 0
