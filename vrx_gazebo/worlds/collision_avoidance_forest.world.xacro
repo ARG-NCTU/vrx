@@ -102,22 +102,22 @@
       <name>block15</name>
       <pose>-35.9044 12.5787 0 0 -0 0</pose>
     </include>
-    <include>
+    <!-- <include>
       <uri>model://polyform_a7</uri>
       <name>block16</name>
       <pose>-36.4915 -1.8949 0 0 -0 0</pose>
-    </include>
+    </include> -->
 
-    <include>
+    <!-- <include>
       <uri>model://black_totem</uri>
       <name>block17</name>
       <pose>-38.8952 -13.8905 0 0 -0 0</pose>
-    </include>
-    <include>
+    </include> -->
+    <!-- <include>
       <uri>model://polyform_a3</uri>
       <name>block18</name>
       <pose>23.1258 -5.80132 0 0 -0 0</pose>
-    </include>
+    </include> -->
     <!-- <include>
       <uri>model://black_totem</uri>
       <name>block19</name>
@@ -251,11 +251,11 @@
       <name>block44</name>
       <pose>35.9409 28.361 0 0 -0 0</pose>
     </include>
-    <include>
+    <!-- <include>
       <uri>model://blue_totem</uri>
       <name>block45</name>
       <pose>-36.4915 -1.8949 0 0 -0 0</pose>
-    </include>
+    </include> -->
     <!-- <include>
       <uri>model://black_totem</uri>
       <name>block46</name>
@@ -276,11 +276,11 @@
       <name>block49</name>
       <pose>-44.8289 12.8711 0 0 -0 0</pose>
     </include>
-    <include>
+    <!-- <include>
       <uri>model://polyform_a7</uri>
       <name>block50</name>
       <pose>-38.8952 -13.8905 0 0 -0 0</pose>
-    </include>
+    </include> -->
 
     <include>
       <uri>model://black_totem</uri>
@@ -599,11 +599,11 @@
       <name>block112</name>
       <pose>-34.2352 -52.2046 0 0 -0 0</pose>
     </include>
-    <include>
+    <!-- <include>
       <uri>model://blue_totem</uri>
       <name>block113</name>
       <pose>23.1258 -5.80132 0 0 -0 0</pose>
-    </include>
+    </include> -->
     <include>
       <uri>model://black_totem</uri>
       <name>block114</name>

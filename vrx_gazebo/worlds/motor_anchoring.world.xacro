@@ -29,7 +29,7 @@
       </wind_objs>
     </xacro:usv_wind_gazebo>
 
-    <include>
+    <!-- <include>
       <uri>model://black_totem</uri>
       <name>totem</name>
       <pose>30 -30 0.00 0.00 0.00 0.00</pose>
@@ -45,7 +45,7 @@
       <uri>model://polyform_a7_redball</uri>
       <name>polyform_red</name>
       <pose>-30 30 0.00 0.00 0.00 0.00</pose>
-    </include>
+    </include> -->
 
   </world>
 </sdf>
