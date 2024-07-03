@@ -59,33 +59,32 @@
 
   <arg  name="smallboat_urdf" default="$(find wamv_gazebo)/urdf/sb_gazebo.urdf.xacro"/>
 
-  <param name="$(arg namespace)/robot_description"
+  <!-- Spawn wamv2 in Gazebo -->
+  <param name="wamv2/robot_description"
          command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)'
          locked:=$(arg wamv_locked)		   
          thruster_config:=$(arg thrust_config)
          vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
-         namespace:=$(arg namespace) "/>
-
-
+         namespace:=wamv2 "/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv_tf_pub" >
-     <remap from="robot_description" to="wamv/robot_description" />
-     <remap from="joint_states" to="wamv/joint_states" />
+     <remap from="robot_description" to="wamv2/robot_description" />
+     <remap from="joint_states" to="wamv2/joint_states" />
   </node>
-  <!-- Spawn model in Gazebo -->
   <node name="spawn_model" pkg="gazebo_ros" type="spawn_model"
         args="-x $(arg x) -y $(arg y) -z $(arg z)
               -R $(arg R) -P $(arg P) -Y $(arg Y)
-              -urdf -param $(arg namespace)/robot_description -model wamv"/>
+              -urdf -param wamv2/robot_description -model wamv2"/>
               
-  <param name="wamv2/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=wamv2" />
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv2_tf_pub" >
-     <remap from="robot_description" to="wamv2/robot_description" />
-     <remap from="joint_states" to="wamv2/joint_states" />
+  <!-- Spawn wamv3 in Gazebo -->      
+  <param name="wamv3/robot_description" command="$(find xacro)/xacro &#x002D;&#x002D;inorder '$(arg urdf)' locked:=$(arg wamv_locked) thruster_config:=$(arg thrust_config) vrx_sensors_enabled:=$(arg vrx_sensors_enabled) namespace:=wamv3" />
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv3_tf_pub" >
+     <remap from="robot_description" to="wamv3/robot_description" />
+     <remap from="joint_states" to="wamv3/joint_states" />
   </node>
   <node name="spawn_model_2" pkg="gazebo_ros" type="spawn_model"
         args="-x 20 -y 20 -z 0.2
               -R 0 -P 0 -Y 0
-              -urdf -param wamv2/robot_description -model wamv2"/> 
+              -urdf -param wamv3/robot_description -model wamv3"/> 
   
   <!-- Set the pinger location -->
   <!-- <node name="set_pinger_position" pkg="vrx_gazebo" type="set_pinger_position.py" output="screen">
@@ -108,8 +107,36 @@
               -R 0 -P 0 -Y 0
               -urdf -param $(arg namespace)/smallboat_description  -model smallboat"/>  
 
-  <include file="$(find lidar_crop)/launch/lidar_crop.launch">
-        <arg name="veh" value="wamv"/>
+
+  <!-- Launch pub_tf_posestamped for wamv2 -->
+    <include file="$(find localization)/launch/pub_tf_posestamped.launch">
+        <arg name="model_name" value="wamv2"/>
+        <arg name="pub_tf" value="false"/>
     </include>
 
+    <!-- Launch pub_tf_posestamped for wamv3 -->
+    <include file="$(find localization)/launch/pub_tf_posestamped.launch">
+        <arg name="model_name" value="wamv3"/>
+        <arg name="pub_tf" value="false"/>
+    </include>
+
+    <!-- Launch lidar_crop for wamv2 -->
+
+    <include file="$(find lidar_crop)/launch/lidar_crop.launch">
+        <arg name="veh" value="wamv2"/>
+    </include>
+
+    <!-- Launch usv_joydrive for wamv2 -->
+    <include file="$(find vrx_gazebo)/launch/usv_joydrive_estop.launch">
+        <arg name="veh" value="wamv2"/>
+        <arg name="use_namespace" value="true"/>
+        <arg name="use_joy" value="false"/>
+    </include>
+
+    <!-- Launch usv_joydrive for wamv3 -->
+    <include file="$(find vrx_gazebo)/launch/usv_joydrive_estop.launch">
+        <arg name="veh" value="wamv3"/>
+        <arg name="use_namespace" value="true"/>
+        <arg name="use_joy" value="false"/>
+    </include>
 </launch>
