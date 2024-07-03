@@ -258,6 +258,21 @@ void UsvDynamicsPlugin::Update()
   Cmat(5, 1) = this->paramXdotU * kVelLinearBody.X();
 
   // Drag
+  // paramXu : Constant drag in surge
+  // paramXuu: Linear drag in surge
+  // paramYv : Constant drag in sway
+  // paramYvv: Linear drag in sway
+  // paramZw : Constant drag in heave
+  // paramZww: Linear drag in heave
+
+  // paramKp : Constant drag in roll
+  // paramKpp: Linear drag in roll
+  // paramMq : Constant drag in pitch
+  // paramMqq: Linear drag in pitch
+  // paramNr : Constant drag in yaw
+  // paramNrr: Linear drag in yaw
+
+
   Dmat(0, 0) = this->paramXu + this->paramXuu * std::abs(kVelLinearBody.X());
   Dmat(1, 1) = this->paramYv + this->paramYvv * std::abs(kVelLinearBody.Y());
   Dmat(2, 2) = this->paramZw + this->paramZww * std::abs(kVelLinearBody.Z());

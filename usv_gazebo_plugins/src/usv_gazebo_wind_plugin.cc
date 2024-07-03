@@ -263,6 +263,10 @@ void UsvWindPlugin::Update()
     // gzdbg << "Apparent wind: " << apparentWind << std::endl;
 
     // Calculate wind force - body coordinates
+    // coefficients are in the form of [X, Y, Z]
+    //  X: linear drag in surge
+    //  Y: linear drag in sway
+    //  Z: linear drag in heave
     ignition::math::Vector3d windForce(
       windObj.windCoeff.X() * relativeWind.X() * abs(relativeWind.X()),
       windObj.windCoeff.Y() * relativeWind.Y() * abs(relativeWind.Y()),
