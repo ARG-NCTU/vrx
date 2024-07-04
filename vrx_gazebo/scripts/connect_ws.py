@@ -4,8 +4,10 @@ import roslibpy
 import rospy
 from geometry_msgs.msg import PoseStamped, Twist
 from sensor_msgs.msg import Joy, LaserScan
-from visualization_msgs.msg import Marker
 from std_msgs.msg import Bool, UInt8
+from visualization_msgs.msg import Marker
+
+
 # from obstacle_detector.msg import Obstacles
 class ROSBridgeConnector:
     def __init__(self):
@@ -24,6 +26,8 @@ class ROSBridgeConnector:
             self.pub_wamv_pose = roslibpy.Topic(self.client, "/gazebo/wamv/pose", "geometry_msgs/PoseStamped")
             self.pub_drone_pose = roslibpy.Topic(self.client, "/drone_pose", "geometry_msgs/PoseStamped")
             self.pub_wamv_gps_pose = roslibpy.Topic(self.client, "/wamv/localization_gps_imu/pose", "geometry_msgs/PoseStamped")
+            self.pub_wamv_gps_pose_new = roslibpy.Topic(self.client, "/wamv/localization_pose/real_pose", "geometry_msgs/PoseStamped")
+            
             self.pub_real_goal = roslibpy.Topic(self.client, "/move_base_simple/goal", "geometry_msgs/PoseStamped")
             # pub more_scan and RL scan for obstacle extraction and merge scan
             self.pub_scan =  roslibpy.Topic(self.client, "/wamv/RL/more_scan", "sensor_msgs/LaserScan")
@@ -86,6 +90,8 @@ class ROSBridgeConnector:
             # rospy.Subscriber("/wamv/joy", Joy, self.cb_joy)
             # rospy.Subscriber("/raw_obstacles", Obstacles, self.cb_extractor)
             rospy.Subscriber("/wamv/localization_gps_imu/pose", PoseStamped, self.cb_wamv_gps_pose)
+            rospy.Subscriber("/wamv/localization_pose/real_pose", PoseStamped, self.cb_wamv_gps_pose_new)
+            
             rospy.Subscriber("/gazebo/wamv/pose", PoseStamped, self.cb_wamv_pose)
             rospy.Subscriber("/wamv/RL/more_scan", LaserScan, self.cb_wamv_laser)
             rospy.Subscriber("/wamv/RL/scan", LaserScan, self.cb_wamv_laser_RL)
@@ -310,7 +316,10 @@ class ROSBridgeConnector:
         
     def cb_wamv_gps_pose(self, data):
         self.cb_posestamped(data, self.pub_wamv_gps_pose)
-            
+    
+    def cb_wamv_gps_pose_new(self, data):
+        self.cb_posestamped(data, self.pub_wamv_gps_pose_new)
+        
     def cb_wamv_pose(self, data):
         self.cb_posestamped(data, self.pub_wamv_pose)
         
