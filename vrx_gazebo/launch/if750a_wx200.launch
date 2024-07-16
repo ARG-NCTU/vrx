@@ -90,7 +90,7 @@
             <param name="tf_prefix" value="$(arg drone_ns)" />
         </node>
 
-        <node pkg="vrx_gazebo" type="if750a_joint_state_publisher.py" name="joint_state_publisher"/>
+        <node pkg="vrx_gazebo" type="if750a_arm_joint_state_publisher.py" name="joint_state_publisher"/>
     </group>
     
     <!-- transfer image to compressed image for VR -->
