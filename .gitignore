@@ -15,3 +15,4 @@ vrx_gazebo/models/dock_permutations/*
 *.pyc
 bags/*
 tags
+vrx_gazebo/models/sanxiantai_bridge/meshes/
