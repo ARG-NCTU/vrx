@@ -1,0 +1,120 @@
+<launch>
+    <arg name="world" default="$(find vrx_gazebo)/worlds/sanxiantai.world" />
+
+    <!-- If true, run gazebo GUI -->
+    <!-- <arg name="gui" default="true" /> -->
+    <arg name="gui" default="false" />
+
+    <!-- If true, run gazebo in verbose mode -->
+    <arg name="verbose" default="false"/>
+
+    <!-- Set various other gazebo arguments-->
+    <arg name="extra_gazebo_args" default=""/>
+
+    <!-- drone namespace -->
+    <arg name="drone_ns" default="drone"/>
+
+    <!-- wamv namespace -->
+    <arg name="wamv_ns" default="wamv"/>
+
+    <!-- Do we lock the vessel to the world? -->
+    <arg name="wamv_locked" default="true" />
+
+    <arg name="paused" default="false"/>
+    <!-- Acoustic pinger position(s) -->
+    <arg name="pinger_params" default="$(find vrx_gazebo)/config/pinger.yaml"/>
+
+
+    <!-- Define a static transform from a camera internal frame to the fcu for every camera used -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="tf_depth_camera" args="0 0 0 -1.57 0 -1.57 fcu camera_link 10"/> -->
+
+    <!-- Launch Gazebo -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world)"/>
+        <arg name="verbose" value="$(arg verbose)"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
+    </include>
+
+    <!-- four dock for drone to random start -->
+    <node name="spawn_model_dock4x4" pkg="gazebo_ros" type="spawn_model"
+    args="-x -15  -y -10 -z 1.5
+            -R 0 -P 0 -Y 0
+            -sdf -database dock_block_4x4  -model dock"/>   
+
+    <node name="spawn_model_dock4x4_1" pkg="gazebo_ros" type="spawn_model"
+    args="-x -15.3  -y 6.89 -z 1.94
+            -R 0 -P 0 -Y 0
+            -sdf -database dock_block_4x4  -model dock1"/>   
+
+    <node name="spawn_model_dock4x4_2" pkg="gazebo_ros" type="spawn_model"
+    args="-x 9.558  -y -5.69 -z 3.24
+            -R 0 -P 0 -Y 0
+            -sdf -database dock_block_4x4  -model dock2"/>
+
+    <node name="spawn_model_dock4x4_3" pkg="gazebo_ros" type="spawn_model"
+    args="-x 7.14 -y 7.39 -z 3.45
+            -R 0 -P 0 -Y 0
+            -sdf -database dock_block_4x4  -model dock3"/>
+
+    <!-- Randomly select a dock -->
+    <!-- <arg name="random_dock" default="$(eval int(eval ('_' + '_import_' + '_(\'random\')').random() * 4))"/> -->
+    <arg name="random_dock" default="4"/>
+    <arg name="drone_x" default="$(eval -15 if arg('random_dock') == 1 else 9.558 if arg('random_dock') == 2 else 7.14 if arg('random_dock') == 3 else -15.3)"/>
+    <arg name="drone_y" default="$(eval -10 if arg('random_dock') == 1 else -5.69 if arg('random_dock') == 2 else 7.39 if arg('random_dock') == 3 else 6.89)"/>
+    <arg name="drone_z" default="$(eval 2 if arg('random_dock') == 1 else 3.8 if arg('random_dock') == 2 else 4 if arg('random_dock') == 3 else 2.5)"/>
+    <arg name="drone_Y" default="$(eval 0 if arg('random_dock') == 1 else 3.14 if arg('random_dock') == 2 else 3.14 if arg('random_dock') == 3 else 0)"/>
+    <!-- Drone launch with random initial position -->
+    <include file="$(find vrx_gazebo)/launch/if750a_wx200.launch">
+        <arg name="drone_ns" value="$(arg drone_ns)"/>
+        <arg name="drone_x" value="$(arg drone_x)"/>
+        <arg name="drone_y" value="$(arg drone_y)"/>
+        <arg name="drone_z" value="$(arg drone_z)"/>
+        <arg name="drone_R" value="0"/>
+        <arg name="drone_P" value="0"/>
+        <arg name="drone_Y" value="$(arg drone_Y)"/>
+    </include>
+
+    <node name="spawn_model_pillar" pkg="gazebo_ros" type="spawn_model"
+    args="-x -4.6 -y -1.6 -z 13
+            -R 0 -P 0 -Y 0
+            -sdf -database pillar -model pillar"/>
+
+    <!-- spawn target and respawn, get target pose -->
+    <node name="spawn_model_pole" pkg="gazebo_ros" type="spawn_model"
+    args="-x -4.6 -y -1.6 -z 14
+            -R 0 -P 0 -Y 0
+            -sdf -database blue_pole  -model red_pole"/>
+            <!-- red_pole -->
+
+    <node name="reset_pole_pose" pkg="vrx_gazebo" type="set_model_pose.py" 
+    args="--model_name red_pole -x -4.6 -y -1.6 -z 14 -rx 0.0 -ry 0.0 -rz 0.0 -rw 1.0"/>
+
+    <node pkg="vrx_gazebo" type="model_state_to_pose_stamped.py" name="model_state_to_pose_stamped" output="log">
+        <param name="model_name" value="red_pole"/>
+        <param name="publish_rate" value="50"/>
+    </node>
+
+    
+
+    
+    <node name="drone_target_check" pkg="vrx_gazebo" type="drone_target_dis_checker.py">
+        <remap from="/gazebo/target/pose" to="/gazebo/red_pole/pose"/>
+        <remap from="/gazebo/drone/pose" to="/gazebo/drone/pose"/>
+    </node>
+    
+    <node name="spawn_model_pillar2" pkg="gazebo_ros" type="spawn_model"
+    args="-x -1.4 -y -0.6 -z 13
+            -R 0 -P 0 -Y 0
+            -sdf -database yellow_pillar -model target_pillar"/>
+
+
+    <!-- <node name="spawn_model_box" pkg="gazebo_ros" type="spawn_model"
+    args="-x -3.5 -y -1.21 -z 13
+            -R 1.57 -P 0 -Y 0.28
+            -sdf -database wooden_box -model wooden_box"/> -->
+
+</launch>
+    
