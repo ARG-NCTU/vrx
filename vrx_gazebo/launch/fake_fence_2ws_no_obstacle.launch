@@ -77,6 +77,8 @@
         args="-x $(arg real_x) -y $(arg real_y) -z $(arg real_z)
               -R $(arg real_R) -P $(arg real_P) -Y $(arg real_Y)
               -urdf -param $(arg namespace)/robot_description -model wamv"/>
+              
+  <include file="$(find vrx_gazebo)/launch/ws1_basic_setup.launch"/>
 
     <!-- <include file="$(find vrx_gazebo)/launch/if750a_camera_pushing.launch">
         <arg name="gcs_url" value="udp://@192.168.0.33" />
