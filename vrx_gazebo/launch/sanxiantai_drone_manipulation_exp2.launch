@@ -78,19 +78,19 @@
     </include>
 
     <node name="spawn_model_pillar" pkg="gazebo_ros" type="spawn_model"
-    args="-x -4.6 -y -1.6 -z 13
+    args="-x -1.4 -y -0.6 -z 13
             -R 0 -P 0 -Y 0
             -sdf -database pillar -model pillar"/>
 
     <!-- spawn target and respawn, get target pose -->
     <node name="spawn_model_pole" pkg="gazebo_ros" type="spawn_model"
-    args="-x -4.6 -y -1.6 -z 14
+    args="-x -1.4 -y -0.6 -z 14
             -R 0 -P 0 -Y 0
             -sdf -database blue_pole  -model red_pole"/>
             <!-- red_pole -->
 
     <node name="reset_pole_pose" pkg="vrx_gazebo" type="set_model_pose.py" 
-    args="--model_name red_pole -x -4.6 -y -1.6 -z 14 -rx 0.0 -ry 0.0 -rz 0.0 -rw 1.0"/>
+    args="--model_name red_pole -x -1.4 -y -0.6 -z 14 -rx 0.0 -ry 0.0 -rz 0.0 -rw 1.0"/>
 
     <node pkg="vrx_gazebo" type="model_state_to_pose_stamped.py" name="model_state_to_pose_stamped" output="log">
         <param name="model_name" value="red_pole"/>
@@ -98,17 +98,11 @@
     </node>
 
     
-
-    
     <node name="drone_target_check" pkg="vrx_gazebo" type="drone_target_dis_checker.py">
         <remap from="/gazebo/target/pose" to="/gazebo/red_pole/pose"/>
         <remap from="/gazebo/drone/pose" to="/gazebo/drone/pose"/>
     </node>
     
-    <node name="spawn_model_pillar2" pkg="gazebo_ros" type="spawn_model"
-    args="-x -1.4 -y -0.6 -z 13
-            -R 0 -P 0 -Y 0
-            -sdf -database yellow_pillar -model target_pillar"/>
 
 
     <!-- <node name="spawn_model_box" pkg="gazebo_ros" type="spawn_model"
