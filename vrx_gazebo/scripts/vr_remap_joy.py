@@ -39,7 +39,7 @@ class VR_remap_joy:
         # 3: ESTOP 
 
         self.mode = UInt8MultiArray()        
-        self.mode.data = [0, 0, 0]
+        self.mode.data = [3, 3, 3]
             
     def cb_wamv_mode(self, msg):
         self.wamv_mode = msg.data
@@ -57,7 +57,7 @@ class VR_remap_joy:
         self.vr_joy = msg
         if self.pub_once:
             # self.pub_shutdown_joy_remap_joy.publish(True)
-            self.inital_DP()
+            self.inital_ESTOP()
         try:
             if 2 <= msg.axes[1] <= 4:
                 # self.mode.data[int(self.vr_joy.axes[1])-2] = self.vr_mode_contorl_mode[int(self.vr_joy.axes[2])]       
@@ -72,7 +72,7 @@ class VR_remap_joy:
         # # Special case for DP mode in Nav_DP file, which will auto change to DP after RL
         # self.change_mode_DP()
         
-        print(f'Pub {self.mode.data}')
+        # print(f'Pub {self.mode.data}')
         
     def timer_callback(self,event):
         # return
@@ -170,10 +170,12 @@ class VR_remap_joy:
         else: 
             pass   
 
-    def inital_DP(self):
-        # DP in th beginning
-        self.vr_to_joy.buttons[3] = 1
-        self.vr_to_joy.buttons[7] = 1
+    def inital_ESTOP(self):
+        
+        self.vr_to_joy.buttons[3] = 0
+        self.vr_to_joy.buttons[7] = 0
+        self.vr_to_joy.buttons[6] = 1
+        self.vr_to_joy.buttons[4] = 0
         
         #wamv2 DP
         self.vr_to_joy.axes[2] == 2
@@ -188,7 +190,7 @@ class VR_remap_joy:
         self.vr_to_joy.axes[2] = 4
         self.pub_joy_4.publish(self.vr_to_joy)
         
-        self.mode.data = [2, 2, 2]
+        self.mode.data = [3, 3, 3]
         self.pub_once = False
 
     def vr_translate_into_joy(self):
@@ -197,10 +199,11 @@ class VR_remap_joy:
         # self.vr_to_joy.buttons[7] = self.vr_joy.buttons[1] # Start: RL
         # self.vr_to_joy.buttons[3] = self.vr_joy.buttons[2] # Y: DP
         # self.vr_to_joy.buttons[6] = self.vr_joy.buttons[3] # Back: Estop
-        # self.vr_to_joy.buttons[0] = self.vr_joy.buttons[7] # A :sync
+        
+        self.vr_to_joy.buttons[0] = self.vr_joy.buttons[7] # A :sync obstacle and robot pose
 
         # self.vr_to_joy.buttons[0] = msg.buttons[5] 
-        # self.vr_to_joy.buttons[1] = msg.buttons[6] # B 
+        self.vr_to_joy.buttons[1] = self.vr_joy.buttons[6] # B 
         # print(self.vr_joy)
 
         #axes
@@ -235,8 +238,6 @@ class VR_remap_joy:
         except:
             pass
     
-
-
 if __name__ == '__main__':
     rospy.init_node('vr_remap_joy')
     vr_remap_joy = VR_remap_joy()
