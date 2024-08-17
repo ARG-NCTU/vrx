@@ -30,17 +30,34 @@ class Goal_Point():
         
         self.scale_factor = rospy.get_param("~scale_factor", 1.0)
         self.twin = rospy.get_param("~twin", True)
+        self.ugv = rospy.get_param("~ugv", True)            
         self.timer = rospy.Timer(rospy.Duration(1), self.timer_cb)
-                
-        self.dt_sim_x = None #1510
-        self.dt_sim_y = None #60
         
-        self.wamv3_x = 1480 #90
-        self.wamv3_y = 60 #-30
         
-        self.wamv4_x = 1450 #90
-        self.wamv4_y = 60 #0
-
+        # Different goal for the experiment
+        if self.ugv:
+            rospy.loginfo('UGV2USV Experiment')
+            rospy.loginfo('scale_factor: %f', self.scale_factor)
+            self.dt_sim_x = None #
+            self.dt_sim_y = None #60
+        
+            self.wamv3_x = 1500 #90
+            self.wamv3_y = 60 #-30
+            
+            self.wamv4_x = 1480 #90
+            self.wamv4_y = 60 #0
+        
+        else:
+            rospy.loginfo('USV2USV Experiment')
+            rospy.loginfo('scale_factor: %f', self.scale_factor)      
+            self.dt_sim_x = None #1510
+            self.dt_sim_y = None #60
+            
+            self.wamv3_x = 1480 #90
+            self.wamv3_y = 60 #-30
+            
+            self.wamv4_x = 1450 #90
+            self.wamv4_y = 60 #0
         self.robot_radius = 4
         self.pi2 = math.radians(360)
 
