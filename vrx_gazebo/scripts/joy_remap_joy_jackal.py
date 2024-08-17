@@ -156,7 +156,7 @@ class Joy_remap_joy:
         if self.joy is not None:
             self.joy_to_joy.header.stamp = rospy.Time.now()        
             if self.first_time:
-                self.inital_DP()
+                self.inital_ESTOP()
             
             self.joy_to_joy.axes = list(self.joy.axes)
             self.joy_to_joy.buttons = list(self.joy.buttons)
@@ -213,7 +213,7 @@ class Joy_remap_joy:
             else:
                 pass
             
-    def inital_DP(self):
+    def inital_ESTOP(self):
                          
         # manual in th beginning
         self.joy_to_joy.axes[2] = 1
@@ -222,8 +222,9 @@ class Joy_remap_joy:
         
         #other wamv DP in th beginning
         self.joy_to_joy.buttons[4] = 0
-        self.joy_to_joy.buttons[3] = 1
-        self.joy_to_joy.buttons[7] = 1
+        self.joy_to_joy.buttons[3] = 0
+        self.joy_to_joy.buttons[7] = 0
+        self.joy_to_joy.buttons[6] = 1
         
         self.joy_to_joy.axes[2] = 2   
         self.pub_joy_2.publish(self.joy_to_joy)
@@ -233,7 +234,9 @@ class Joy_remap_joy:
         
         self.joy_to_joy.axes[2] = 4
         self.pub_joy_4.publish(self.joy_to_joy)
+        self.mode.data = [3, 3, 3]
         self.first_time = False
+        
     def run(self):
         while not rospy.is_shutdown():
             if self.flag:

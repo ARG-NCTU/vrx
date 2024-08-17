@@ -194,6 +194,10 @@ class VR_remap_joy:
         self.pub_once = False
 
     def vr_translate_into_joy(self):
+        #button
+        self.vr_to_joy.buttons[0] = self.vr_joy.buttons[7] # A :sync obstacle and robot pose
+        self.vr_to_joy.buttons[1] = self.vr_joy.buttons[6] # B 
+        
         #axes
         self.vr_to_joy.axes[1] = self.vr_joy.axes[4] # left stick forward/backward
         self.vr_to_joy.axes[3] = self.vr_joy.axes[5] # right stick right/left
