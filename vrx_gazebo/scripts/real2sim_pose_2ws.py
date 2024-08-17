@@ -62,7 +62,7 @@ class RealtoSimTransform:
         
     def wamv3_init_pose_MR(self):
         init_wamv3 = PoseStamped()
-        init_wamv3.pose.position.x = 1476
+        init_wamv3.pose.position.x = 1477
         init_wamv3.pose.position.y = 18
         init_wamv3.pose.position.z = 0
         init_wamv3.pose.orientation.x = 0
@@ -73,7 +73,7 @@ class RealtoSimTransform:
     
     def wamv4_init_pose_MR(self):
         init_wamv4 = PoseStamped()
-        init_wamv4.pose.position.x = 1484
+        init_wamv4.pose.position.x = 1483
         init_wamv4.pose.position.y = 18
         init_wamv4.pose.position.z = 0
         init_wamv4.pose.orientation.x = 0
