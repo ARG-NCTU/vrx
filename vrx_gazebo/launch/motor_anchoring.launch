@@ -82,10 +82,10 @@
      <remap from="robot_description" to="wamv2/robot_description" />
      <remap from="joint_states" to="wamv2/joint_states" />
   </node>
-  <node name="spawn_model_2" pkg="gazebo_ros" type="spawn_model"
+  <!-- <node name="spawn_model_2" pkg="gazebo_ros" type="spawn_model"
         args="-x 20 -y 20 -z 0.2
               -R 0 -P 0 -Y 0
-              -urdf -param wamv2/robot_description -model wamv2"/> 
+              -urdf -param wamv2/robot_description -model wamv2"/>  -->
   
   <!-- Set the pinger location -->
   <!-- <node name="set_pinger_position" pkg="vrx_gazebo" type="set_pinger_position.py" output="screen">
