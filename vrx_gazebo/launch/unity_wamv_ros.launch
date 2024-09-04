@@ -165,7 +165,7 @@
     <param name="angular_scaling_factor" value="1.0" />
   </node>
 
-  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+  <!-- <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
     <arg name="port" default="9090" />
     <arg name="address" default="" />
     <arg name="ssl" default="false" />
@@ -185,7 +185,7 @@
     <arg name="services_glob" default="" />
     <arg name="params_glob" default="" />
     <arg name="bson_only_mode" default="false" />
-  </include>
+  </include> -->
 
   <!-- Set the pinger location -->
   <!-- <node name="set_pinger_position" pkg="vrx_gazebo" type="set_pinger_position.py"
