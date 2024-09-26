@@ -11,6 +11,8 @@ class Node():
         # Publisher
         self.cmd_pub = rospy.Publisher("cmd_vel", Twist, queue_size=10)
 
+        self.finish_pub = rospy.Publisher("visual_servoing_finished", Bool, queue_size=10)
+
         # Subscriber
         sub_bbox_center_cord_topic_name = rospy.get_param('~sub_bbox_center_cord_topic', '/detr_object_detection/detection_bbox_center_cord')
         self.sub_bbox_center_cord = rospy.Subscriber(sub_bbox_center_cord_topic_name, Float32MultiArray, self.cb_bbox_center, queue_size=1) #[x,y], both x and y in boundary [-1, 1]
@@ -41,35 +43,42 @@ class Node():
         self.bbox_detected = False
         self.timer = rospy.Timer(rospy.Duration(0.1), self.cb_publish)
 
+        self.bbox_prev_x = None
+
+    def angular_PID_control(self):
+        self.error_sum += self.error
+        self.error_diff = self.error - self.prev_error
+        self.twist.angular.z = self.kp * self.error + self.ki * self.error_sum + self.kd * self.error_diff
+        self.cmd_pub.publish(self.twist)
+        self.prev_error = self.error
+
+    def linear_forward(self):
+        self.twist.linear.x = 0.3
+        self.twist.angular.z = 0.0
+        self.cmd_pub.publish(self.twist)
+        self.prev_error = 0.0
+
     def cb_publish(self, event):
         if self.bbox_detected:
+            self.bbox_prev_x = self.bbox_center[0]
             rospy.loginfo("Bbox detected")
-            if self.bbox_area > 0.003:
-                self.twist.linear.x = 0.0
-                self.twist.angular.z = 0.0
-                self.cmd_pub.publish(self.twist)
-                self.prev_error = 0.0
-            else:
+            if self.bbox_area < 0.003:
                 if abs(self.bbox_center[0]) < 0.1:
-                    print("center")
-                    self.twist.linear.x = 0.3
-                    self.twist.angular.z = 0.0
-                    self.cmd_pub.publish(self.twist)
-                    self.prev_error = 0.0
+                    rospy.loginfo("Bbox in center of the image")
+                    self.linear_forward()
                 else: 
-                    print("left or right")
+                    if self.bbox_center[0] > 0.0:
+                        rospy.loginfo("Bbox in right side of the image")
+                    else:
+                        rospy.loginfo("Bbox in left side of the image")
                     self.twist.linear.x = 0.0
                     self.error = self.bbox_center[0]
-                    self.error_sum += self.error
-                    self.error_diff = self.error - self.prev_error
-                    self.twist.angular.z = self.kp * self.error + self.ki * self.error_sum + self.kd * self.error_diff
-                    self.cmd_pub.publish(self.twist)
-                    self.prev_error = self.error
-        else:
+                    self.angular_PID_control()
+                     
+        elif self.bbox_prev_x is not None:
             self.twist.linear.x = 0.0
-            self.twist.angular.z = 0.0
-            self.cmd_pub.publish(self.twist)
-            self.prev_error = 0.0
+            self.error = self.bbox_prev_x
+            self.angular_PID_control()
 
     def cb_bbox_center(self, data):
         self.bbox_center = data.data

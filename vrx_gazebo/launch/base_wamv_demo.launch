@@ -92,9 +92,4 @@
       <arg name="veh" value="wamv2"/>
   </include>
 
-  <!-- Launch visual servoing-->
-  <include file="$(find vrx_gazebo)/launch/bbox2twist.launch">
-      <arg name="veh" value="wamv2"/>
-  </include>
-
 </launch>
