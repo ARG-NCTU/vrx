@@ -10,7 +10,6 @@ class Node():
         
         # Publisher
         self.cmd_pub = rospy.Publisher("cmd_vel", Twist, queue_size=10)
-
         self.finish_pub = rospy.Publisher("visual_servoing_finished", Bool, queue_size=10)
 
         # Subscriber
@@ -24,7 +23,7 @@ class Node():
         self.sub_detected = rospy.Subscriber(sub_detected_topic_name, Bool, self.cb_bbox_detected, queue_size=1)
         
         # PID controller
-        self.kp = -0.5
+        self.kp = rospy.get_param('~kp', -0.5)
         self.ki = 0.0
         self.kd = 0.0
         self.error = 0.0
@@ -44,6 +43,7 @@ class Node():
         self.timer = rospy.Timer(rospy.Duration(0.1), self.cb_publish)
 
         self.bbox_prev_x = None
+        self.finished = False
 
     def angular_PID_control(self):
         self.error_sum += self.error
@@ -74,11 +74,17 @@ class Node():
                     self.twist.linear.x = 0.0
                     self.error = self.bbox_center[0]
                     self.angular_PID_control()
-                     
-        elif self.bbox_prev_x is not None:
-            self.twist.linear.x = 0.0
-            self.error = self.bbox_prev_x
-            self.angular_PID_control()
+            else:
+                rospy.loginfo("Finish visual servoing")
+                self.finished = True
+        else:
+            self.finished = False         
+            if self.bbox_prev_x is not None:
+                self.twist.linear.x = 0.0
+                self.error = self.bbox_prev_x
+                self.angular_PID_control()
+        
+        self.finish_pub.publish(self.finished)
 
     def cb_bbox_center(self, data):
         self.bbox_center = data.data

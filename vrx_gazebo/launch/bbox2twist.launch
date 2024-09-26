@@ -1,10 +1,12 @@
 <launch>
     <arg name="veh" default="wamv2"/>
+    <arg name="kp" default="-0.5"/>
     <!-- Node to run the visual servoing -->
     <node ns="$(arg veh)" pkg="vrx_gazebo" type="bbox2twist.py" name="bbox2twist" output="screen">
         <param name="sub_bbox_center_cord_topic" value="/detr_object_detection/detection_bbox_center_cord"/>
         <param name="sub_bbox_area_topic" value="/detr_object_detection/detection_bbox_area"/>
         <param name="sub_detected_topic" value="/detr_object_detection/detected"/>
+        <param name="kp" value="$(arg kp)"/>
     </node>
 
 </launch>
