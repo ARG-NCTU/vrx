@@ -39,6 +39,8 @@ find_package(catkin REQUIRED COMPONENTS
   wamv_gazebo
   wave_gazebo
   xacro
+  nav_msgs
+  geographic_msgs
 )
 
 ########################
