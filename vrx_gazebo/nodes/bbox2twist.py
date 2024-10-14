@@ -9,7 +9,7 @@ class Node():
     def __init__(self):
         
         # Publisher
-        self.cmd_pub = rospy.Publisher("cmd_vel", Twist, queue_size=10)
+        self.cmd_pub = rospy.Publisher("search_cmd", Twist, queue_size=10)
         self.finish_pub = rospy.Publisher("visual_servoing_finished", Bool, queue_size=10)
 
         # Subscriber
