@@ -10,6 +10,7 @@ class Node():
         
         # Publisher
         self.cmd_pub = rospy.Publisher("search_cmd", Twist, queue_size=10)
+        self.start_pub = rospy.Publisher("visual_servoing_started", Bool, queue_size=10)
         self.finish_pub = rospy.Publisher("visual_servoing_finished", Bool, queue_size=10)
 
         # Subscriber
@@ -40,6 +41,8 @@ class Node():
         self.bbox_center = [0.0, 0.0]
         self.bbox_area = 0.0
         self.bbox_detected = False
+        self.bbox_detected_count = 0
+        self.bbox_detected_threshold = 1
         self.timer = rospy.Timer(rospy.Duration(0.1), self.cb_publish)
 
         self.bbox_prev_x = None
@@ -53,7 +56,7 @@ class Node():
         self.prev_error = self.error
 
     def linear_forward(self):
-        self.twist.linear.x = 0.3
+        self.twist.linear.x = 0.6
         self.twist.angular.z = 0.0
         self.cmd_pub.publish(self.twist)
         self.prev_error = 0.0
@@ -76,15 +79,12 @@ class Node():
                     self.angular_PID_control()
             else:
                 rospy.loginfo("Finish visual servoing")
-                self.finished = True
-        else:
-            self.finished = False         
-            if self.bbox_prev_x is not None:
-                self.twist.linear.x = 0.0
-                self.error = self.bbox_prev_x
-                self.angular_PID_control()
+                self.finish_pub.publish(True)
         
-        self.finish_pub.publish(self.finished)
+        elif self.bbox_prev_x is not None:
+            self.twist.linear.x = 0.0
+            self.error = self.bbox_prev_x
+            self.angular_PID_control()
 
     def cb_bbox_center(self, data):
         self.bbox_center = data.data
@@ -93,7 +93,18 @@ class Node():
         self.bbox_area = data.data
 
     def cb_bbox_detected(self, data):
-        self.bbox_detected = data.data
+        if data.data:
+            self.bbox_detected_count += 1
+            rospy.loginfo(self.bbox_detected_count)
+        else:
+            self.bbox_detected_count = 0
+        
+        if self.bbox_detected_count >= self.bbox_detected_threshold:
+            self.bbox_detected = True
+            self.start_pub.publish(True)
+        else:
+            self.bbox_detected = False
+            self.start_pub.publish(False)
 
 if __name__ == '__main__':
     rospy.init_node('bbox2twist', anonymous=True)
