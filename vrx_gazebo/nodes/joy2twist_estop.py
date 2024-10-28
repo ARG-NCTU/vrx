@@ -34,7 +34,8 @@ class Node():
         
         # Subscriber
         self.sub_cmd = rospy.Subscriber("cmd_vel", Twist, self.cb_cmd, queue_size=1)
-        self.sub_joy = rospy.Subscriber("/joy", Joy, self.cbJoy, queue_size=1)
+        sub_joy_topic = rospy.get_param("~sub_joy_topic", "/joy")
+        self.sub_joy = rospy.Subscriber(sub_joy_topic, Joy, self.cbJoy, queue_size=1)
         self.timer = rospy.Timer(rospy.Duration(0.1), self.cb_publish)
 
     def cb_publish(self, event):
