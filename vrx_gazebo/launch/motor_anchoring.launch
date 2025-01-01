@@ -53,6 +53,7 @@
   <arg name="x_square_config" value="$(eval int((thrust_config)=='X_square'))"/>
 
   <!-- For now - can only use the T configuration! -->
+  <arg if="$(arg h_config)" name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
   <arg if="$(arg t_config)" name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
   <arg if="$(arg x_config)" name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
   <arg if="$(arg x_square_config)" name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
