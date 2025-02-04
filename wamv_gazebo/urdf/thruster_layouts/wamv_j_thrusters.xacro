@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find wamv_description)/urdf/thrusters/engine.xacro" />
+  <xacro:engine prefix="left" position="-2.373776 1.027135 0.318237" />
+  <xacro:engine prefix="right" position="-2.373776 -1.027135 0.318237" />
+  <xacro:engine prefix="left_lateral" position="1.20 0.90 0.318237" orientation="0.0 0.0 1.5707"/>
+  <xacro:engine prefix="right_lateral" position="1.20 -0.90 0.318237" orientation="0.0 0.0 -1.5707"/>
+  <gazebo>
+    <plugin name="wamv_gazebo_thrust" filename="libusv_gazebo_thrust_plugin.so">
+      <cmdTimeout>1.0</cmdTimeout>
+      <publisherRate>100.0</publisherRate>
+      <robotNamespace>${namespace}</robotNamespace>
+      <xacro:include filename="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_gazebo_thruster_config_linear.xacro" />
+      <xacro:wamv_gazebo_thruster_config name="left_front" />
+      <xacro:wamv_gazebo_thruster_config name="right_front" />
+    </plugin>
+    <plugin name="wamv_gazebo_thrust" filename="libusv_gazebo_thrust_plugin.so">
+      <cmdTimeout>1.0</cmdTimeout>
+      <publisherRate>100.0</publisherRate>
+      <robotNamespace>${namespace}</robotNamespace>
+      <xacro:include filename="$(find wamv_gazebo)/urdf/thruster_layouts/wamv_gazebo_thruster_config_angular.xacro" />
+      <xacro:wamv_gazebo_thruster_config name="left_rear" />
+      <xacro:wamv_gazebo_thruster_config name="right_rear" />
+    </plugin>
+  </gazebo>
+</robot>
