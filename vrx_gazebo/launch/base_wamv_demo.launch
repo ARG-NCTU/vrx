@@ -72,15 +72,15 @@
   <node name="spawn_model" pkg="gazebo_ros" type="spawn_model"
         args="-x $(arg x) -y $(arg y) -z $(arg z)
               -R $(arg R) -P $(arg P) -Y $(arg Y)
-              -urdf -param $(arg namespace)/robot_description -model wamv2"/>
+              -urdf -param $(arg namespace)/robot_description -model $(arg namespace)"/>
   
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="wamv2_tf_pub" >
-      <remap from="robot_description" to="wamv2/robot_description" />
-      <remap from="joint_states" to="wamv2/joint_states" />
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="$(arg namespace)_tf_pub" >
+      <remap from="robot_description" to="$(arg namespace)/robot_description" />
+      <remap from="joint_states" to="$(arg namespace)/joint_states" />
   </node>
   
   <include file="$(find localization)/launch/pub_tf_posestamped.launch">
-      <arg name="model_name" value="wamv2"/>
+      <arg name="model_name" value="$(arg namespace)"/>
       <arg name="pub_tf" value="true"/>
       <arg name="pub_pose" value="true"/>
   </include>
@@ -94,7 +94,7 @@
 
   <!-- Launch lidar_crop for wamv -->
   <include file="$(find lidar_crop)/launch/lidar_crop.launch">
-      <arg name="veh" value="wamv2"/>
+      <arg name="veh" value="$(arg namespace)"/>
   </include>
 
 </launch>
