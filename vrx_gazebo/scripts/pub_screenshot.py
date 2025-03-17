@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import fix_python3_path
+# import fix_python3_path
 import rospy
 import rospkg
 import message_filters
