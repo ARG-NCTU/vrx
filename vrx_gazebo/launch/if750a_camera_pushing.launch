@@ -49,7 +49,7 @@
               -sdf -database $(arg model) -model $(arg drone_ns)"/>
 
     <group ns="$(arg drone_ns)">
-        <param name="robot_description" command="cat '/home/argrobotx/robotx-2022/Firmware/Tools/sitl_gazebo/models/$(arg model)/$(arg model).urdf'" />
+        <param name="robot_description" command="cat '/home/argrobotx/$(env REPO_NAME)/Firmware/Tools/sitl_gazebo/models/$(arg model)/$(arg model).urdf'" />
         <rosparam command="load" file="$(find vrx_gazebo)/config/drone_config/control.yaml" />
         <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="vertical_rod_joint_position_controller"/>
         <node pkg="vrx_gazebo" type="model_state_to_tf.py" name="model_state_to_tf">
